@@ -54,4 +54,40 @@ offset_bottom = 8.0
 focus_mode = 0
 mouse_default_cursor_shape = 2
 
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="LeftPage" type="Button" parent="MarginContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+disabled = true
+text = "<"
+
+[node name="Pages" type="RichTextLabel" parent="MarginContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "0/0"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RightPage" type="Button" parent="MarginContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+disabled = true
+text = ">"
+
 [connection signal="pressed" from="MarginContainer/FullText/WordButton" to="MarginContainer/FullText" method="_on_word_button_pressed"]
+[connection signal="pressed" from="MarginContainer/MarginContainer/HBoxContainer/LeftPage" to="MarginContainer/FullText" method="_on_left_page_pressed"]
+[connection signal="pressed" from="MarginContainer/MarginContainer/HBoxContainer/RightPage" to="MarginContainer/FullText" method="_on_right_page_pressed"]

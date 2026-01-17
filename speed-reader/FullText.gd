@@ -2,17 +2,27 @@ extends RichTextLabel
 
 class_name FullText
 
+var _full_text : String
+var _pages : Array[String] = []
+var _maximum_lines : int = -1
+var _currently_page_idx : int = 0
+
 var _font : Font = load("res://fonts/Poppins/Poppins-Light.ttf")
 var _font_size : int = 25
 var _paragraph := TextParagraph.new()
 
 var _letters : Array[Letter] = []
-var _words : Array[Word] = []
+var _currently_page_letters : Array[Letter] = []
+var _currently_page_words : Array[Word] = []
 
 @onready var _word_button : Button = $WordButton
 var _fade_tween : Tween
 var _last_word_in_button : Word
 var _currently_word_in_button : Word
+
+@onready var _pages_text : RichTextLabel = $"../MarginContainer/HBoxContainer/Pages"
+@onready var _left_page_button : Button = $"../MarginContainer/HBoxContainer/LeftPage"
+@onready var _right_page_button : Button = $"../MarginContainer/HBoxContainer/RightPage"
 
 signal clicked_on_word(word : String, idx : int)
 
@@ -23,10 +33,11 @@ func _ready() -> void:
 
 func _resized() -> void:
 	_paragraph.width = size.x
+	set_full_text(_full_text)
 
 func _physics_process(_delta: float) -> void:
 	var _found_mouse_in_word : bool = false
-	for word in _words:
+	for word in _currently_page_words:
 		if word.rect.has_point(get_local_mouse_position()):
 			_set_word_button(word)
 			_found_mouse_in_word = true
@@ -77,18 +88,22 @@ func _fade_out_button(duration : float = 0.1) -> void:
 		_word_button.visible = false
 	)
 
-func define_text(_text : String) -> void:
-	text = _text
-	_paragraph.clear()
-	_paragraph.add_string(text, _font, _font_size)
+func set_full_text(full_text : String) -> void:
+	_full_text = full_text
+	_calculate_pages(_full_text)
 	queue_redraw()
 
 func _draw() -> void:
-	if not text:
+	if not _pages:
 		return
 	
-	_letters.clear()
-	_words.clear()
+	_pages_text.text = str(_currently_page_idx + 1) + "/" + str(_pages.size())
+	
+	_paragraph.clear()
+	_paragraph.add_string(_pages[_currently_page_idx], _font, _font_size)
+	
+	_currently_page_letters.clear()
+	_currently_page_words.clear()
 	
 	# Get the primary text server
 	var text_server = TextServerManager.get_primary_interface()
@@ -121,13 +136,7 @@ func _draw() -> void:
 			# get the offset, it may be needed
 			#var offset = glyph.get("offset", Vector2.ZERO)
 			
-			# draw a red rect surrounding the glyph
-			#draw_rect(Rect2(Vector2(x, y), Vector2(advance, ascent + descent)), Color.RED, false)
-			_letters.append(Letter.new(Rect2(Vector2(x, y), Vector2(advance, ascent + descent)), text[character_idx]))
-			if Rect2(Vector2(x, y), Vector2(advance, ascent + descent)).has_point(get_local_mouse_position()):
-				pass
-				#print(get_word_index_from_char_idx(text, text.split(" "), character_idx))
-				#print(text.split(" ")[get_word_index_from_char_idx(text, text.split(" "), character_idx)])
+			_currently_page_letters.append(Letter.new(Rect2(Vector2(x, y), Vector2(advance, ascent + descent)), _pages[_currently_page_idx][character_idx], i))
 			
 			# add the advance to x
 			x += advance
@@ -135,20 +144,18 @@ func _draw() -> void:
 
 		# update y with the ascent and descent of the line
 		y += ascent + descent
-
-	# draw the paragraph to this canvas item
-	#_paragraph.draw(get_canvas_item(), Vector2.ZERO)
+	
 	var word_idx := 0
 	var idx := 0
 	var _current_word : Word = null
 	var _first_letter_idx := -1
 
-	while idx < _letters.size():
-		var letter := _letters[idx]
+	while idx < _currently_page_letters.size():
+		var letter := _currently_page_letters[idx]
 
 		if not _is_whitespace(letter.letter):
 			if _current_word == null:
-				_current_word = Word.new(letter.rect, "", word_idx)
+				_current_word = Word.new(letter.rect, "", word_idx, letter.line)
 				word_idx += 1
 				_first_letter_idx = idx
 
@@ -156,7 +163,7 @@ func _draw() -> void:
 			_current_word.rect = _current_word.rect.merge(letter.rect)
 		else:
 			if _current_word != null:
-				_words.append(_current_word)
+				_currently_page_words.append(_current_word)
 				_current_word = null
 				_first_letter_idx = -1
 
@@ -164,14 +171,88 @@ func _draw() -> void:
 
 	# pega a última palavra (caso não termine com whitespace)
 	if _current_word != null:
-		_words.append(_current_word)
+		_currently_page_words.append(_current_word)
+	
+	# draw the paragraph to this canvas item
+	_paragraph.draw(get_canvas_item(), Vector2.ZERO)
 
-	#for word in _words:
-		#draw_rect(word.rect, Color.RED, false)
-		#print(word.word)
+func _calculate_pages(full_text : String) -> void:
+	var paragraph := TextParagraph.new()
+	paragraph.width = size.x
+	paragraph.add_string(full_text, _font, _font_size)
+	
+	_pages.clear()
+	_letters.clear()
+	
+	# Get the primary text server
+	var text_server = TextServerManager.get_primary_interface()
+	var x = 0.0
+	var y = 0.0
+	var ascent = 0.0
+	var descent = 0.0
+	var character_idx : int = 0
+	_maximum_lines = -1
+	
+	# for each line
+	for i in paragraph.get_line_count():
+		# reset x
+		x = 0.0
+		
+		# get the ascent and descent of the line
+		ascent = paragraph.get_line_ascent(i)
+		descent = paragraph.get_line_descent(i)
+
+		# get the rid of the line
+		var line_rid = paragraph.get_line_rid(i)
+		
+		# get all the glyphs that compose the line
+		var glyphs = text_server.shaped_text_get_glyphs(line_rid)
+
+		# for each glyph
+		for glyph in glyphs:
+			# get the advance (how much the we need to move x)
+			var advance = glyph.get("advance", 0)
+			
+			# get the offset, it may be needed
+			#var offset = glyph.get("offset", Vector2.ZERO)
+			
+			if _maximum_lines < 0 and y + ascent + descent >= position.y + size.y:
+				_maximum_lines = i - 1
+			_letters.append(Letter.new(Rect2(Vector2(x, y), Vector2(advance, ascent + descent)), full_text[character_idx], i))
+			
+			# add the advance to x
+			x += advance
+			character_idx += 1
+
+		# update y with the ascent and descent of the line
+		y += ascent + descent
+	
+	if _maximum_lines < 0:
+		_maximum_lines = paragraph.get_line_count()
+	
+	var page : String = ""
+	var currently_page : int = 1
+	for i in _letters.size():
+		if _letters[i].line > _maximum_lines * currently_page:
+			currently_page += 1
+			_pages.append(page)
+			page = "" + _letters[i].letter
+		else:
+			page += _letters[i].letter
+	_letters.clear()
+	_pages.append(page)
+	_currently_page_idx = 0
+	
+	_left_page_button.disabled = true
+	if _pages.size() > 1:
+		_right_page_button.disabled = false
+	else:
+		_right_page_button.disabled = true
+	#print(_pages)
+	#print(_maximum_lines)
 
 func get_word_index_from_char_idx(_text : String, words : PackedStringArray, char_idx : int) -> int:
-	if char_idx < 0 or char_idx >= text.length():
+	if char_idx < 0 or char_idx >= _text.length():
 		return -1
 
 	var running_idx := 0
@@ -212,16 +293,16 @@ func get_word_index_from_char_idx(_text : String, words : PackedStringArray, cha
 	#return text.substr(start, end - start + 1)
 
 func _get_start_idx(idx: int) -> int:
-	if idx < 0 or idx >= text.length():
+	if idx < 0 or idx >= _full_text.length():
 		return -1
 	
-	if _is_whitespace(text[idx]):
+	if _is_whitespace(_full_text[idx]):
 		return -1
 	
 	var start := idx
 	
 	# Anda para trás
-	while start > 0 and not _is_whitespace(text[start - 1]):
+	while start > 0 and not _is_whitespace(_full_text[start - 1]):
 		start -= 1
 	
 	return start
@@ -232,23 +313,50 @@ func _is_whitespace(c: String) -> bool:
 class Letter:
 	var rect : Rect2
 	var letter : String
+	var line : int
 	
 	@warning_ignore("shadowed_variable")
-	func _init(rect : Rect2, letter : String) -> void:
+	func _init(rect : Rect2, letter : String, line : int) -> void:
 		self.rect = rect
 		self.letter = letter
+		self.line = line
 
 class Word:
 	var idx : int
 	var rect : Rect2
 	var word : String
+	var line : int
 	
 	@warning_ignore("shadowed_variable")
-	func _init(rect : Rect2, word : String, idx : int) -> void:
+	func _init(rect : Rect2, word : String, idx : int, line : int) -> void:
 		self.rect = rect
 		self.word = word
 		self.idx = idx
+		self.line = line
 
 func _on_word_button_pressed() -> void:
 	if _word_button.modulate.a > 0:
-		clicked_on_word.emit(_currently_word_in_button.word, _currently_word_in_button.idx)
+		var idx : int = 0
+		var page_idx : int = 0
+		while page_idx < _currently_page_idx:
+			idx += Global.split_text_by_space(_pages[page_idx]).size() - 1
+			page_idx += 1
+		clicked_on_word.emit(_currently_word_in_button.word, idx + _currently_word_in_button.idx)
+
+func _on_left_page_pressed() -> void:
+	if _currently_page_idx > 0:
+		_currently_page_idx -= 1
+		queue_redraw()
+		_left_page_button.release_focus()
+		_right_page_button.disabled = false
+		if _currently_page_idx <= 0:
+			_left_page_button.disabled = true
+
+func _on_right_page_pressed() -> void:
+	if _currently_page_idx < _pages.size() - 1:
+		_currently_page_idx += 1
+		queue_redraw()
+		_right_page_button.release_focus()
+		_left_page_button.disabled = false
+		if _currently_page_idx >= _pages.size() - 1:
+			_right_page_button.disabled = true
