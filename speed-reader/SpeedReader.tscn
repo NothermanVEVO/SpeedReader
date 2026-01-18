@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://b7rpu2eiydidn"]
+[gd_scene load_steps=6 format=3 uid="uid://b7rpu2eiydidn"]
 
 [ext_resource type="Script" uid="uid://wmyj7sf2qfhu" path="res://SpeedReader.gd" id="1_iq8i0"]
 [ext_resource type="FontFile" uid="uid://c55x50yepnavk" path="res://fonts/Poppins/Poppins-Light.ttf" id="2_v4uy4"]
+[ext_resource type="Script" uid="uid://cdmdowrdnm7vn" path="res://TextContainer.gd" id="2_xdc5n"]
 [ext_resource type="Script" uid="uid://b3uukynvdg636" path="res://FullText.gd" id="3_f3hev"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_iq8i0"]
@@ -31,13 +32,53 @@ theme_override_styles/separator = SubResource("StyleBoxLine_iq8i0")
 
 [node name="Timer" type="Timer" parent="."]
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="TextContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 8
+script = ExtResource("2_xdc5n")
 
-[node name="FullText" type="RichTextLabel" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="TextContainer"]
+layout_mode = 2
+
+[node name="Top" type="MarginContainer" parent="TextContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TextContainer/VBoxContainer/Top"]
+layout_mode = 2
+
+[node name="File" type="MenuButton" parent="TextContainer/VBoxContainer/Top/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Arquivo"
+flat = false
+item_count = 4
+popup/item_0/text = "Novo"
+popup/item_0/id = 0
+popup/item_1/text = "Abrir"
+popup/item_1/id = 1
+popup/item_2/text = "Importar"
+popup/item_2/id = 2
+popup/item_3/text = "Salvar"
+popup/item_3/id = 3
+
+[node name="Edit" type="Button" parent="TextContainer/VBoxContainer/Top/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+mouse_default_cursor_shape = 2
+toggle_mode = true
+text = "Editar"
+
+[node name="Button" type="Button" parent="TextContainer/VBoxContainer/Top/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+mouse_default_cursor_shape = 2
+text = "Configurações"
+
+[node name="FullText" type="RichTextLabel" parent="TextContainer/VBoxContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_fonts/normal_font = ExtResource("2_v4uy4")
 theme_override_font_sizes/normal_font_size = 20
 bbcode_enabled = true
@@ -45,7 +86,7 @@ fit_content = true
 autowrap_mode = 2
 script = ExtResource("3_f3hev")
 
-[node name="WordButton" type="Button" parent="MarginContainer/FullText"]
+[node name="WordButton" type="Button" parent="TextContainer/VBoxContainer/FullText"]
 modulate = Color(1.2060356, 5.1045413, 5.076487, 0)
 show_behind_parent = true
 layout_mode = 0
@@ -54,7 +95,14 @@ offset_bottom = 8.0
 focus_mode = 0
 mouse_default_cursor_shape = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
+[node name="TextEdit" type="TextEdit" parent="TextContainer/VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "Escreva algo..."
+
+[node name="Bottom" type="MarginContainer" parent="TextContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_constants/margin_left = 10
@@ -62,17 +110,17 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TextContainer/VBoxContainer/Bottom"]
 layout_mode = 2
 
-[node name="LeftPage" type="Button" parent="MarginContainer/MarginContainer/HBoxContainer"]
+[node name="LeftPage" type="Button" parent="TextContainer/VBoxContainer/Bottom/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 disabled = true
 text = "<"
 
-[node name="Pages" type="RichTextLabel" parent="MarginContainer/MarginContainer/HBoxContainer"]
+[node name="Pages" type="RichTextLabel" parent="TextContainer/VBoxContainer/Bottom/HBoxContainer"]
 layout_mode = 2
 text = "0/0"
 fit_content = true
@@ -81,13 +129,14 @@ autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RightPage" type="Button" parent="MarginContainer/MarginContainer/HBoxContainer"]
+[node name="RightPage" type="Button" parent="TextContainer/VBoxContainer/Bottom/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 disabled = true
 text = ">"
 
-[connection signal="pressed" from="MarginContainer/FullText/WordButton" to="MarginContainer/FullText" method="_on_word_button_pressed"]
-[connection signal="pressed" from="MarginContainer/MarginContainer/HBoxContainer/LeftPage" to="MarginContainer/FullText" method="_on_left_page_pressed"]
-[connection signal="pressed" from="MarginContainer/MarginContainer/HBoxContainer/RightPage" to="MarginContainer/FullText" method="_on_right_page_pressed"]
+[connection signal="toggled" from="TextContainer/VBoxContainer/Top/HBoxContainer/Edit" to="TextContainer" method="_on_edit_toggled"]
+[connection signal="pressed" from="TextContainer/VBoxContainer/FullText/WordButton" to="TextContainer/VBoxContainer/FullText" method="_on_word_button_pressed"]
+[connection signal="pressed" from="TextContainer/VBoxContainer/Bottom/HBoxContainer/LeftPage" to="TextContainer/VBoxContainer/FullText" method="_on_left_page_pressed"]
+[connection signal="pressed" from="TextContainer/VBoxContainer/Bottom/HBoxContainer/RightPage" to="TextContainer/VBoxContainer/FullText" method="_on_right_page_pressed"]

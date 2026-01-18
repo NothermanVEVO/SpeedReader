@@ -20,9 +20,9 @@ var _fade_tween : Tween
 var _last_word_in_button : Word
 var _currently_word_in_button : Word
 
-@onready var _pages_text : RichTextLabel = $"../MarginContainer/HBoxContainer/Pages"
-@onready var _left_page_button : Button = $"../MarginContainer/HBoxContainer/LeftPage"
-@onready var _right_page_button : Button = $"../MarginContainer/HBoxContainer/RightPage"
+@onready var _pages_text : RichTextLabel = $"../Bottom/HBoxContainer/Pages"
+@onready var _left_page_button : Button = $"../Bottom/HBoxContainer/LeftPage"
+@onready var _right_page_button : Button = $"../Bottom/HBoxContainer/RightPage"
 
 signal clicked_on_word(word : String, idx : int)
 
@@ -93,6 +93,14 @@ func set_full_text(full_text : String) -> void:
 	_calculate_pages(_full_text)
 	queue_redraw()
 
+func get_full_text() -> String:
+	return _full_text
+
+func disable_pages() -> void:
+	_pages_text.text = "0/0"
+	_left_page_button.disabled = true
+	_right_page_button.disabled = true
+
 func _draw() -> void:
 	if not _pages:
 		return
@@ -132,6 +140,9 @@ func _draw() -> void:
 		for glyph in glyphs:
 			# get the advance (how much the we need to move x)
 			var advance = glyph.get("advance", 0)
+			
+			if advance == 0 and character_idx < _pages[_currently_page_idx].length() and _pages[_currently_page_idx][character_idx] not in ["\t", "\n"]:
+				continue
 			
 			# get the offset, it may be needed
 			#var offset = glyph.get("offset", Vector2.ZERO)
@@ -213,12 +224,16 @@ func _calculate_pages(full_text : String) -> void:
 			# get the advance (how much the we need to move x)
 			var advance = glyph.get("advance", 0)
 			
+			if advance == 0 and character_idx < full_text.length() and full_text[character_idx] not in ["\t", "\n"]:
+				continue
+			
 			# get the offset, it may be needed
 			#var offset = glyph.get("offset", Vector2.ZERO)
 			
-			if _maximum_lines < 0 and y + ascent + descent >= position.y + size.y:
+			if _maximum_lines < 0 and y + ascent + descent >= size.y:
 				_maximum_lines = i - 1
 			_letters.append(Letter.new(Rect2(Vector2(x, y), Vector2(advance, ascent + descent)), full_text[character_idx], i))
+			
 			
 			# add the advance to x
 			x += advance
@@ -248,8 +263,6 @@ func _calculate_pages(full_text : String) -> void:
 		_right_page_button.disabled = false
 	else:
 		_right_page_button.disabled = true
-	#print(_pages)
-	#print(_maximum_lines)
 
 func get_word_index_from_char_idx(_text : String, words : PackedStringArray, char_idx : int) -> int:
 	if char_idx < 0 or char_idx >= _text.length():
