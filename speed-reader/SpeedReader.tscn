@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://b7rpu2eiydidn"]
+[gd_scene load_steps=7 format=3 uid="uid://b7rpu2eiydidn"]
 
 [ext_resource type="Script" uid="uid://wmyj7sf2qfhu" path="res://SpeedReader.gd" id="1_iq8i0"]
 [ext_resource type="FontFile" uid="uid://c55x50yepnavk" path="res://fonts/Poppins/Poppins-Light.ttf" id="2_v4uy4"]
 [ext_resource type="Script" uid="uid://cdmdowrdnm7vn" path="res://TextContainer.gd" id="2_xdc5n"]
 [ext_resource type="Script" uid="uid://b3uukynvdg636" path="res://FullText.gd" id="3_f3hev"]
+[ext_resource type="Script" uid="uid://ckutroofw2701" path="res://dialog/InputDialog.gd" id="5_q068l"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_iq8i0"]
 color = Color(0.18, 0.18, 0.18, 1)
@@ -37,6 +38,21 @@ layout_mode = 2
 size_flags_horizontal = 8
 script = ExtResource("2_xdc5n")
 
+[node name="FileDialog" type="FileDialog" parent="TextContainer"]
+oversampling_override = 1.0
+ok_button_text = "Salvar"
+cancel_button_text = "Cancelar"
+access = 2
+use_native_dialog = true
+
+[node name="AcceptDialog" type="AcceptDialog" parent="TextContainer"]
+title = "Aviso!"
+force_native = true
+
+[node name="InputDialog" type="AcceptDialog" parent="TextContainer"]
+script = ExtResource("5_q068l")
+metadata/_custom_type_script = "uid://ckutroofw2701"
+
 [node name="VBoxContainer" type="VBoxContainer" parent="TextContainer"]
 layout_mode = 2
 
@@ -52,7 +68,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Arquivo"
 flat = false
-item_count = 4
+item_count = 5
 popup/item_0/text = "Novo"
 popup/item_0/id = 0
 popup/item_1/text = "Abrir"
@@ -61,6 +77,8 @@ popup/item_2/text = "Importar"
 popup/item_2/id = 2
 popup/item_3/text = "Salvar"
 popup/item_3/id = 3
+popup/item_4/text = "Salvar como"
+popup/item_4/id = 4
 
 [node name="Edit" type="Button" parent="TextContainer/VBoxContainer/Top/HBoxContainer"]
 layout_mode = 2
@@ -136,6 +154,7 @@ mouse_default_cursor_shape = 2
 disabled = true
 text = ">"
 
+[connection signal="file_selected" from="TextContainer/FileDialog" to="TextContainer" method="_on_file_dialog_file_selected"]
 [connection signal="toggled" from="TextContainer/VBoxContainer/Top/HBoxContainer/Edit" to="TextContainer" method="_on_edit_toggled"]
 [connection signal="pressed" from="TextContainer/VBoxContainer/FullText/WordButton" to="TextContainer/VBoxContainer/FullText" method="_on_word_button_pressed"]
 [connection signal="pressed" from="TextContainer/VBoxContainer/Bottom/HBoxContainer/LeftPage" to="TextContainer/VBoxContainer/FullText" method="_on_left_page_pressed"]

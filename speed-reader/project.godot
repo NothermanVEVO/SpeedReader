@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 Global="*res://global/Global.gd"
+Files="*res://global/Files.gd"
 
 [display]
 
