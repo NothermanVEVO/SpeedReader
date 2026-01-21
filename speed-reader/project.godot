@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 Global="*res://global/Global.gd"
 Files="*res://global/Files.gd"
+ReaderThread="*res://global/ReaderThread.gd"
 
 [display]
 

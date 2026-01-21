@@ -53,6 +53,15 @@ force_native = true
 script = ExtResource("5_q068l")
 metadata/_custom_type_script = "uid://ckutroofw2701"
 
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="TextContainer"]
+oversampling_override = 1.0
+title = "Salvar - Aviso!"
+size = Vector2i(268, 100)
+extend_to_title = true
+force_native = true
+ok_button_text = "Sim"
+cancel_button_text = "Cancelar"
+
 [node name="VBoxContainer" type="VBoxContainer" parent="TextContainer"]
 layout_mode = 2
 
@@ -155,6 +164,8 @@ disabled = true
 text = ">"
 
 [connection signal="file_selected" from="TextContainer/FileDialog" to="TextContainer" method="_on_file_dialog_file_selected"]
+[connection signal="confirmed" from="TextContainer/ConfirmationDialog" to="TextContainer" method="_on_confirmation_dialog_confirmed"]
+[connection signal="custom_action" from="TextContainer/ConfirmationDialog" to="TextContainer" method="_on_confirmation_dialog_custom_action"]
 [connection signal="toggled" from="TextContainer/VBoxContainer/Top/HBoxContainer/Edit" to="TextContainer" method="_on_edit_toggled"]
 [connection signal="pressed" from="TextContainer/VBoxContainer/FullText/WordButton" to="TextContainer/VBoxContainer/FullText" method="_on_word_button_pressed"]
 [connection signal="pressed" from="TextContainer/VBoxContainer/Bottom/HBoxContainer/LeftPage" to="TextContainer/VBoxContainer/FullText" method="_on_left_page_pressed"]

@@ -26,86 +26,31 @@ var _last_word_before_editing : String = ""
 
 var _is_paused : bool = true
 
+var _current_page : String = ""
+var _next_page : String = ""
+
 func _ready() -> void:
 	_full_text.clicked_on_word.connect(_full_text_clicked_on_word)
-	#set_text("Oi, oficina, tudo bem com você? Estou testando para ver se está tudo funcionando como o planejado. E então, foi? Você conseguiu ler em uma velocidade maior do que o normal? Isso é algo muito bom para você treinar sua leitura e seu cérebro.")
-	#set_text("A tecnologia é uma ponte entre o que imaginamos e o que conseguimos realizar. Por meio dela, transformamos curiosidade em conhecimento, ideias em projetos e sonhos em realidade. Cada linha de código, cada inovação e cada pequeno avanço carregam o poder de mudar vidas, aproximar pessoas e construir um futuro mais criativo, acessível e cheio de possibilidades. E nesse caminho, aprendemos que errar faz parte do processo e que a evolução nasce da persistência. A tecnologia não é apenas feita de máquinas e sistemas, mas de pessoas que ousam tentar, melhorar e compartilhar. Quando usamos o conhecimento para criar com propósito, abrimos espaço para um futuro onde inovação e humanidade caminham juntas. Ela nos convida a enxergar problemas como oportunidades e desafios como pontos de partida. A cada descoberta, ampliamos nossos limites e percebemos que o verdadeiro avanço acontece quando usamos a tecnologia para gerar impacto positivo, inspirar outras pessoas e deixar o mundo um pouco melhor do que encontramos.")
-	#set_text("Era madrugada quando a cidade resolveu parar de fazer barulho.
-#
-#Os semáforos continuavam piscando, mas ninguém passava. As janelas estavam acesas, embora não houvesse silhuetas por trás das cortinas. Até o vento parecia andar de meias, com medo de acordar alguém. Só um lugar seguia vivo: a pequena oficina no fim da rua.
-#
-#Lá dentro, um rapaz tentava consertar um relógio que não marcava horas — marcava lembranças.
-#
-#Cada vez que ele girava a engrenagem principal, o ponteiro não avançava no tempo, mas voltava. Um cheiro de café velho surgia, depois o som distante de risadas, depois o gosto metálico de uma despedida que nunca foi dita em voz alta. O relógio era defeituoso assim desde que apareceu, embrulhado em jornal, na porta da oficina, numa noite sem explicação.
-#
-#O rapaz já tinha tentado de tudo: trocar peças, lubrificar molas, até xingar o objeto em três idiomas diferentes. Nada funcionava. O relógio insistia em lembrar.
-#
-#Cansado, ele largou as ferramentas e perguntou em voz alta, como quem fala com um gato:
-#
-#— O que você quer de mim?
-#
-#O relógio respondeu.
-#
-#Não com palavras, mas parando exatamente às 03:17.
-#
-#Naquele instante, a oficina se encheu de algo que não era som nem luz. Era presença. Ele soube, sem entender como, que aquele era o horário em que sempre fugia de algo importante. O momento em que desligava o celular, mudava de assunto, fingia estar ocupado.
-#
-#Com as mãos tremendo, ele girou o ponteiro mais uma vez.
-#
-#Dessa vez, o relógio não mostrou uma lembrança. Mostrou um futuro simples: a oficina aberta de manhã, cheiro de café fresco, alguém entrando e sorrindo como se estivesse finalmente em casa.
-#
-#O relógio então voltou a funcionar como qualquer outro.
-#
-#A cidade retomou o barulho. Os semáforos ouviram passos. O vento tirou as meias.
-#
-#E o rapaz aprendeu que alguns consertos não são feitos com ferramentas — mas com coragem de ficar quando tudo em você quer ir embora.")
-	#set_text("A S,Ç´DAS Psk<d pd <asSAD ,PDS P,ds ap´,AD P,DS <ds ,
-#DS A< A
-#S< DS
-#a<d sa<d as<d saç<D Saç< dsaç<d AS
-#,ÇD as< DSÇA, DAs<çd AS,
-#D AS[ÇD,
-#apq{d kwq!	+k d!@D -=P2WKMD SÁp ç<   
- #
- #
-#Ds ad saD 
-#ASd asd a 231
-#E  =S< ds< a
-#")
-	#set_text("oxi´´ ei")
-	#set_text("A S,´ÇDAS Psk<d pd <asSAD ,PDS P,ds ap,AD P,DS <ds ,
-	#DS A< A")
-	#set_text("alguém.")
-	#set_text("oficina")
-	#set_text("
-	#Os semáforos")
-	#set_text("rua.
-	#
-	#Lá")
-	#set_text("Como o planejado")
-	#_current_word = "Porque"
+
 	queue_redraw()
 	
 	_font_size = 50
 	
-	#_rich_text_label.add_theme_font_override("normal_font", _font)
-	#_rich_text_label.add_theme_font_size_override("normal_font_size", _font_size)
-	
-	# Set the max width to 600
 	_paragraph.width = 600
 	
-	_text_container.editing_text.connect(_is_editing_text)
+	#_text_container.editing_text.connect(_is_editing_text)
+	_full_text.changed_page.connect(_get_page)
 
 func _reset() -> void:
 	_last_word_before_editing = _current_word
 	_current_word = ""
 	queue_redraw()
 
-func _is_editing_text(is_editing : bool) -> void:
-	if is_editing:
-		_reset()
-	else:
-		set_text(_text_container.get_text())
+#func _is_editing_text(is_editing : bool) -> void:
+	#if is_editing:
+		#_reset()
+	#else:
+		#set_text(_text_container.get_text())
 
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("ui_accept") and not _text_container.is_editing():
@@ -114,11 +59,11 @@ func _process(_delta: float) -> void:
 		else:
 			stop()
 
-func set_text(text : String) -> void:
-	_full_text.set_full_text(text.strip_edges())
-	_words = Global.split_text_by_space(_full_text.get_full_text())
-	_set_current_word(0)
-	_currently_word_idx = -1
+#func set_text(text : String) -> void:
+	#_full_text.set_full_text(text.strip_edges())
+	#_words = Global.split_text_by_space(_full_text.get_full_text())
+	#_set_current_word(0)
+	#_currently_word_idx = -1
 
 func set_words_per_minute(wpm : float) -> void:
 	_words_per_minute = clampf(wpm, MIN_WORDS_PER_MINUTE, MAX_WORDS_PER_MINUTE)
@@ -152,6 +97,16 @@ func stop() -> void:
 func _set_current_word(idx : int) -> void:
 	_current_word = _words[idx].strip_edges()
 	queue_redraw()
+
+func _get_page(page : String) -> void:
+	_current_page = page
+	_words.clear()
+	_words = Global.split_text_by_space(_current_page)
+	if _words.is_empty() and not _full_text.get_next_page().is_empty():
+		_full_text.set_page(_full_text.get_page_index() + 1)
+	else:
+		_set_current_word(0)
+		_currently_word_idx = -1
 
 #@warning_ignore("shadowed_variable_base_class")
 #func _get_middle_idx(size : int) -> int:

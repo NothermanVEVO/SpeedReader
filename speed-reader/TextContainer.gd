@@ -9,13 +9,14 @@ enum File {NEW = 0, OPEN = 1, IMPORT = 2, SAVE = 3, SAVE_AS = 4}
 @onready var _file_dialog : FileDialog = $FileDialog
 @onready var _accept_dialog : AcceptDialog = $AcceptDialog
 @onready var _input_dialog : InputDialog = $InputDialog
+@onready var _confirmation_dialog : ConfirmationDialog = $ConfirmationDialog
+var _custom_confirmation_dialog_button : Button
 
 @onready var _full_text : FullText = $VBoxContainer/FullText
 @onready var _text_edit : TextEdit = $VBoxContainer/TextEdit
 
 @onready var _edit_button : Button = $VBoxContainer/Top/HBoxContainer/Edit
 
-var _exist_file_to_save : bool = false
 var _has_unsaved_changes : bool = false
 
 var _is_editing : bool = false
@@ -26,11 +27,16 @@ var _last_file_dialog_request : File
 
 var _last_import_path : String = ""
 
+var _currently_file_save_path : String = ""
+
 func _ready() -> void:
 	_menu_button.get_popup().id_pressed.connect(_menu_button_id_pressed)
+	
 	_input_dialog.title = "Nome do arquivo"
 	_input_dialog.define_text("Digite o nome do arquivo:")
 	_input_dialog.text_confirmed.connect(_input_dialog_text_confirmed)
+	
+	_custom_confirmation_dialog_button = _confirmation_dialog.add_button("Não salvar", false, "Negar")
 
 func is_editing() -> bool:
 	return _is_editing
@@ -53,26 +59,35 @@ func _menu_button_id_pressed(id : int) -> void:
 
 func _new() -> void:
 	if _has_unsaved_changes:
-		print("PErgunta se quer salvar")
-	_exist_file_to_save = false
-	pass
+		_confirmation_dialog.dialog_text = "O arquivo não está salvo."
+		_custom_confirmation_dialog_button.text = "Não salvar"
+		_confirmation_dialog.popup_centered()
+		return
+	_reset()
 
 func _open() -> void:
-	pass
+	_open_file_dialog_to_open()
 
 func _import() -> void:
 	_open_file_dialog_to_import()
 
 func _save() -> void:
-	if not _exist_file_to_save:
+	if _currently_file_save_path.is_empty():
 		_save_as()
 		return
+	_last_file_dialog_request = File.SAVE
+	_on_file_dialog_file_selected(_currently_file_save_path)
 
 func _save_as() -> void:
 	if _get_full_text().is_empty():
 		return
 	
 	_open_file_dialog_to_save()
+
+func _reset() -> void:
+	_currently_file_save_path = ""
+	_full_text.set_full_text("")
+	_text_edit.text = ""
 
 func _open_file_dialog_to_open() -> void:
 	_file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
@@ -94,7 +109,7 @@ func _open_file_dialog_to_save() -> void:
 	_file_dialog.access = FileDialog.ACCESS_USERDATA
 	_file_dialog.root_subfolder = "texts"
 	_file_dialog.ok_button_text = "Salvar"
-	_last_file_dialog_request = File.SAVE_AS
+	_last_file_dialog_request = File.SAVE
 	_file_dialog.popup_centered()
 
 func _get_full_text() -> String:
@@ -122,7 +137,7 @@ func _on_edit_toggled(toggled_on: bool) -> void:
 func _on_file_dialog_file_selected(path: String) -> void:
 	match _last_file_dialog_request:
 		File.OPEN:
-			pass
+			_open_imported_file(path)
 		File.IMPORT:
 			if not path.get_extension() in Files.VALID_EXTENSION_IN_EXTRACTION:
 				_accept_dialog.title = "Importação - Aviso!"
@@ -131,8 +146,9 @@ func _on_file_dialog_file_selected(path: String) -> void:
 				return
 			_input_dialog.popup_centered()
 			_last_import_path = path
-		File.SAVE_AS:
-			var status := Files.save_file(path.get_basename() + ".txt", _get_full_text())
+		File.SAVE:
+			var overrides : bool = not _currently_file_save_path.is_empty()
+			var status := Files.save_file(path.get_basename() + ".txt", _get_full_text(), overrides)
 			_open_accept_dialog_on_save(status)
 
 func _input_dialog_text_confirmed(text : String) -> void:
@@ -141,9 +157,12 @@ func _input_dialog_text_confirmed(text : String) -> void:
 	_accept_dialog.dialog_text = "Importando arquivo..."
 	_accept_dialog.popup_centered()
 	await get_tree().create_timer(0.5).timeout
-	var status := Files.import(_last_import_path, Files.EXTRACTED_TEXTS_PATH + "/" + text + ".txt")
+	var path : String = Files.EXTRACTED_TEXTS_PATH + "/" + text + ".txt"
+	var status := Files.import(_last_import_path, path)
 	_accept_dialog.get_ok_button().disabled = false
 	_open_accept_dialog_on_import(status)
+	if status == OK:
+		_open_imported_file(path)
 
 func _open_accept_dialog_on_import(status : Error) -> void:
 	_accept_dialog.title = "Importação - Aviso!"
@@ -170,3 +189,27 @@ func _open_accept_dialog_on_save(status : Error) -> void:
 		OK:
 			_accept_dialog.dialog_text = "Sucesso: O arquivo foi salvo."
 	_accept_dialog.popup_centered()
+
+func _open_imported_file(file_path : String) -> void:
+	_accept_dialog.title = "Abrir - Aviso!"
+	var status := Files.can_get_imported_file(file_path)
+	if status != OK:
+		if status == ERR_INVALID_DATA:
+			_accept_dialog.dialog_text = "Erro: Só é possivel abrir arquivos em formato \".txt\"\nSe quiser abrir algum arquivo diferente, tente \"importar\" primeiro."
+		elif status == ERR_FILE_NOT_FOUND:
+			_accept_dialog.dialog_text = "Erro: Arquivo não encontrado!"
+		_accept_dialog.popup_centered()
+	else:
+		Files.get_text_from_imported_file(file_path)
+		_currently_file_save_path = file_path
+		#_full_text.set_full_text(text)
+		#_text_edit.text = text
+
+func _on_confirmation_dialog_confirmed() -> void:
+	_save()
+
+func _on_confirmation_dialog_custom_action(_action: StringName) -> void:
+	if _custom_confirmation_dialog_button.text == "Não salvar":
+		_reset()
+	elif _custom_confirmation_dialog_button.text == "Sair":
+		get_tree().quit()

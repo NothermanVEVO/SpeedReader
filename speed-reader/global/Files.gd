@@ -48,17 +48,29 @@ func import(from_path : String, to_path : String) -> Error:
 	else:
 		return FAILED
 
-func get_text_from(file_path : String) -> String:
-	#var file_path : String = EXTRACTED_TEXTS_PATH + "/" + file_name + ".txt"
+func can_get_imported_file(file_path : String) -> Error:
+	if file_path.get_extension() != "txt":
+		return ERR_INVALID_DATA
+	
 	if not FileAccess.file_exists(file_path):
-		return ""
-	var file := FileAccess.open(file_path, FileAccess.READ)
-	var text := file.get_as_text()
-	file.close()
-	return text
+		return ERR_FILE_NOT_FOUND
+	
+	return OK
 
-func save_file(file_path : String, data : String) -> Error:
-	if FileAccess.file_exists(file_path):
+#func get_text_from_imported_file(file_path : String) -> String:
+	##var file_path : String = EXTRACTED_TEXTS_PATH + "/" + file_name + ".txt"
+	#if not FileAccess.file_exists(file_path):
+		#return ""
+	#var file := FileAccess.open(file_path, FileAccess.READ)
+	#var text := file.get_as_text(true)
+	#file.close()
+	#return text
+
+func get_text_from_imported_file(file_path : String) -> void:
+	ReaderThread.calculate_pages(file_path, FullText.get_font(), FullText.get_font_size(), FullText.get_paragraph_width(), FullText.get_max_lines())
+
+func save_file(file_path : String, data : String, overrides : bool = false) -> Error:
+	if not overrides and FileAccess.file_exists(file_path):
 		return ERR_ALREADY_EXISTS
 	var f := FileAccess.open(file_path, FileAccess.WRITE)
 	var is_ok : bool = f.store_string(data)
