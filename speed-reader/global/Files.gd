@@ -39,6 +39,10 @@ func import(from_path : String, to_path : String) -> Error:
 		else:
 			return FAILED
 	
+	if ReaderThread.is_calculating_pages():
+		ReaderThread.force_to_end()
+		await ReaderThread.ended_by_force
+	
 	var exe_path := ProjectSettings.globalize_path(EXTRACT_FILE_PATH)
 	var input := ProjectSettings.globalize_path(from_path)
 	var output := ProjectSettings.globalize_path(to_path)
@@ -67,6 +71,9 @@ func can_get_imported_file(file_path : String) -> Error:
 	#return text
 
 func get_text_from_imported_file(file_path : String) -> void:
+	if ReaderThread.is_calculating_pages():
+		ReaderThread.force_to_end()
+		await ReaderThread.ended_by_force
 	ReaderThread.calculate_pages(file_path, FullText.get_font(), FullText.get_font_size(), FullText.get_paragraph_width(), FullText.get_max_lines())
 
 func save_file(file_path : String, data : String, overrides : bool = false) -> Error:

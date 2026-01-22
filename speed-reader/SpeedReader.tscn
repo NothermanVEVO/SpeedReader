@@ -1,10 +1,16 @@
-[gd_scene load_steps=7 format=3 uid="uid://b7rpu2eiydidn"]
+[gd_scene load_steps=13 format=3 uid="uid://b7rpu2eiydidn"]
 
 [ext_resource type="Script" uid="uid://wmyj7sf2qfhu" path="res://SpeedReader.gd" id="1_iq8i0"]
 [ext_resource type="FontFile" uid="uid://c55x50yepnavk" path="res://fonts/Poppins/Poppins-Light.ttf" id="2_v4uy4"]
 [ext_resource type="Script" uid="uid://cdmdowrdnm7vn" path="res://TextContainer.gd" id="2_xdc5n"]
 [ext_resource type="Script" uid="uid://b3uukynvdg636" path="res://FullText.gd" id="3_f3hev"]
 [ext_resource type="Script" uid="uid://ckutroofw2701" path="res://dialog/InputDialog.gd" id="5_q068l"]
+[ext_resource type="Script" uid="uid://nnsywkaaa6jg" path="res://Player.gd" id="6_3dwvd"]
+[ext_resource type="Texture2D" uid="uid://vdmm4fxsfxv7" path="res://assets/white_skip_back_button.png" id="6_jaaaw"]
+[ext_resource type="Texture2D" uid="uid://nr8subgtvvwi" path="res://assets/white_skip_forward_button.png" id="8_3dwvd"]
+[ext_resource type="Texture2D" uid="uid://qblsa1w723aq" path="res://assets/white_play_button.png" id="8_dj55r"]
+[ext_resource type="Theme" uid="uid://bgoh6vqpusiqe" path="res://themes/white/base_theme_white.tres" id="8_x4dh1"]
+[ext_resource type="FontFile" uid="uid://dejoefeh8m8sh" path="res://fonts/roboto/Roboto-Regular.ttf" id="9_dj55r"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_iq8i0"]
 color = Color(0.18, 0.18, 0.18, 1)
@@ -53,21 +59,13 @@ force_native = true
 script = ExtResource("5_q068l")
 metadata/_custom_type_script = "uid://ckutroofw2701"
 
-[node name="ConfirmationDialog" type="ConfirmationDialog" parent="TextContainer"]
-oversampling_override = 1.0
-title = "Salvar - Aviso!"
-size = Vector2i(268, 100)
-extend_to_title = true
-force_native = true
-ok_button_text = "Sim"
-cancel_button_text = "Cancelar"
-
 [node name="VBoxContainer" type="VBoxContainer" parent="TextContainer"]
 layout_mode = 2
 
 [node name="Top" type="MarginContainer" parent="TextContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
+theme_override_constants/margin_top = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TextContainer/VBoxContainer/Top"]
 layout_mode = 2
@@ -77,28 +75,16 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Arquivo"
 flat = false
-item_count = 5
-popup/item_0/text = "Novo"
+item_count = 3
+popup/item_0/text = "Abrir"
 popup/item_0/id = 0
-popup/item_1/text = "Abrir"
+popup/item_1/text = "Importar"
 popup/item_1/id = 1
-popup/item_2/text = "Importar"
+popup/item_2/text = "Abrir local do arquivo"
 popup/item_2/id = 2
-popup/item_3/text = "Salvar"
-popup/item_3/id = 3
-popup/item_4/text = "Salvar como"
-popup/item_4/id = 4
 
-[node name="Edit" type="Button" parent="TextContainer/VBoxContainer/Top/HBoxContainer"]
+[node name="Settings" type="Button" parent="TextContainer/VBoxContainer/Top/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 0
-mouse_default_cursor_shape = 2
-toggle_mode = true
-text = "Editar"
-
-[node name="Button" type="Button" parent="TextContainer/VBoxContainer/Top/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 text = "Configurações"
 
@@ -122,13 +108,6 @@ offset_bottom = 8.0
 focus_mode = 0
 mouse_default_cursor_shape = 2
 
-[node name="TextEdit" type="TextEdit" parent="TextContainer/VBoxContainer"]
-visible = false
-custom_minimum_size = Vector2(800, 0)
-layout_mode = 2
-size_flags_vertical = 3
-placeholder_text = "Escreva algo..."
-
 [node name="Bottom" type="MarginContainer" parent="TextContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 8
@@ -139,6 +118,7 @@ theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TextContainer/VBoxContainer/Bottom"]
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="LeftPage" type="Button" parent="TextContainer/VBoxContainer/Bottom/HBoxContainer"]
 layout_mode = 2
@@ -163,10 +143,92 @@ mouse_default_cursor_shape = 2
 disabled = true
 text = ">"
 
+[node name="Player" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_bottom = 40
+script = ExtResource("6_3dwvd")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Player"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Backwards" type="Button" parent="Player/HBoxContainer"]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme = ExtResource("8_x4dh1")
+icon = ExtResource("6_jaaaw")
+expand_icon = true
+
+[node name="Play" type="Button" parent="Player/HBoxContainer"]
+custom_minimum_size = Vector2(160, 160)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme = ExtResource("8_x4dh1")
+icon = ExtResource("8_dj55r")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Forwards" type="Button" parent="Player/HBoxContainer"]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme = ExtResource("8_x4dh1")
+icon = ExtResource("8_3dwvd")
+icon_alignment = 1
+expand_icon = true
+
+[node name="VSeparator" type="VSeparator" parent="Player/HBoxContainer"]
+layout_mode = 2
+
+[node name="WordsPerMinute" type="VBoxContainer" parent="Player/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Player/HBoxContainer/WordsPerMinute"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("9_dj55r")
+theme_override_font_sizes/normal_font_size = 20
+text = " Palavras Por Minuto (PPM): "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="WPMSpinBox" type="SpinBox" parent="Player/HBoxContainer/WordsPerMinute"]
+layout_mode = 2
+theme = ExtResource("8_x4dh1")
+min_value = 1.0
+max_value = 10000.0
+value = 1.0
+alignment = 1
+suffix = "PPM"
+
+[node name="WPMHSlider" type="HSlider" parent="Player/HBoxContainer/WordsPerMinute"]
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("8_x4dh1")
+tick_count = 5
+ticks_on_borders = true
+ticks_position = 3
+
 [connection signal="file_selected" from="TextContainer/FileDialog" to="TextContainer" method="_on_file_dialog_file_selected"]
-[connection signal="confirmed" from="TextContainer/ConfirmationDialog" to="TextContainer" method="_on_confirmation_dialog_confirmed"]
-[connection signal="custom_action" from="TextContainer/ConfirmationDialog" to="TextContainer" method="_on_confirmation_dialog_custom_action"]
-[connection signal="toggled" from="TextContainer/VBoxContainer/Top/HBoxContainer/Edit" to="TextContainer" method="_on_edit_toggled"]
 [connection signal="pressed" from="TextContainer/VBoxContainer/FullText/WordButton" to="TextContainer/VBoxContainer/FullText" method="_on_word_button_pressed"]
 [connection signal="pressed" from="TextContainer/VBoxContainer/Bottom/HBoxContainer/LeftPage" to="TextContainer/VBoxContainer/FullText" method="_on_left_page_pressed"]
 [connection signal="pressed" from="TextContainer/VBoxContainer/Bottom/HBoxContainer/RightPage" to="TextContainer/VBoxContainer/FullText" method="_on_right_page_pressed"]
+[connection signal="pressed" from="Player/HBoxContainer/Backwards" to="Player" method="_on_backwards_pressed"]
+[connection signal="pressed" from="Player/HBoxContainer/Play" to="Player" method="_on_play_pressed"]
+[connection signal="pressed" from="Player/HBoxContainer/Forwards" to="Player" method="_on_forwards_pressed"]
+[connection signal="value_changed" from="Player/HBoxContainer/WordsPerMinute/WPMSpinBox" to="Player" method="_on_wpm_spin_box_value_changed"]
+[connection signal="drag_ended" from="Player/HBoxContainer/WordsPerMinute/WPMHSlider" to="Player" method="_on_wpm_hslider_drag_ended"]
+[connection signal="value_changed" from="Player/HBoxContainer/WordsPerMinute/WPMHSlider" to="Player" method="_on_wpm_hslider_value_changed"]

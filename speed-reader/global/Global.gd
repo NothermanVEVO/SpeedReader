@@ -10,3 +10,6 @@ func split_text_by_space(text : String) -> PackedStringArray:
 
 func is_whitespace(c: String) -> bool:
 	return c == " " or c == "\n" or c == "\t" or c == "\r"
+
+func is_only_whitespace(text : String) -> bool:
+	return text.strip_edges().is_empty()

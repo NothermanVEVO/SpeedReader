@@ -1,15 +1,18 @@
 extends MarginContainer
 
-const MIN_WORDS_PER_MINUTE : float = 0.01
-const MAX_WORDS_PER_MINUTE : float = 10000
+class_name SpeedReader
+
+const MIN_WORDS_PER_MINUTE : float = 1
+const MAX_WORDS_PER_MINUTE : float = 2000
 const PUNCTUATION_DELAY : float = 0.5
 
 const PUNCTUATIONS : String = ".,:;!?"
 const IGNORED_CHARACTERS : String = PUNCTUATIONS + "'´`"
 
 @onready var _full_text : FullText = $TextContainer/VBoxContainer/FullText
+@onready var _player : Player = $Player
+
 @onready var _timer : Timer = $Timer
-@onready var _text_container : TextContainer = $TextContainer
 
 var _font : Font = load("res://fonts/Poppins/Poppins-Light.ttf")
 var _font_size : int = 100
@@ -22,42 +25,63 @@ var _words_per_minute : float = 250
 var _currently_words_per_minute : float = 250
 var _current_word : String = ""
 
-var _last_word_before_editing : String = ""
-
 var _is_paused : bool = true
 
 var _current_page : String = ""
-var _next_page : String = ""
 
 func _ready() -> void:
+	_player.set_wpm(250)
+	
 	_full_text.clicked_on_word.connect(_full_text_clicked_on_word)
-
-	queue_redraw()
 	
 	_font_size = 50
 	
 	_paragraph.width = 600
 	
-	#_text_container.editing_text.connect(_is_editing_text)
 	_full_text.changed_page.connect(_get_page)
+	
+	_player.go_backward.connect(_player_go_backward)
+	_player.play.connect(_player_play)
+	_player.go_forward.connect(_player_go_forward)
+	_player.wpm_changed.connect(_player_wpm_changed)
+	
+	ReaderThread.will_calculate_pages.connect(_reset)
 
 func _reset() -> void:
-	_last_word_before_editing = _current_word
+	_current_page = ""
 	_current_word = ""
+	_currently_word_idx = -1
 	queue_redraw()
 
-#func _is_editing_text(is_editing : bool) -> void:
-	#if is_editing:
-		#_reset()
-	#else:
-		#set_text(_text_container.get_text())
-
 func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("ui_accept") and not _text_container.is_editing():
-		if _is_paused:
-			play()
-		else:
-			stop()
+	if Input.is_action_just_pressed("ui_accept"):
+		_player.set_paused(not _is_paused)
+
+func _player_go_backward() -> void: ## TODO WARNING BECAFERUL NOTE BUG
+	if _currently_word_idx - 1 > 0 and _currently_word_idx - 1 < _words.size():
+		_currently_word_idx -= 1
+		_set_current_word(_currently_word_idx)
+	if _currently_word_idx - 1 == 0:
+		_currently_word_idx -= 1
+		_full_text.set_page(_full_text.get_page_index() - 1)
+
+func _player_play(can_play : bool) -> void:
+	if can_play:
+		play()
+	else:
+		stop()
+
+func _player_go_forward() -> void: ## TODO WARNING BECAFERUL NOTE BUG
+	if _words.size() > 0 and _currently_word_idx + 1 < _words.size():
+		_currently_word_idx += 1
+		_set_current_word(_currently_word_idx)
+	if _currently_word_idx + 1 >= _words.size() - 1:
+		_currently_word_idx += 1
+		_full_text.set_page(_full_text.get_page_index() + 1)
+
+func _player_wpm_changed(wpm : int) -> void:
+	_words_per_minute = wpm
+	_currently_words_per_minute = wpm
 
 #func set_text(text : String) -> void:
 	#_full_text.set_full_text(text.strip_edges())
@@ -70,23 +94,27 @@ func set_words_per_minute(wpm : float) -> void:
 	_currently_words_per_minute = _words_per_minute
 
 func play() -> void:
-	if _full_text.get_full_text().strip_edges().is_empty():
+	if _current_page.is_empty():
+		_player.set_paused(true)
 		return
 	_is_paused = false
 	while not _is_paused:
-		_currently_word_idx += 1
 		if _currently_word_idx >= _words.size():
 			return
+		_currently_word_idx += 1
 		_set_current_word(_currently_word_idx)
 		if _words[_currently_word_idx][-1] in PUNCTUATIONS:
 			_currently_words_per_minute = _words_per_minute - _words_per_minute * PUNCTUATION_DELAY
 		else:
 			_currently_words_per_minute = _words_per_minute
-		#print(_currently_words_per_minute / 60)
 		_timer.start(60 / _currently_words_per_minute)
 		await _timer.timeout
-		if _text_container.is_editing():
-			stop()
+		if _currently_word_idx >= _words.size() - 1:
+			if not _full_text.get_next_page().is_empty():
+				_full_text.set_page(_full_text.get_page_index() + 1)
+			else:
+				_player.set_paused(true)
+				return
 
 func stop() -> void:
 	if not _is_paused:

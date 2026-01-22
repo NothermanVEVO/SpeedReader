@@ -36,7 +36,9 @@ func _ready() -> void:
 	add_theme_font_override("normal_font", _font)
 	add_theme_font_size_override("normal_font_size", _font_size)
 	resized.connect(_resized)
+	ReaderThread.calculated_all_pages.connect(_calculated_all_pages)
 	ReaderThread.calculated_pages.connect(_calculated_pages)
+	ReaderThread.will_calculate_pages.connect(_reset)
 
 func _resized() -> void:
 	_paragraph_width = size.x
@@ -57,6 +59,16 @@ func _physics_process(_delta: float) -> void:
 		_fade_out_button()
 		_last_word_in_button = null
 
+func _reset() -> void:
+	_full_text = ""
+	_currently_page_idx = -1
+	_quant_of_pages = 0
+	_currently_page_letters.clear()
+	_currently_page_words.clear()
+	_previous_page = ""
+	_next_page = ""
+	_pages_text.text = "0/0"
+
 static func get_font() -> Font:
 	return _font
 
@@ -69,11 +81,15 @@ static func get_paragraph_width() -> float:
 static func get_max_lines() -> int:
 	return _maximum_lines
 
-func _calculated_pages(pages : int) -> void:
-	_quant_of_pages = pages
-	_pages_text.text = str(_currently_page_idx + 1) + "/" + str(_quant_of_pages)
+func _calculated_all_pages(_pages : int) -> void:
 	if _currently_page_idx < 0:
 		set_page(0)
+
+func _calculated_pages(pages : int) -> void:
+	_quant_of_pages = pages
+	if _currently_page_idx < 0 and _quant_of_pages > 2:
+		set_page(0)
+	_pages_text.text = str(_currently_page_idx + 1) + "/" + str(_quant_of_pages)
 	if _currently_page_idx == 0:
 		_left_page_button.disabled = true
 	else:
@@ -87,7 +103,7 @@ func set_page(page_idx : int) -> void:
 	if page_idx < 0 or page_idx >= _quant_of_pages:
 		return
 
-	_pages_text.text = "%d/%d" % [page_idx + 1, _quant_of_pages]
+	_pages_text.text = str(page_idx + 1) + "/" + str(_quant_of_pages)
 
 	if page_idx == _currently_page_idx - 1 and not _previous_page.is_empty():
 		_next_page = _full_text
@@ -308,78 +324,6 @@ func _calculate_maximum_lines() -> int:
 			if found_maximum_lines:
 				break
 	return maximum_lines
-
-#func _calculate_pages(full_text : String) -> void:
-	#var paragraph := TextParagraph.new()
-	#paragraph.width = size.x
-	#paragraph.add_string(full_text, _font, _font_size)
-	#
-	#_pages.clear()
-	#_letters.clear()
-	#
-	#print(paragraph.get_line_count())
-	#
-	## Get the primary text server
-	#var text_server = TextServerManager.get_primary_interface()
-	#var x = 0.0
-	#var y = 0.0
-	#var ascent = 0.0
-	#var descent = 0.0
-	#var character_idx : int = 0
-	#
-	## for each line
-	#for i in paragraph.get_line_count():
-		## reset x
-		#x = 0.0
-		#
-		## get the ascent and descent of the line
-		#ascent = paragraph.get_line_ascent(i)
-		#descent = paragraph.get_line_descent(i)
-#
-		## get the rid of the line
-		#var line_rid = paragraph.get_line_rid(i)
-		#
-		## get all the glyphs that compose the line
-		#var glyphs = text_server.shaped_text_get_glyphs(line_rid)
-#
-		## for each glyph
-		#for glyph in glyphs:
-			## get the advance (how much the we need to move x)
-			#var advance = glyph.get("advance", 0)
-			#
-			#if advance == 0 and character_idx < full_text.length() and full_text[character_idx] not in ["\t", "\n"]:
-				#continue
-			#
-			## get the offset, it may be needed
-			##var offset = glyph.get("offset", Vector2.ZERO)
-			#
-			#_letters.append(Letter.new(Rect2(Vector2(x, y), Vector2(advance, ascent + descent)), full_text[character_idx], i))
-			#
-			## add the advance to x
-			#x += advance
-			#character_idx += 1
-#
-		## update y with the ascent and descent of the line
-		#y += ascent + descent
-	#
-	#var page : String = ""
-	#var currently_page : int = 1
-	#for i in _letters.size():
-		#if _letters[i].line >= _maximum_lines * currently_page:
-			#currently_page += 1
-			#_pages.append(page)
-			#page = "" + _letters[i].letter
-		#else:
-			#page += _letters[i].letter
-	#_letters.clear()
-	#_pages.append(page)
-	#_currently_page_idx = 0
-	#
-	#_left_page_button.disabled = true
-	#if _pages.size() > 1:
-		#_right_page_button.disabled = false
-	#else:
-		#_right_page_button.disabled = true
 
 class Letter:
 	var rect : Rect2
