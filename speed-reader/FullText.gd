@@ -16,15 +16,18 @@ var _currently_page_letters : Array[Letter] = []
 var _currently_page_words : Array[Word] = []
 
 @onready var _word_button : Button = $WordButton
+var _additional_word_buttons : Array[Button] = []
+
 var _fade_tween : Tween
 var _last_word_in_button : Word
 var _currently_word_in_button : Word
 
-@onready var _pages_text : RichTextLabel = $"../Bottom/HBoxContainer/Pages"
 @onready var _left_page_button : Button = $"../Bottom/HBoxContainer/LeftPage"
+@onready var _page_spin_box : SpinBox = $"../Bottom/HBoxContainer/HBoxContainer/PageSpinBox"
+@onready var _pages_text : RichTextLabel = $"../Bottom/HBoxContainer/HBoxContainer/PagesText"
 @onready var _right_page_button : Button = $"../Bottom/HBoxContainer/RightPage"
 
-var _last_size_y : float = 0
+var _last_size := Vector2.ZERO
 
 signal clicked_on_word(word : String, idx : int)
 signal changed_page(page : String)
@@ -32,28 +35,49 @@ signal changed_page(page : String)
 var _previous_page : String = ""
 var _next_page : String = ""
 
+var _last_word_idx_in_focus : int = -1
+var word_in_focus : Word
+
 func _ready() -> void:
 	add_theme_font_override("normal_font", _font)
 	add_theme_font_size_override("normal_font_size", _font_size)
+	
+	_page_spin_box.get_line_edit().text_submitted.connect(_remove_page_line_edit_focus)
+	
 	resized.connect(_resized)
+	
 	ReaderThread.calculated_all_pages.connect(_calculated_all_pages)
 	ReaderThread.calculated_pages.connect(_calculated_pages)
 	ReaderThread.will_calculate_pages.connect(_reset)
+	
+	Global.changed_theme.connect(_changed_theme)
+
+func _changed_theme(_theme : Global.Themes) -> void:
+	_word_button.modulate = _get_word_button_color()
+	queue_redraw()
 
 func _resized() -> void:
-	_paragraph_width = size.x
-	_paragraph.width = size.x
 	set_full_text(_full_text)
-	if size.y != _last_size_y:
-		_last_size_y = size.y
+	if size != _last_size:
+		_last_size = size
+		_paragraph_width = size.x
+		_paragraph.width = size.x
 		_maximum_lines = _calculate_maximum_lines()
+	if _last_word_idx_in_focus >= 0:
+		set_word_idx_in_focus(_last_word_idx_in_focus)
 
 func _physics_process(_delta: float) -> void:
+	if not visible:
+		return
+	
 	var _found_mouse_in_word : bool = false
 	for word in _currently_page_words:
-		if word.rect.has_point(get_local_mouse_position()):
-			_set_word_button(word)
-			_found_mouse_in_word = true
+		for rect in word.get_word_rects():
+			if rect.has_point(get_local_mouse_position()):
+				_set_word_button(word)
+				_found_mouse_in_word = true
+				break
+		if _found_mouse_in_word:
 			break
 	if not _found_mouse_in_word and _word_button.modulate.a == 0.75:
 		_fade_out_button()
@@ -61,13 +85,15 @@ func _physics_process(_delta: float) -> void:
 
 func _reset() -> void:
 	_full_text = ""
+	_last_word_idx_in_focus = -1
 	_currently_page_idx = -1
 	_quant_of_pages = 0
-	_currently_page_letters.clear()
-	_currently_page_words.clear()
+	_clear_letter_n_words()
 	_previous_page = ""
 	_next_page = ""
-	_pages_text.text = "0/0"
+	_pages_text.text = "/1"
+	_page_spin_box.value = 1
+	_page_spin_box.max_value = 1
 
 static func get_font() -> Font:
 	return _font
@@ -87,9 +113,13 @@ func _calculated_all_pages(_pages : int) -> void:
 
 func _calculated_pages(pages : int) -> void:
 	_quant_of_pages = pages
-	if _currently_page_idx < 0 and _quant_of_pages > 2:
+	
+	_page_spin_box.max_value = _quant_of_pages
+	
+	if _currently_page_idx < 0 and _quant_of_pages > 2: ## WARNING IS IT RIGHT?
 		set_page(0)
-	_pages_text.text = str(_currently_page_idx + 1) + "/" + str(_quant_of_pages)
+	_page_spin_box.value = _currently_page_idx + 1
+	_pages_text.text = "/" + str(_quant_of_pages)
 	if _currently_page_idx == 0:
 		_left_page_button.disabled = true
 	else:
@@ -103,7 +133,8 @@ func set_page(page_idx : int) -> void:
 	if page_idx < 0 or page_idx >= _quant_of_pages:
 		return
 
-	_pages_text.text = str(page_idx + 1) + "/" + str(_quant_of_pages)
+	_page_spin_box.value = page_idx + 1
+	_pages_text.text = "/" + str(_quant_of_pages)
 
 	if page_idx == _currently_page_idx - 1 and not _previous_page.is_empty():
 		_next_page = _full_text
@@ -136,6 +167,14 @@ func set_page(page_idx : int) -> void:
 		else:
 			_next_page = ""
 
+	_left_page_button.disabled = false
+	_right_page_button.disabled = false
+
+	if page_idx <= 0:
+		_left_page_button.disabled = true
+	if page_idx >= _quant_of_pages - 1:
+		_right_page_button.disabled = true
+
 	_currently_page_idx = page_idx
 	set_full_text(_full_text)
 	changed_page.emit(_full_text)
@@ -156,12 +195,36 @@ func _set_word_button(word : Word) -> void:
 	_currently_word_in_button = word
 	if _last_word_in_button and _last_word_in_button == _currently_word_in_button:
 		return
+	_last_word_in_button = _currently_word_in_button
+	
+	for button in _additional_word_buttons:
+		button.pressed.disconnect(_on_word_button_pressed)
+		remove_child(button)
+		button.queue_free()
+	_additional_word_buttons.clear()
+	
+	var word_rects : Array[Rect2] = _currently_word_in_button.get_word_rects()
+	
+	if word_rects.is_empty():
+		return
+	
+	_word_button.position = word_rects[0].position
+	_word_button.size = word_rects[0].size
+	
+	for i in range(1, word_rects.size()):
+		var button := Button.new()
+		add_child(button)
+		_additional_word_buttons.append(button)
+		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		button.focus_mode = Control.FOCUS_NONE
+		button.modulate = _get_word_button_color()
+		button.show_behind_parent = true
+		button.visible = false
+		button.pressed.connect(_on_word_button_pressed)
+		button.position = word_rects[i].position
+		button.size = word_rects[i].size
 	
 	_fade_in_button()
-	_word_button.position = _currently_word_in_button.rect.position
-	_word_button.size = _currently_word_in_button.rect.size
-	
-	_last_word_in_button = _currently_word_in_button
 
 func _fade_in_button(duration : float = 0.15) -> void:
 	if _fade_tween:
@@ -169,49 +232,82 @@ func _fade_in_button(duration : float = 0.15) -> void:
 
 	_word_button.visible = true
 	_word_button.modulate.a = 0.0
+	
+	for button in _additional_word_buttons:
+		button.visible = true
+		button.modulate.a = 0.0
 
 	_fade_tween = create_tween()
-	_fade_tween.tween_property(
+	_fade_tween.parallel().tween_property(
 		_word_button,
 		"modulate:a",
 		0.75,
 		duration
 	)
+	
+	for button in _additional_word_buttons:
+		_fade_tween.parallel().tween_property(
+		button,
+		"modulate:a",
+		0.75,
+		duration
+		)
 
 func _fade_out_button(duration : float = 0.1) -> void:
 	if _fade_tween:
 		_fade_tween.kill()
 
 	_fade_tween = create_tween()
-	_fade_tween.tween_property(
+	_fade_tween.parallel().tween_property(
 		_word_button,
 		"modulate:a",
 		0.0,
 		duration
 	)
+	
+	for button in _additional_word_buttons:
+		_fade_tween.parallel().tween_property(
+		button,
+		"modulate:a",
+		0.0,
+		duration
+		)
 
 	_fade_tween.finished.connect(func():
 		_word_button.visible = false
+		for button in _additional_word_buttons:
+			button.visible = false
 	)
 
 func set_full_text(full_text : String) -> void:
 	_full_text = full_text
-	queue_redraw()
+	_calculate_words()
 
 func disable_pages() -> void:
 	_pages_text.text = "0/0"
 	_left_page_button.disabled = true
 	_right_page_button.disabled = true
 
-func _draw() -> void:
+## MAKES THE GARBAGE COLLECTOR TRULY COLLECTS THIS || PREVENTS MEMORY LEAK
+func _clear_letter_n_words() -> void:
+	for letter in _currently_page_letters:
+		letter.word_parent = null
+		letter = null
+	
+	for word in _currently_page_words:
+		word = null
+	
+	_currently_page_letters.clear()
+	_currently_page_words.clear()
+
+func _calculate_words() -> void:
 	if _full_text.is_empty():
 		return
 	
 	_paragraph.clear()
 	_paragraph.add_string(_full_text, _font, _font_size)
 	
-	_currently_page_letters.clear()
-	_currently_page_words.clear()
+	_clear_letter_n_words()
 	
 	# Get the primary text server
 	var text_server = TextServerManager.get_primary_interface()
@@ -265,11 +361,11 @@ func _draw() -> void:
 
 		if not Global.is_whitespace(letter.letter):
 			if _current_word == null:
-				_current_word = Word.new(letter.rect, "", word_idx, letter.line)
+				_current_word = Word.new([], word_idx)
 				word_idx += 1
 
-			_current_word.word += letter.letter
-			_current_word.rect = _current_word.rect.merge(letter.rect)
+			_current_word.letters.append(letter)
+			letter.word_parent = _current_word
 		else:
 			if _current_word != null:
 				_currently_page_words.append(_current_word)
@@ -279,9 +375,36 @@ func _draw() -> void:
 
 	if _current_word != null:
 		_currently_page_words.append(_current_word)
+
+func set_word_idx_in_focus(idx : int) -> void:
+	if idx < 0 or idx >= _currently_page_words.size():
+		return
+	
+	_last_word_idx_in_focus = idx
+	
+	if word_in_focus:
+		word_in_focus.in_focus = false
+	
+	word_in_focus = _currently_page_words[idx]
+	word_in_focus.in_focus = true
+	
+	if visible:
+		queue_redraw()
+
+func _draw() -> void:
+	if _full_text.is_empty():
+		return
 	
 	# draw the paragraph to this canvas item
-	_paragraph.draw(get_canvas_item(), Vector2.ZERO)
+	#_paragraph.draw(get_canvas_item(), Vector2.ZERO)
+	
+	var theme_text_color : Color = Global.get_theme_text_color()
+	
+	for letter in _currently_page_letters:
+		var pos : Vector2 = letter.rect.position
+		pos.y += _font_size
+		var color : Color = theme_text_color if letter.word_parent and not letter.word_parent.in_focus else Color.RED
+		draw_string(_font, pos, letter.letter, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size, color)
 
 func _calculate_maximum_lines() -> int:
 	var paragraph := TextParagraph.new()
@@ -329,6 +452,7 @@ class Letter:
 	var rect : Rect2
 	var letter : String
 	var line : int
+	var word_parent : Word
 	
 	@warning_ignore("shadowed_variable")
 	func _init(rect : Rect2, letter : String, line : int) -> void:
@@ -338,42 +462,78 @@ class Letter:
 
 class Word:
 	var idx : int
-	var rect : Rect2
-	var word : String
-	var line : int
+	var letters : Array[Letter]
+	var in_focus : bool = false
 	
 	@warning_ignore("shadowed_variable")
-	func _init(rect : Rect2, word : String, idx : int, line : int) -> void:
-		self.rect = rect
-		self.word = word
+	func _init(letters : Array[Letter], idx : int) -> void:
+		self.letters = letters
 		self.idx = idx
-		self.line = line
+	
+	func get_word_rects() -> Array[Rect2]:
+		var rects : Array[Rect2] = []
+		
+		if letters.is_empty():
+			return []
+		
+		var rect : Rect2 = letters[0].rect
+		var last_line : int = letters[0].line
+		
+		for i in range(1, letters.size()):
+			if letters[i].line > last_line:
+				rects.append(rect)
+				rect = letters[i].rect
+				last_line = letters[i].line
+			else:
+				rect = rect.merge(letters[i].rect)
+		
+		rects.append(rect)
+		
+		return rects
+
+	func get_word() -> String:
+		var word := ""
+		
+		for letter in letters:
+			word += letter.letter
+		
+		return word
+
+func _get_word_button_color() -> Color:
+	match Global.get_theme_type():
+		Global.Themes.DARK:
+			return Color(0.0, 2.319, 2.321, 0.0)
+		Global.Themes.WHITE:
+			return Color(0.0, 0.88, 0.88, 0.0)
+	
+	return Color(0.0, 0.0, 0.0, 0.0)
 
 func _on_word_button_pressed() -> void:
 	if _word_button.modulate.a > 0:
-		var idx : int = 0
 		var page_idx : int = 0
 		while page_idx < _currently_page_idx:
-			idx += Global.split_text_by_space(_full_text).size()
 			page_idx += 1
-		#print(Global.split_text_by_space(_pages[page_idx]))
-		#clicked_on_word.emit(_currently_word_in_button.word, idx + _currently_word_in_button.idx)
-		clicked_on_word.emit(_currently_word_in_button.word, _currently_word_in_button.idx)
+		clicked_on_word.emit(_currently_word_in_button.get_word(), _currently_word_in_button.idx)
 
 func _on_left_page_pressed() -> void:
 	if _currently_page_idx > 0:
 		_currently_page_idx -= 1
 		set_page(_currently_page_idx)
 		_left_page_button.release_focus()
-		_right_page_button.disabled = false
-		if _currently_page_idx <= 0:
-			_left_page_button.disabled = true
 
 func _on_right_page_pressed() -> void:
 	if _currently_page_idx < _quant_of_pages - 1:
 		_currently_page_idx += 1
 		set_page(_currently_page_idx)
 		_right_page_button.release_focus()
-		_left_page_button.disabled = false
-		if _currently_page_idx >= _quant_of_pages - 1:
-			_right_page_button.disabled = true
+
+func _on_page_spin_box_value_changed(value: float) -> void:
+	@warning_ignore("narrowing_conversion")
+	set_page(value - 1)
+
+func is_in_focus() -> bool:
+	return _page_spin_box.get_line_edit().has_focus()
+
+func _remove_page_line_edit_focus(_new_text: String) -> void:
+	await get_tree().create_timer(0.1).timeout
+	_page_spin_box.get_line_edit().release_focus()

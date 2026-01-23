@@ -61,15 +61,6 @@ func can_get_imported_file(file_path : String) -> Error:
 	
 	return OK
 
-#func get_text_from_imported_file(file_path : String) -> String:
-	##var file_path : String = EXTRACTED_TEXTS_PATH + "/" + file_name + ".txt"
-	#if not FileAccess.file_exists(file_path):
-		#return ""
-	#var file := FileAccess.open(file_path, FileAccess.READ)
-	#var text := file.get_as_text(true)
-	#file.close()
-	#return text
-
 func get_text_from_imported_file(file_path : String) -> void:
 	if ReaderThread.is_calculating_pages():
 		ReaderThread.force_to_end()
@@ -86,3 +77,7 @@ func save_file(file_path : String, data : String, overrides : bool = false) -> E
 		return OK
 	else:
 		return FAILED
+
+func open_extracted_texts_folder() -> void:
+	var abs_path := ProjectSettings.globalize_path(Files.EXTRACTED_TEXTS_PATH)
+	OS.shell_open(abs_path)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://b7rpu2eiydidn"]
+[gd_scene load_steps=23 format=3 uid="uid://b7rpu2eiydidn"]
 
 [ext_resource type="Script" uid="uid://wmyj7sf2qfhu" path="res://SpeedReader.gd" id="1_iq8i0"]
 [ext_resource type="FontFile" uid="uid://c55x50yepnavk" path="res://fonts/Poppins/Poppins-Light.ttf" id="2_v4uy4"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://vdmm4fxsfxv7" path="res://assets/dark theme/white_skip_back_button.png" id="6_jaaaw"]
 [ext_resource type="Texture2D" uid="uid://nr8subgtvvwi" path="res://assets/dark theme/white_skip_forward_button.png" id="8_3dwvd"]
 [ext_resource type="Texture2D" uid="uid://qblsa1w723aq" path="res://assets/dark theme/white_play_button.png" id="8_dj55r"]
+[ext_resource type="Theme" uid="uid://bgoh6vqpusiqe" path="res://themes/dark/base_theme_dark.tres" id="8_x4dh1"]
 [ext_resource type="FontFile" uid="uid://dejoefeh8m8sh" path="res://fonts/roboto/Roboto-Regular.ttf" id="9_dj55r"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_iq8i0"]
@@ -16,21 +17,110 @@ color = Color(0.18, 0.18, 0.18, 1)
 thickness = 3
 vertical = true
 
-[sub_resource type="DPITexture" id="DPITexture_x4dh1"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_huacd"]
 
-[sub_resource type="DPITexture" id="DPITexture_3dwvd"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_huacd"]
+content_margin_left = 50.0
+content_margin_right = 50.0
+bg_color = Color(0.07016479, 0.07016479, 0.07016479, 0.54700005)
+border_color = Color(0.8001019, 0.8001019, 0.8001019, 0)
+corner_radius_top_left = 125
+corner_radius_top_right = 125
+corner_radius_bottom_right = 125
+corner_radius_bottom_left = 125
+corner_detail = 1
+shadow_color = Color(0.07058824, 0.07058824, 0.07058824, 0.54509807)
+shadow_size = 10
 
-[sub_resource type="DPITexture" id="DPITexture_dj55r"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rxnwj"]
+content_margin_left = 50.0
+content_margin_right = 50.0
+draw_center = false
+corner_radius_top_left = 125
+corner_radius_top_right = 125
+corner_radius_bottom_right = 125
+corner_radius_bottom_left = 125
+corner_detail = 1
+shadow_color = Color(1, 1, 1, 0.6)
+shadow_size = 10
 
-[sub_resource type="DPITexture" id="DPITexture_t3wsn"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_balt5"]
+content_margin_left = 50.0
+content_margin_right = 50.0
+bg_color = Color(0.34064347, 0.34064347, 0.34064347, 0.536)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.14044741, 0.14044747, 0.14044735, 1)
+border_blend = true
+corner_radius_top_left = 125
+corner_radius_top_right = 125
+corner_radius_bottom_right = 125
+corner_radius_bottom_left = 125
+corner_detail = 1
+shadow_color = Color(1, 1, 1, 0.6)
+shadow_size = 10
 
-[sub_resource type="DPITexture" id="DPITexture_0bh3t"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_unnop"]
+bg_color = Color(0, 0, 0, 0.34901962)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
 
-[sub_resource type="DPITexture" id="DPITexture_psif1"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fbxrb"]
+bg_color = Color(0, 0, 0, 0.52156866)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
 
-[sub_resource type="DPITexture" id="DPITexture_w152y"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5qm6l"]
+bg_color = Color(0.13816993, 0.13816993, 0.13816993, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
+shadow_color = Color(1, 1, 1, 0.6)
+shadow_size = 4
 
-[sub_resource type="DPITexture" id="DPITexture_n12ab"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6plbd"]
+bg_color = Color(1, 1, 1, 0.105000004)
+skew = Vector2(0.3, 0)
+border_width_right = 1
+border_width_bottom = 1
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f7v51"]
+bg_color = Color(1, 1, 1, 0.03137255)
+skew = Vector2(0.3, 0)
+border_width_right = 1
+border_width_bottom = 1
+corner_detail = 1
+shadow_color = Color(1, 1, 1, 0.12100001)
+shadow_size = 5
+
+[sub_resource type="Theme" id="Theme_3dwvd"]
+Button/styles/focus = SubResource("StyleBoxEmpty_huacd")
+Button/styles/hover = SubResource("StyleBoxFlat_huacd")
+Button/styles/normal = SubResource("StyleBoxFlat_rxnwj")
+Button/styles/pressed = SubResource("StyleBoxFlat_balt5")
+HSlider/styles/grabber_area = SubResource("StyleBoxFlat_unnop")
+HSlider/styles/grabber_area_highlight = SubResource("StyleBoxFlat_fbxrb")
+HSlider/styles/slider = SubResource("StyleBoxFlat_5qm6l")
+LineEdit/styles/focus = SubResource("StyleBoxFlat_6plbd")
+LineEdit/styles/normal = SubResource("StyleBoxFlat_f7v51")
+SpinBox/colors/down_icon_modulate = Color(0, 0, 0, 1)
+SpinBox/colors/up_icon_modulate = Color(0, 0, 0, 1)
+SpinBox/constants/buttons_vertical_separation = 2
+SpinBox/constants/field_and_buttons_separation = 4
 
 [node name="SpeedReader" type="MarginContainer"]
 anchors_preset = 15
@@ -86,7 +176,6 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TextContainer/VBoxContainer/Top"]
 layout_mode = 2
@@ -117,21 +206,11 @@ layout_mode = 2
 tooltip_text = "Continua mostrando a HUD enquanto a leitura estiver ocorrendo."
 focus_mode = 0
 mouse_default_cursor_shape = 2
-text = "Continuar mostrando HUD"
+text = "Continuar
+mostrando"
 
-[node name="MarginContainer" type="MarginContainer" parent="TextContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="TextContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-
-[node name="HSeparator" type="HSeparator" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="FullText" type="RichTextLabel" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(350, 0)
+[node name="FullText" type="RichTextLabel" parent="TextContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_fonts/normal_font = ExtResource("2_v4uy4")
@@ -141,7 +220,8 @@ fit_content = true
 autowrap_mode = 2
 script = ExtResource("3_f3hev")
 
-[node name="WordButton" type="Button" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText"]
+[node name="WordButton" type="Button" parent="TextContainer/VBoxContainer/FullText"]
+modulate = Color(1.2060356, 5.1045413, 5.076487, 0)
 show_behind_parent = true
 layout_mode = 0
 offset_right = 8.0
@@ -149,10 +229,7 @@ offset_bottom = 8.0
 focus_mode = 0
 mouse_default_cursor_shape = 2
 
-[node name="HSeparator2" type="HSeparator" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Bottom" type="MarginContainer" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+[node name="Bottom" type="MarginContainer" parent="TextContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_constants/margin_left = 10
@@ -160,48 +237,27 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TextContainer/VBoxContainer/Bottom"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="LeftPage" type="Button" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer"]
+[node name="LeftPage" type="Button" parent="TextContainer/VBoxContainer/Bottom/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 disabled = true
 text = "<"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer"]
+[node name="Pages" type="RichTextLabel" parent="TextContainer/VBoxContainer/Bottom/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 6
-
-[node name="PageSpinBox" type="SpinBox" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-theme_override_constants/buttons_width = 0
-theme_override_icons/up = SubResource("DPITexture_x4dh1")
-theme_override_icons/up_hover = SubResource("DPITexture_3dwvd")
-theme_override_icons/up_pressed = SubResource("DPITexture_dj55r")
-theme_override_icons/up_disabled = SubResource("DPITexture_t3wsn")
-theme_override_icons/down = SubResource("DPITexture_0bh3t")
-theme_override_icons/down_hover = SubResource("DPITexture_psif1")
-theme_override_icons/down_pressed = SubResource("DPITexture_w152y")
-theme_override_icons/down_disabled = SubResource("DPITexture_n12ab")
-min_value = 1.0
-max_value = 1.0
-value = 1.0
-alignment = 2
-
-[node name="PagesText" type="RichTextLabel" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "/1"
+text = "0/0"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RightPage" type="Button" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer"]
+[node name="RightPage" type="Button" parent="TextContainer/VBoxContainer/Bottom/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
@@ -227,6 +283,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 focus_mode = 0
 mouse_default_cursor_shape = 2
+theme = ExtResource("8_x4dh1")
 icon = ExtResource("6_jaaaw")
 expand_icon = true
 
@@ -235,6 +292,7 @@ custom_minimum_size = Vector2(160, 160)
 layout_mode = 2
 focus_mode = 0
 mouse_default_cursor_shape = 2
+theme = ExtResource("8_x4dh1")
 icon = ExtResource("8_dj55r")
 icon_alignment = 1
 expand_icon = true
@@ -246,6 +304,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 focus_mode = 0
 mouse_default_cursor_shape = 2
+theme = SubResource("Theme_3dwvd")
 icon = ExtResource("8_3dwvd")
 icon_alignment = 1
 expand_icon = true
@@ -269,6 +328,7 @@ autowrap_mode = 0
 
 [node name="WPMSpinBox" type="SpinBox" parent="Player/HBoxContainer/WordsPerMinute"]
 layout_mode = 2
+theme = ExtResource("8_x4dh1")
 min_value = 1.0
 max_value = 10000.0
 value = 1.0
@@ -278,17 +338,16 @@ suffix = "PPM"
 [node name="WPMHSlider" type="HSlider" parent="Player/HBoxContainer/WordsPerMinute"]
 layout_mode = 2
 focus_mode = 0
+theme = ExtResource("8_x4dh1")
 tick_count = 5
 ticks_on_borders = true
 ticks_position = 3
 
 [connection signal="file_selected" from="TextContainer/FileDialog" to="TextContainer" method="_on_file_dialog_file_selected"]
-[connection signal="pressed" from="TextContainer/VBoxContainer/Top/HBoxContainer/Settings" to="TextContainer" method="_on_settings_pressed"]
 [connection signal="toggled" from="TextContainer/VBoxContainer/Top/HBoxContainer/KeepDisplaying" to="TextContainer" method="_on_keep_displaying_toggled"]
-[connection signal="pressed" from="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText/WordButton" to="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText" method="_on_word_button_pressed"]
-[connection signal="pressed" from="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer/LeftPage" to="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText" method="_on_left_page_pressed"]
-[connection signal="value_changed" from="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer/HBoxContainer/PageSpinBox" to="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText" method="_on_page_spin_box_value_changed"]
-[connection signal="pressed" from="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer/RightPage" to="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText" method="_on_right_page_pressed"]
+[connection signal="pressed" from="TextContainer/VBoxContainer/FullText/WordButton" to="TextContainer/VBoxContainer/FullText" method="_on_word_button_pressed"]
+[connection signal="pressed" from="TextContainer/VBoxContainer/Bottom/HBoxContainer/LeftPage" to="TextContainer/VBoxContainer/FullText" method="_on_left_page_pressed"]
+[connection signal="pressed" from="TextContainer/VBoxContainer/Bottom/HBoxContainer/RightPage" to="TextContainer/VBoxContainer/FullText" method="_on_right_page_pressed"]
 [connection signal="pressed" from="Player/HBoxContainer/Backwards" to="Player" method="_on_backwards_pressed"]
 [connection signal="pressed" from="Player/HBoxContainer/Play" to="Player" method="_on_play_pressed"]
 [connection signal="pressed" from="Player/HBoxContainer/Forwards" to="Player" method="_on_forwards_pressed"]

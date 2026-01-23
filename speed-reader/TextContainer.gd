@@ -2,33 +2,65 @@ extends MarginContainer
 
 class_name TextContainer
 
-enum File {OPEN = 0, IMPORT = 1}
+enum File {OPEN = 0, IMPORT = 1, OPEN_DIRECTORY = 2}
 
-@onready var _menu_button : MenuButton = $VBoxContainer/Top/HBoxContainer/File
+const _WHITE_THEME : Theme = preload("res://themes/white/base_text_container_theme_white.tres")
+const _DARK_THEME : Theme = preload("res://themes/dark/base_text_container_theme_dark.tres")
+
+@onready var _file_menu_button : MenuButton = $VBoxContainer/Top/HBoxContainer/File
 
 @onready var _file_dialog : FileDialog = $FileDialog
 @onready var _accept_dialog : AcceptDialog = $AcceptDialog
 @onready var _input_dialog : InputDialog = $InputDialog
 
-@onready var _full_text : FullText = $VBoxContainer/FullText
+@onready var _full_text : FullText = $VBoxContainer/MarginContainer/VBoxContainer/FullText
+@onready var _player : Player = $"../Player"
 
 var _last_file_dialog_request : File
 
 var _last_import_path : String = ""
 
+var _keep_displaying : bool = false
+
+var _fade_tween : Tween
+
+const _SETTINGS_WINDOW_SCENE : PackedScene = preload("res://windows/settingsWindow/SettingsWindow.tscn")
+@onready var _settings_window : SettingsWindow = _SETTINGS_WINDOW_SCENE.instantiate()
+
+var _current_imported_file_path : String = ""
+
 func _ready() -> void:
-	_menu_button.get_popup().id_pressed.connect(_menu_button_id_pressed)
+	_file_menu_button.get_popup().id_pressed.connect(_file_menu_button_id_pressed)
 	
 	_input_dialog.title = "Nome do arquivo"
 	_input_dialog.define_text("Digite o nome do arquivo:")
 	_input_dialog.text_confirmed.connect(_input_dialog_text_confirmed)
+	
+	_player.play.connect(_is_playing)
+	
+	Global.changed_theme.connect(_changed_theme)
+	
+	add_child(_settings_window)
 
-func _menu_button_id_pressed(id : int) -> void:
+func _changed_theme(_theme : Global.Themes) -> void:
+	var current_theme : Theme
+	
+	match _theme:
+		Global.Themes.DARK:
+			current_theme = _DARK_THEME
+		Global.Themes.WHITE:
+			current_theme = _WHITE_THEME
+	
+	theme = current_theme
+
+func _file_menu_button_id_pressed(id : int) -> void:
 	match id:
 		File.OPEN:
 			_open()
 		File.IMPORT:
 			_import()
+		File.OPEN_DIRECTORY:
+			Files.open_extracted_texts_folder()
 
 func _open() -> void:
 	_open_file_dialog_to_open()
@@ -106,5 +138,75 @@ func _open_imported_file(file_path : String) -> void:
 		_accept_dialog.popup_centered()
 	else:
 		Files.get_text_from_imported_file(file_path)
-		#_full_text.set_full_text(text)
-		#_text_edit.text = text
+		_current_imported_file_path = file_path
+
+func _on_keep_displaying_toggled(toggled_on: bool) -> void:
+	_keep_displaying = toggled_on
+
+func _is_playing(is_playing : bool) -> void:
+	if _keep_displaying:
+		return
+	if is_playing:
+		_fade_out()
+	else:
+		_fade_in()
+
+func _fade_in(duration: float = 0.2) -> void:
+	if _fade_tween:
+		_fade_tween.kill()
+
+	self.visible = true
+	_player.visible = true
+
+	self.modulate.a = 0.0
+	_player.modulate.a = 0.0
+
+	_fade_tween = create_tween()
+	_fade_tween.set_trans(Tween.TRANS_SINE)
+	_fade_tween.set_ease(Tween.EASE_OUT)
+
+	_fade_tween.parallel().tween_property(
+		self,
+		"modulate:a",
+		1.0,
+		duration
+	)
+
+	_fade_tween.parallel().tween_property(
+		_player,
+		"modulate:a",
+		1.0,
+		duration
+	)
+
+func _fade_out(duration: float = 0.2) -> void:
+	if _fade_tween:
+		_fade_tween.kill()
+
+	_fade_tween = create_tween()
+	_fade_tween.set_trans(Tween.TRANS_SINE)
+	_fade_tween.set_ease(Tween.EASE_IN)
+
+	_fade_tween.parallel().tween_property(
+		self,
+		"modulate:a",
+		0.0,
+		duration
+	)
+
+	_fade_tween.parallel().tween_property(
+		_player,
+		"modulate:a",
+		0.0,
+		duration
+	)
+
+	_fade_tween.finished.connect(func ():
+		self.visible = false
+		_player.visible = false
+	)
+
+
+func _on_settings_pressed() -> void:
+	if not _settings_window.visible:
+		_settings_window.popup()

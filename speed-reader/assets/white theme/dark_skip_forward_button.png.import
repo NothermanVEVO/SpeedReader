@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://vdmm4fxsfxv7"
-path="res://.godot/imported/white_skip_back_button.png-652b879a3ee7d00fe7382b89fe718293.ctex"
+uid="uid://dkj3vxer82se7"
+path="res://.godot/imported/dark_skip_forward_button.png-e230835a7032c0ffc54c48042d7623c9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/white_skip_back_button.png"
-dest_files=["res://.godot/imported/white_skip_back_button.png-652b879a3ee7d00fe7382b89fe718293.ctex"]
+source_file="res://assets/white theme/dark_skip_forward_button.png"
+dest_files=["res://.godot/imported/dark_skip_forward_button.png-e230835a7032c0ffc54c48042d7623c9.ctex"]
 
 [params]
 

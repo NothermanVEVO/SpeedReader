@@ -1,0 +1,67 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://bu10psb6li0ij"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3rbyt"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.16409835, 0.16409835, 0.16409835, 0.22600001)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1cflm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vqac1"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.8047426, 0.80474263, 0.8047426, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1cflm"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.3854925, 0.38549256, 0.38549232, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_blegv"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.62967473, 0.62967485, 0.62967455, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ecbci"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.30323282, 0.30323282, 0.30323282, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[resource]
+Button/colors/font_color = Color(0, 0, 0, 1)
+Button/colors/font_disabled_color = Color(0, 0, 0, 0.5019608)
+Button/colors/font_focus_color = Color(0, 0, 0, 1)
+Button/colors/font_hover_color = Color(0.16206542, 0.16206557, 0.16206601, 1)
+Button/colors/font_hover_pressed_color = Color(0.8474744, 0.84747446, 0.84747446, 1)
+Button/styles/disabled = SubResource("StyleBoxFlat_3rbyt")
+Button/styles/focus = SubResource("StyleBoxEmpty_1cflm")
+Button/styles/hover = SubResource("StyleBoxFlat_vqac1")
+Button/styles/hover_pressed = SubResource("StyleBoxFlat_1cflm")
+Button/styles/normal = SubResource("StyleBoxFlat_blegv")
+Button/styles/pressed = SubResource("StyleBoxFlat_ecbci")
+RichTextLabel/colors/default_color = Color(0, 0, 0, 1)

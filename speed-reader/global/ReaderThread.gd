@@ -49,7 +49,6 @@ func _calculate_pages() -> void:
 	_pages_position_in_file.append(0)
 	_current_pages_calculated = 1
 
-	#var pages : Array[String] = []
 	var page_text := ""
 
 	var byte_offset := 0
@@ -125,15 +124,6 @@ func _calculate_pages() -> void:
 	file.close()
 	
 	_ended.call_deferred()
-	
-	#print(_pages_position_in_file)
-	#
-	#for page in pages:
-		#print(page)
-		#print("---------------------------------------------")
-	#for i in _pages_position_in_file.size():
-		#print(get_page_text(i))
-		#print("---------------------------------------------")
 
 func read_utf8_char(file : FileAccess) -> Dictionary:
 	if file.eof_reached():

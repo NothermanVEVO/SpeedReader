@@ -1,0 +1,12 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://dx7t77py1weby"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7k5y"]
+bg_color = Color(0.62152386, 0.6215239, 0.6215237, 1)
+
+[resource]
+ItemList/colors/font_color = Color(0.12955844, 0.12955847, 0.12955844, 1)
+ItemList/colors/font_selected_color = Color(0, 0, 0, 1)
+ItemList/colors/guide_color = Color(0.18717614, 0.18717614, 0.18717614, 0.2509804)
+ItemList/constants/h_separation = 10
+ItemList/styles/panel = SubResource("StyleBoxFlat_q7k5y")
+RichTextLabel/colors/default_color = Color(0, 0, 0, 1)

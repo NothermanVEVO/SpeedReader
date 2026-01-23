@@ -1,0 +1,47 @@
+[gd_scene load_steps=3 format=3 uid="uid://cwnt0d5xthrv6"]
+
+[ext_resource type="Script" uid="uid://ckssvhneh5oaq" path="res://windows/settingsWindow/options/ThemeOption.gd" id="1_x0g75"]
+[ext_resource type="FontFile" uid="uid://bqt6s0iqt8dpe" path="res://fonts/roboto/Roboto-Light.ttf" id="2_l1y8k"]
+
+[node name="ThemeOption" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_top = 20
+script = ExtResource("1_x0g75")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 19
+
+[node name="ThemeTitle" type="RichTextLabel" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_l1y8k")
+theme_override_font_sizes/normal_font_size = 40
+text = " Tema:"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ThemeOptionButton" type="OptionButton" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_default_cursor_shape = 2
+theme_override_fonts/font = ExtResource("2_l1y8k")
+theme_override_font_sizes/font_size = 25
+alignment = 1
+selected = 0
+item_count = 2
+popup/item_0/text = "Escuro"
+popup/item_0/id = 0
+popup/item_1/text = "Claro"
+popup/item_1/id = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[connection signal="item_selected" from="VBoxContainer/ThemeOptionButton" to="." method="_on_theme_option_button_item_selected"]

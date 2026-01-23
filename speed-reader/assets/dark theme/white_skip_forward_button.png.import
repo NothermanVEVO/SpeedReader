@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cxptxs2sdb37h"
-path="res://.godot/imported/white_pause_button.png-f0851995810ff9a793633aced39720d8.ctex"
+uid="uid://nr8subgtvvwi"
+path="res://.godot/imported/white_skip_forward_button.png-96c6be0bd756f5c2e110c9f873639820.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/white_pause_button.png"
-dest_files=["res://.godot/imported/white_pause_button.png-f0851995810ff9a793633aced39720d8.ctex"]
+source_file="res://assets/dark theme/white_skip_forward_button.png"
+dest_files=["res://.godot/imported/white_skip_forward_button.png-96c6be0bd756f5c2e110c9f873639820.ctex"]
 
 [params]
 

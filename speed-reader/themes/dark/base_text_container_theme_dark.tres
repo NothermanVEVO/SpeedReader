@@ -1,0 +1,61 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://cp0aos6p52n08"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ruphm"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.16007765, 0.16007765, 0.16007765, 0.48000002)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_npg00"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_npg00"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.28485027, 0.28485027, 0.28485027, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dwlo5"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.28485027, 0.28485027, 0.28485027, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fsb8f"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.1584723, 0.15847233, 0.1584723, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xyfat"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.13319641, 0.13319641, 0.13319638, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[resource]
+Button/styles/disabled = SubResource("StyleBoxFlat_ruphm")
+Button/styles/focus = SubResource("StyleBoxEmpty_npg00")
+Button/styles/hover = SubResource("StyleBoxFlat_npg00")
+Button/styles/hover_pressed = SubResource("StyleBoxFlat_dwlo5")
+Button/styles/normal = SubResource("StyleBoxFlat_fsb8f")
+Button/styles/pressed = SubResource("StyleBoxFlat_xyfat")
