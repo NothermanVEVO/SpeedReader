@@ -11,7 +11,7 @@ const _WHITE_GO_FORWARD_ICON : CompressedTexture2D = preload("res://assets/dark 
 const _DARK_GO_BACKWARD_ICON : CompressedTexture2D = preload("res://assets/white theme/dark_skip_back_button.png")
 const _DARK_GO_FORWARD_ICON : CompressedTexture2D = preload("res://assets/white theme/dark_skip_forward_button.png")
 
-const _WHITE_PAUSE_ICON : CompressedTexture2D = preload("res://assets/white theme/dark_skip_back_button.png")
+const _WHITE_PAUSE_ICON : CompressedTexture2D = preload("res://assets/dark theme/white_pause_button.png")
 const _WHITE_PLAY_ICON : CompressedTexture2D = preload("res://assets/dark theme/white_play_button.png")
 
 const _DARK_PAUSE_ICON : CompressedTexture2D = preload("res://assets/white theme/dark_pause_button.png")
