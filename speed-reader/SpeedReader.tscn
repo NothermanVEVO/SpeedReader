@@ -1,6 +1,7 @@
-[gd_scene load_steps=20 format=3 uid="uid://b7rpu2eiydidn"]
+[gd_scene load_steps=21 format=3 uid="uid://b7rpu2eiydidn"]
 
 [ext_resource type="Script" uid="uid://wmyj7sf2qfhu" path="res://SpeedReader.gd" id="1_iq8i0"]
+[ext_resource type="Theme" uid="uid://bgoh6vqpusiqe" path="res://themes/dark/base_player_theme_dark.tres" id="2_3dwvd"]
 [ext_resource type="FontFile" uid="uid://c55x50yepnavk" path="res://fonts/Poppins/Poppins-Light.ttf" id="2_v4uy4"]
 [ext_resource type="Script" uid="uid://cdmdowrdnm7vn" path="res://TextContainer.gd" id="2_xdc5n"]
 [ext_resource type="Script" uid="uid://b3uukynvdg636" path="res://FullText.gd" id="3_f3hev"]
@@ -45,13 +46,13 @@ show_behind_parent = true
 layout_mode = 2
 color = Color(0, 0, 0, 1)
 
-[node name="VSeparator" type="VSeparator" parent="."]
+[node name="UpVSeparator" type="VSeparator" parent="."]
 custom_minimum_size = Vector2(0, 450)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/separator = SubResource("StyleBoxLine_iq8i0")
 
-[node name="VSeparator2" type="VSeparator" parent="."]
+[node name="DownSeparator" type="VSeparator" parent="."]
 custom_minimum_size = Vector2(0, 450)
 layout_mode = 2
 size_flags_vertical = 8
@@ -59,41 +60,128 @@ theme_override_styles/separator = SubResource("StyleBoxLine_iq8i0")
 
 [node name="Timer" type="Timer" parent="."]
 
-[node name="TextContainer" type="MarginContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
-size_flags_horizontal = 8
+
+[node name="Player" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme = ExtResource("2_3dwvd")
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+script = ExtResource("6_3dwvd")
+
+[node name="FlowContainer" type="FlowContainer" parent="HBoxContainer/Player"]
+layout_mode = 2
+theme_override_constants/v_separation = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Player/FlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_constants/separation = 30
+
+[node name="Backwards" type="Button" parent="HBoxContainer/Player/FlowContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+mouse_default_cursor_shape = 2
+icon = ExtResource("6_jaaaw")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Play" type="Button" parent="HBoxContainer/Player/FlowContainer/HBoxContainer"]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+icon = ExtResource("8_dj55r")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Forwards" type="Button" parent="HBoxContainer/Player/FlowContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+mouse_default_cursor_shape = 2
+icon = ExtResource("8_3dwvd")
+icon_alignment = 1
+expand_icon = true
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/Player/FlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="WordsPerMinute" type="VBoxContainer" parent="HBoxContainer/Player/FlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="WPMText" type="RichTextLabel" parent="HBoxContainer/Player/FlowContainer/WordsPerMinute"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("9_dj55r")
+theme_override_font_sizes/normal_font_size = 20
+text = " Palavras Por Minuto (PPM): "
+fit_content = true
+scroll_active = false
+
+[node name="WPMSpinBox" type="SpinBox" parent="HBoxContainer/Player/FlowContainer/WordsPerMinute"]
+layout_mode = 2
+min_value = 1.0
+max_value = 10000.0
+value = 1.0
+alignment = 1
+suffix = "PPM"
+
+[node name="WPMHSlider" type="HSlider" parent="HBoxContainer/Player/FlowContainer/WordsPerMinute"]
+layout_mode = 2
+focus_mode = 0
+tick_count = 5
+ticks_on_borders = true
+ticks_position = 3
+
+[node name="TextContainer" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 script = ExtResource("2_xdc5n")
 
-[node name="FileDialog" type="FileDialog" parent="TextContainer"]
+[node name="FileDialog" type="FileDialog" parent="HBoxContainer/TextContainer"]
 oversampling_override = 1.0
 ok_button_text = "Salvar"
 cancel_button_text = "Cancelar"
 access = 2
 use_native_dialog = true
 
-[node name="AcceptDialog" type="AcceptDialog" parent="TextContainer"]
+[node name="AcceptDialog" type="AcceptDialog" parent="HBoxContainer/TextContainer"]
 title = "Aviso!"
 force_native = true
 
-[node name="InputDialog" type="AcceptDialog" parent="TextContainer"]
+[node name="InputDialog" type="AcceptDialog" parent="HBoxContainer/TextContainer"]
 script = ExtResource("5_q068l")
 metadata/_custom_type_script = "uid://ckutroofw2701"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TextContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TextContainer"]
 layout_mode = 2
 
-[node name="Top" type="MarginContainer" parent="TextContainer/VBoxContainer"]
+[node name="Top" type="MarginContainer" parent="HBoxContainer/TextContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TextContainer/VBoxContainer/Top"]
+[node name="FlowContainer" type="FlowContainer" parent="HBoxContainer/TextContainer/VBoxContainer/Top"]
 layout_mode = 2
+alignment = 2
 
-[node name="File" type="MenuButton" parent="TextContainer/VBoxContainer/Top/HBoxContainer"]
+[node name="File" type="MenuButton" parent="HBoxContainer/TextContainer/VBoxContainer/Top/FlowContainer"]
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 10
 size_flags_vertical = 0
 text = "Arquivo"
 flat = false
@@ -105,34 +193,37 @@ popup/item_1/id = 1
 popup/item_2/text = "Abrir local do arquivo"
 popup/item_2/id = 2
 
-[node name="Settings" type="Button" parent="TextContainer/VBoxContainer/Top/HBoxContainer"]
+[node name="Settings" type="Button" parent="HBoxContainer/TextContainer/VBoxContainer/Top/FlowContainer"]
 layout_mode = 2
+size_flags_horizontal = 8
 size_flags_vertical = 0
 focus_mode = 0
 mouse_default_cursor_shape = 2
 text = "Configurações"
 
-[node name="KeepDisplaying" type="CheckButton" parent="TextContainer/VBoxContainer/Top/HBoxContainer"]
+[node name="KeepDisplaying" type="CheckButton" parent="HBoxContainer/TextContainer/VBoxContainer/Top/FlowContainer"]
 layout_mode = 2
+size_flags_horizontal = 8
 tooltip_text = "Continua mostrando a HUD enquanto a leitura estiver ocorrendo."
 focus_mode = 0
 mouse_default_cursor_shape = 2
 text = "Continuar mostrando HUD"
 
-[node name="MarginContainer" type="MarginContainer" parent="TextContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/TextContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TextContainer/VBoxContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TextContainer/VBoxContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/TextContainer/VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="FullText" type="RichTextLabel" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(350, 0)
+[node name="FullText" type="RichTextLabel" parent="HBoxContainer/TextContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+size_flags_horizontal = 8
 size_flags_vertical = 3
 theme_override_fonts/normal_font = ExtResource("2_v4uy4")
 theme_override_font_sizes/normal_font_size = 20
@@ -141,7 +232,7 @@ fit_content = true
 autowrap_mode = 2
 script = ExtResource("3_f3hev")
 
-[node name="WordButton" type="Button" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText"]
+[node name="WordButton" type="Button" parent="HBoxContainer/TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText"]
 show_behind_parent = true
 layout_mode = 0
 offset_right = 8.0
@@ -149,10 +240,10 @@ offset_bottom = 8.0
 focus_mode = 0
 mouse_default_cursor_shape = 2
 
-[node name="HSeparator2" type="HSeparator" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="HBoxContainer/TextContainer/VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Bottom" type="MarginContainer" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+[node name="Bottom" type="MarginContainer" parent="HBoxContainer/TextContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_constants/margin_left = 10
@@ -160,24 +251,26 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom"]
+[node name="FlowContainer" type="FlowContainer" parent="HBoxContainer/TextContainer/VBoxContainer/Bottom"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/h_separation = 10
+last_wrap_alignment = 3
 
-[node name="LeftPage" type="Button" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer"]
+[node name="LeftPage" type="Button" parent="HBoxContainer/TextContainer/VBoxContainer/Bottom/FlowContainer"]
+custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 disabled = true
 text = "<"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/TextContainer/VBoxContainer/Bottom/FlowContainer"]
 layout_mode = 2
-size_flags_horizontal = 6
+size_flags_horizontal = 4
 
-[node name="PageSpinBox" type="SpinBox" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer/HBoxContainer"]
+[node name="PageSpinBox" type="SpinBox" parent="HBoxContainer/TextContainer/VBoxContainer/Bottom/FlowContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 10
+size_flags_horizontal = 8
 theme_override_constants/buttons_width = 0
 theme_override_icons/up = SubResource("DPITexture_x4dh1")
 theme_override_icons/up_hover = SubResource("DPITexture_3dwvd")
@@ -192,7 +285,7 @@ max_value = 1.0
 value = 1.0
 alignment = 2
 
-[node name="PagesText" type="RichTextLabel" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer/HBoxContainer"]
+[node name="PagesText" type="RichTextLabel" parent="HBoxContainer/TextContainer/VBoxContainer/Bottom/FlowContainer/HBoxContainer"]
 layout_mode = 2
 text = "/1"
 fit_content = true
@@ -201,97 +294,24 @@ autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RightPage" type="Button" parent="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer"]
+[node name="RightPage" type="Button" parent="HBoxContainer/TextContainer/VBoxContainer/Bottom/FlowContainer"]
+custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 8
 mouse_default_cursor_shape = 2
 disabled = true
 text = ">"
 
-[node name="Player" type="MarginContainer" parent="."]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 8
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_bottom = 40
-script = ExtResource("6_3dwvd")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Player"]
-layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="Backwards" type="Button" parent="Player/HBoxContainer"]
-custom_minimum_size = Vector2(128, 128)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-focus_mode = 0
-mouse_default_cursor_shape = 2
-icon = ExtResource("6_jaaaw")
-expand_icon = true
-
-[node name="Play" type="Button" parent="Player/HBoxContainer"]
-custom_minimum_size = Vector2(160, 160)
-layout_mode = 2
-focus_mode = 0
-mouse_default_cursor_shape = 2
-icon = ExtResource("8_dj55r")
-icon_alignment = 1
-expand_icon = true
-
-[node name="Forwards" type="Button" parent="Player/HBoxContainer"]
-custom_minimum_size = Vector2(128, 128)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-focus_mode = 0
-mouse_default_cursor_shape = 2
-icon = ExtResource("8_3dwvd")
-icon_alignment = 1
-expand_icon = true
-
-[node name="VSeparator" type="VSeparator" parent="Player/HBoxContainer"]
-layout_mode = 2
-
-[node name="WordsPerMinute" type="VBoxContainer" parent="Player/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="WPMText" type="RichTextLabel" parent="Player/HBoxContainer/WordsPerMinute"]
-layout_mode = 2
-theme_override_fonts/normal_font = ExtResource("9_dj55r")
-theme_override_font_sizes/normal_font_size = 20
-text = " Palavras Por Minuto (PPM): "
-fit_content = true
-scroll_active = false
-autowrap_mode = 0
-
-[node name="WPMSpinBox" type="SpinBox" parent="Player/HBoxContainer/WordsPerMinute"]
-layout_mode = 2
-min_value = 1.0
-max_value = 10000.0
-value = 1.0
-alignment = 1
-suffix = "PPM"
-
-[node name="WPMHSlider" type="HSlider" parent="Player/HBoxContainer/WordsPerMinute"]
-layout_mode = 2
-focus_mode = 0
-tick_count = 5
-ticks_on_borders = true
-ticks_position = 3
-
-[connection signal="file_selected" from="TextContainer/FileDialog" to="TextContainer" method="_on_file_dialog_file_selected"]
-[connection signal="pressed" from="TextContainer/VBoxContainer/Top/HBoxContainer/Settings" to="TextContainer" method="_on_settings_pressed"]
-[connection signal="toggled" from="TextContainer/VBoxContainer/Top/HBoxContainer/KeepDisplaying" to="TextContainer" method="_on_keep_displaying_toggled"]
-[connection signal="pressed" from="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText/WordButton" to="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText" method="_on_word_button_pressed"]
-[connection signal="pressed" from="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer/LeftPage" to="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText" method="_on_left_page_pressed"]
-[connection signal="value_changed" from="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer/HBoxContainer/PageSpinBox" to="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText" method="_on_page_spin_box_value_changed"]
-[connection signal="pressed" from="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/Bottom/HBoxContainer/RightPage" to="TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText" method="_on_right_page_pressed"]
-[connection signal="pressed" from="Player/HBoxContainer/Backwards" to="Player" method="_on_backwards_pressed"]
-[connection signal="pressed" from="Player/HBoxContainer/Play" to="Player" method="_on_play_pressed"]
-[connection signal="pressed" from="Player/HBoxContainer/Forwards" to="Player" method="_on_forwards_pressed"]
-[connection signal="value_changed" from="Player/HBoxContainer/WordsPerMinute/WPMSpinBox" to="Player" method="_on_wpm_spin_box_value_changed"]
-[connection signal="drag_ended" from="Player/HBoxContainer/WordsPerMinute/WPMHSlider" to="Player" method="_on_wpm_hslider_drag_ended"]
-[connection signal="value_changed" from="Player/HBoxContainer/WordsPerMinute/WPMHSlider" to="Player" method="_on_wpm_hslider_value_changed"]
+[connection signal="pressed" from="HBoxContainer/Player/FlowContainer/HBoxContainer/Backwards" to="HBoxContainer/Player" method="_on_backwards_pressed"]
+[connection signal="pressed" from="HBoxContainer/Player/FlowContainer/HBoxContainer/Play" to="HBoxContainer/Player" method="_on_play_pressed"]
+[connection signal="pressed" from="HBoxContainer/Player/FlowContainer/HBoxContainer/Forwards" to="HBoxContainer/Player" method="_on_forwards_pressed"]
+[connection signal="value_changed" from="HBoxContainer/Player/FlowContainer/WordsPerMinute/WPMSpinBox" to="HBoxContainer/Player" method="_on_wpm_spin_box_value_changed"]
+[connection signal="drag_ended" from="HBoxContainer/Player/FlowContainer/WordsPerMinute/WPMHSlider" to="HBoxContainer/Player" method="_on_wpm_hslider_drag_ended"]
+[connection signal="value_changed" from="HBoxContainer/Player/FlowContainer/WordsPerMinute/WPMHSlider" to="HBoxContainer/Player" method="_on_wpm_hslider_value_changed"]
+[connection signal="file_selected" from="HBoxContainer/TextContainer/FileDialog" to="HBoxContainer/TextContainer" method="_on_file_dialog_file_selected"]
+[connection signal="pressed" from="HBoxContainer/TextContainer/VBoxContainer/Top/FlowContainer/Settings" to="HBoxContainer/TextContainer" method="_on_settings_pressed"]
+[connection signal="toggled" from="HBoxContainer/TextContainer/VBoxContainer/Top/FlowContainer/KeepDisplaying" to="HBoxContainer/TextContainer" method="_on_keep_displaying_toggled"]
+[connection signal="pressed" from="HBoxContainer/TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText/WordButton" to="HBoxContainer/TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText" method="_on_word_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/TextContainer/VBoxContainer/Bottom/FlowContainer/LeftPage" to="HBoxContainer/TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText" method="_on_left_page_pressed"]
+[connection signal="value_changed" from="HBoxContainer/TextContainer/VBoxContainer/Bottom/FlowContainer/HBoxContainer/PageSpinBox" to="HBoxContainer/TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText" method="_on_page_spin_box_value_changed"]
+[connection signal="pressed" from="HBoxContainer/TextContainer/VBoxContainer/Bottom/FlowContainer/RightPage" to="HBoxContainer/TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText" method="_on_right_page_pressed"]

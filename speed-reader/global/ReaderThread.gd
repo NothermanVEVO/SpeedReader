@@ -9,6 +9,7 @@ var _max_lines : int
 var _width : float
 
 var _current_pages_calculated : int = 0
+var _calculated_all_pages : bool = false
 
 var _pages_position_in_file : PackedInt64Array = []
 
@@ -16,7 +17,7 @@ var _force_to_end : bool = false
 
 signal will_calculate_pages
 signal calculated_pages(pages : int)
-signal calculated_all_pages(pages : int) ## BASICALLY TELLS THAT THE PROCESS ENDED
+signal calculated_all_pages(pages : int) ## BASICALLY YELLS THAT THE PROCESS ENDED
 signal ended_by_force
 
 func calculate_pages(file_path : String, font : Font, font_size : int, width : float, max_lines : int) -> void:
@@ -28,6 +29,7 @@ func calculate_pages(file_path : String, font : Font, font_size : int, width : f
 	_width = width
 	_max_lines = max_lines
 	will_calculate_pages.emit()
+	_calculated_all_pages = false
 	_thread.start(_calculate_pages)
 
 func _ended() -> void:
@@ -121,6 +123,8 @@ func _calculate_pages() -> void:
 	calculated_pages.emit.call_deferred(_current_pages_calculated)
 	calculated_all_pages.emit.call_deferred(_current_pages_calculated)
 	
+	_calculated_all_pages = true
+	
 	file.close()
 	
 	_ended.call_deferred()
@@ -184,6 +188,183 @@ func get_page_text(page_index : int) -> String:
 
 	return bytes.get_string_from_utf8()
 
+func get_page_words_with_positions(page_index: int) -> Array[Dictionary]:
+	var file := FileAccess.open(_file_path, FileAccess.READ)
+	if file == null:
+		return []
+
+	var start := _pages_position_in_file[page_index]
+	var end: int
+
+	if page_index < _pages_position_in_file.size() - 1:
+		end = _pages_position_in_file[page_index + 1]
+	else:
+		end = file.get_length()
+
+	file.seek(start)
+
+	var result: Array[Dictionary] = []
+
+	var current_word := ""
+	var current_word_pos := -1
+	var inside_word := false
+
+	while file.get_position() < end and not file.eof_reached():
+		var ch_data := read_utf8_char(file)
+		if ch_data.is_empty():
+			break
+
+		var ch: String = ch_data["char"]
+		var ch_start: int = ch_data["start"]
+
+		var is_separator := Global.is_whitespace(ch)
+
+		if not is_separator:
+			if not inside_word:
+				inside_word = true
+				current_word_pos = ch_start
+				current_word = ""
+			current_word += ch
+		else:
+			if inside_word:
+				result.append({
+					"word": current_word,
+					"pos": current_word_pos
+				})
+				current_word = ""
+				current_word_pos = -1
+				inside_word = false
+
+	if inside_word and current_word != "":
+		result.append({
+			"word": current_word,
+			"pos": current_word_pos
+		})
+
+	if result.is_empty():
+		result.append({
+			"word": "",
+			"pos": start
+		})
+
+	file.close()
+	return result
+
+func get_word_idx_in_page_by_pos(page_index: int, word_pos: int) -> int:
+	var file := FileAccess.open(_file_path, FileAccess.READ)
+	if file == null:
+		return -1
+
+	var start := _pages_position_in_file[page_index]
+	var end: int
+
+	if page_index < _pages_position_in_file.size() - 1:
+		end = _pages_position_in_file[page_index + 1]
+	else:
+		end = file.get_length()
+
+	if word_pos < start or word_pos >= end:
+		file.close()
+		return -1
+
+	file.seek(start)
+
+	var inside_word := false
+	var idx := -1
+
+	while file.get_position() < end and not file.eof_reached():
+		var ch_data := read_utf8_char(file)
+		if ch_data.is_empty():
+			break
+
+		var ch: String = ch_data["char"]
+		var ch_start: int = ch_data["start"]
+
+		var is_separator := Global.is_whitespace(ch)
+
+		if not is_separator:
+			if not inside_word:
+				inside_word = true
+				idx += 1
+
+				# começou uma palavra nessa posição
+				if ch_start == word_pos:
+					file.close()
+					return idx
+		else:
+			inside_word = false
+
+	file.close()
+	return -1
+
+func get_page_index_by_file_pos(file_pos: int) -> int:
+	if _pages_position_in_file.is_empty():
+		return -1
+
+	if file_pos < _pages_position_in_file[0]:
+		return -1
+
+	var count := _pages_position_in_file.size()
+
+	# Se ainda está calculando páginas, a última ainda não é confiável
+	var high := count - 1
+	if not _calculated_all_pages:
+		if count < 2:
+			return -1
+		high = count - 2
+
+	var low := 0
+
+	while low <= high:
+		@warning_ignore("integer_division")
+		var mid := (low + high) / 2
+
+		var start := _pages_position_in_file[mid]
+
+		var next_start: int
+		if mid + 1 < count:
+			next_start = _pages_position_in_file[mid + 1]
+		else:
+			@warning_ignore("narrowing_conversion")
+			next_start = INF
+
+		if file_pos >= start and file_pos < next_start:
+			return mid
+		elif file_pos < start:
+			high = mid - 1
+		else:
+			low = mid + 1
+
+	return -1
+
+#func get_page_index_by_file_pos(file_pos: int) -> int:
+	#if _pages_position_in_file.is_empty():
+		#return -1
+#
+	#if file_pos < _pages_position_in_file[0]:
+		#return -1
+#
+	#var low := 0
+	#var high := _pages_position_in_file.size() - 1
+#
+	#while low <= high:
+		#@warning_ignore("integer_division")
+		#var mid := (low + high) / 2
+		#var start := _pages_position_in_file[mid]
+		#var next_start := INF
+#
+		#if mid + 1 < _pages_position_in_file.size():
+			#next_start = _pages_position_in_file[mid + 1]
+#
+		#if file_pos >= start and file_pos < next_start:
+			#return mid
+		#elif file_pos < start:
+			#high = mid - 1
+		#else:
+			#low = mid + 1
+#
+	#return _pages_position_in_file.size() - 1
+
 func get_total_of_pages() -> int:
 	return _current_pages_calculated
 
@@ -192,3 +373,24 @@ func is_calculating_pages() -> bool:
 
 func force_to_end() -> void:
 	_force_to_end = true
+
+func get_file_sha256_stream(path: String) -> String:
+	if not FileAccess.file_exists(path):
+		return ""
+
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return ""
+
+	var ctx := HashingContext.new()
+	ctx.start(HashingContext.HASH_SHA256)
+
+	const CHUNK_SIZE := 1024 * 1024 # 1MB por vez
+
+	while not file.eof_reached():
+		var chunk := file.get_buffer(CHUNK_SIZE)
+		if chunk.size() > 0:
+			ctx.update(chunk)
+
+	var hash_bytes := ctx.finish()
+	return hash_bytes.hex_encode()

@@ -1,0 +1,34 @@
+,en,pt-br,es
+File,File,Arquivo,Archivo
+Open,Open,Abrir,Abrir
+Import,Import,Importar,Importar
+Open file location,Open file location,Abrir local do arquivo,Abrir ubicación del archivo
+Settings,Settings,Configurações,Ajustes
+Keep Displaying HUD,Keep Displaying HUD,Continuar mostrando HUD,Seguir mostrando HUD
+Words Per Minute,Words Per Minute,Palavras Por Minuto,Palabras por minuto
+WPM,WPM,PPM,PPM
+General,General,Geral,General
+Window,Window,Janela,Ventana
+Theme,Theme,Tema,Tema
+Language,Language,Idioma,Idioma
+Font,Font,Fonte,Fuente
+White,White,Claro,Claro
+Dark,Dark,Escuro,Oscuro
+Mode,Mode,Modo,Modo
+Resolution,Resolution,Resolução,Resolución
+Fullscreen,Fullscreen,Tela Cheia,Pantalla Completa
+Name of the folder,Name of the folder,Nome do arquivo,Nombre del archivo
+Type the name of the folder,Type the name of the folder,Digite o nome do arquivo,Introduzca el nombre del archivo.
+Importation,Importation,Importação,Importar
+Warning,Warning,Aviso,Aviso
+Error,Error,Erro,Error
+Success,Success,Sucesso,Éxito
+Invalid file type,Invalid file type,Tipo de arquivo inválido,Tipo de archivo no válido
+The accepted formats are,The accepted formats are,Os formatos aceitos são,Los formatos aceptados son
+Importing file,Importing file,Importando arquivo,Importando archivo
+File not found,File not found,Arquivo não encontrado,Archivo no encontrado
+This name of file already exists,This name of file already exists,Esse nome de arquivo já existe,Este nombre de archivo ya existe.
+Unknown,Unknown,Desconhecido,Desconocido
+The file was imported,The file was imported,O arquivo foi importado,El archivo fue importado.
+It is only possible to open files in the following format,It is only possible to open files in the following format,Só é possivel abrir arquivos em formato,Sólo es posible abrir archivos en el siguiente formato
+"If you want to open a different file, try ""importing"" it first.","If you want to open a different file, try ""importing"" it first.","Se quiser abrir algum arquivo diferente, tente \""importar\"" primeiro.","Si desea abrir un archivo diferente, intente ""importarlo"" primero."

@@ -5,8 +5,8 @@
 [node name="SettingsWindow" type="Window"]
 oversampling_override = 1.0
 title = "Configurações"
-position = Vector2i(0, 36)
-size = Vector2i(1060, 710)
+position = Vector2i(25, 55)
+size = Vector2i(860, 480)
 visible = false
 exclusive = true
 force_native = true
@@ -32,7 +32,7 @@ custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/VBoxContainer"]
+[node name="GeneralText" type="RichTextLabel" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2
 text = "Geral"
 fit_content = true
@@ -43,14 +43,13 @@ vertical_alignment = 1
 
 [node name="OptionsItemList" type="ItemList" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 mouse_default_cursor_shape = 2
 auto_height = true
 item_count = 4
 item_0/text = "Janela"
-item_0/disabled = true
 item_1/text = "Tema"
 item_2/text = "Idioma"
-item_2/disabled = true
 item_3/text = "Fontes"
 item_3/disabled = true
 
@@ -58,5 +57,6 @@ item_3/disabled = true
 layout_mode = 2
 size_flags_horizontal = 3
 
+[connection signal="about_to_popup" from="." to="." method="_on_about_to_popup"]
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
 [connection signal="item_selected" from="HBoxContainer/VBoxContainer/OptionsItemList" to="." method="_on_options_item_selected"]

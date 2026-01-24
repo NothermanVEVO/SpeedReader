@@ -11,8 +11,11 @@ const IGNORED_CHARACTERS : String = PUNCTUATIONS + "'´`"
 
 @onready var _color_background : ColorRect = $ColorBackground
 
-@onready var _full_text : FullText = $TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText
-@onready var _player : Player = $Player
+@onready var up_v_separator : VSeparator = $UpVSeparator
+@onready var down_v_separator : VSeparator = $DownSeparator
+
+@onready var _full_text : FullText = $HBoxContainer/TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText
+@onready var _player : Player = $HBoxContainer/Player
 
 @onready var _timer : Timer = $Timer
 
@@ -22,8 +25,8 @@ var _paragraph = TextParagraph.new()
 
 var _words : PackedStringArray
 var _currently_word_idx : int = 0
-var _words_per_minute : float = 250
-var _currently_words_per_minute : float = 250
+static var _words_per_minute : float = 250
+static var _currently_words_per_minute : float = 250
 var _current_word : String = ""
 
 var _is_paused : bool = true
@@ -44,7 +47,7 @@ var _last_word : String = ""
 var _quant_of_same_word_repetitions : int = 1
 
 func _ready() -> void:
-	_player.set_wpm(250, false)
+	_player.set_wpm(_words_per_minute, false)
 	
 	_full_text.clicked_on_word.connect(_full_text_clicked_on_word)
 	
@@ -62,6 +65,15 @@ func _ready() -> void:
 	ReaderThread.will_calculate_pages.connect(_reset)
 	
 	Global.changed_theme.connect(_changed_theme)
+	
+	_resized()
+	
+	resized.connect(_resized)
+
+func _resized() -> void:
+	var new_size_y : float = 450.0 * (DisplayServer.window_get_size().y / 1080.0)
+	up_v_separator.custom_minimum_size.y = new_size_y
+	down_v_separator.custom_minimum_size.y = new_size_y
 
 func _reset() -> void:
 	_current_page = ""
@@ -135,37 +147,43 @@ func _process(delta: float) -> void:
 				_current_wpm_delay -= _DELAY_AFTER_HOLD_WPM
 				set_words_per_minute(_words_per_minute + 1)
 
+static func get_words_per_minute() -> float:
+	return _words_per_minute
+
 func _player_go_backward() -> void:
 	if _currently_word_idx - 1 < 0 and _full_text.get_page_index() - 1 >= 0:
 		_full_text.set_page(_full_text.get_page_index() - 1)
-		_currently_word_idx = _words.size() - 1
-		_set_current_word(_currently_word_idx)
+		_currently_word_idx = _words.size() - 2
+		_set_current_word(_currently_word_idx + 1)
 	else:
-		_currently_word_idx = clampi(_currently_word_idx - 1, 0, _words.size() - 1)
-		_set_current_word(_currently_word_idx)
+		_currently_word_idx = clampi(_currently_word_idx - 1, -1, _words.size() - 1)
+		_set_current_word(_currently_word_idx + 1)
 
 func _player_play(can_play : bool) -> void:
 	if can_play:
+		if _words.is_empty() and not _full_text.get_next_page().is_empty():
+			_full_text.go_to_next_non_blank_page()
+			if _full_text.get_next_page().is_empty():
+				_player.set_paused(true)
+				return
 		play()
 	else:
 		stop()
 
 func _player_go_forward() -> void:
-	if _currently_word_idx + 1 >= _words.size():
+	if _currently_word_idx + 2 >= _words.size():
 		_full_text.set_page(_full_text.get_page_index() + 1)
 	else:
-		_currently_word_idx = clampi(_currently_word_idx + 1, 0, _words.size() - 1)
-		_set_current_word(_currently_word_idx)
+		_currently_word_idx = clampi(_currently_word_idx + 1, -1, _words.size() - 1)
+		_set_current_word(_currently_word_idx + 1)
 
 func _player_wpm_changed(wpm : int) -> void:
 	_words_per_minute = wpm
 	_currently_words_per_minute = wpm
 
-#func set_text(text : String) -> void:
-	#_full_text.set_full_text(text.strip_edges())
-	#_words = Global.split_text_by_space(_full_text.get_full_text())
-	#_set_current_word(0)
-	#_currently_word_idx = -1
+static func set_wpm(wpm : float) -> void:
+	_words_per_minute = wpm
+	_currently_words_per_minute = wpm
 
 func set_words_per_minute(wpm : float) -> void:
 	_words_per_minute = clampf(wpm, MIN_WORDS_PER_MINUTE, MAX_WORDS_PER_MINUTE)
@@ -179,7 +197,8 @@ func play() -> void:
 	
 	_is_paused = false
 	while not _is_paused:
-		if _currently_word_idx >= _words.size():
+		if _currently_word_idx + 1 >= _words.size() or _words.is_empty():
+			_player.set_paused(true)
 			return
 		
 		_currently_word_idx += 1
@@ -208,6 +227,7 @@ func play() -> void:
 				return
 
 func stop() -> void:
+	_quant_of_same_word_repetitions = 0
 	if not _is_paused:
 		@warning_ignore("narrowing_conversion")
 		_currently_word_idx = clampi(_currently_word_idx - 1, -1, 9223372036854775807)
@@ -225,11 +245,14 @@ func _get_page(page : String) -> void:
 	_current_page = page
 	_words.clear()
 	_words = Global.split_text_by_space(_current_page)
-	if _words.is_empty() and not _full_text.get_next_page().is_empty():
-		_full_text.set_page(_full_text.get_page_index() + 1)
-	else:
-		_set_current_word(0)
-		_currently_word_idx = -1
+	if not _is_paused and _words.is_empty() and not _full_text.get_next_page().is_empty():
+		_full_text.go_to_next_non_blank_page()
+		#_full_text.set_page(_full_text.get_page_index() + 1)
+		if _full_text.get_next_page().is_empty():
+			_player.set_paused(true)
+			return
+	_set_current_word(0)
+	_currently_word_idx = -1
 
 #@warning_ignore("shadowed_variable_base_class")
 #func _get_middle_idx(size : int) -> int:

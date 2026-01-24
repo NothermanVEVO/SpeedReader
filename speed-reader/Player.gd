@@ -8,7 +8,7 @@ const _DARK_THEME : Theme = preload("res://themes/dark/base_player_theme_dark.tr
 const _WHITE_GO_BACKWARD_ICON : CompressedTexture2D = preload("res://assets/dark theme/white_skip_back_button.png")
 const _WHITE_GO_FORWARD_ICON : CompressedTexture2D = preload("res://assets/dark theme/white_skip_forward_button.png")
 
-const _DARK_GO_BACKWARD_ICON : CompressedTexture2D = preload("res://assets/white theme/dark_pause_button.png")
+const _DARK_GO_BACKWARD_ICON : CompressedTexture2D = preload("res://assets/white theme/dark_skip_back_button.png")
 const _DARK_GO_FORWARD_ICON : CompressedTexture2D = preload("res://assets/white theme/dark_skip_forward_button.png")
 
 const _WHITE_PAUSE_ICON : CompressedTexture2D = preload("res://assets/white theme/dark_skip_back_button.png")
@@ -20,12 +20,14 @@ const _DARK_PLAY_ICON : CompressedTexture2D = preload("res://assets/white theme/
 var _current_pause_icon : CompressedTexture2D
 var _current_play_icon : CompressedTexture2D
 
-@onready var _go_backward_button : Button = $HBoxContainer/Backwards
-@onready var _play_button : Button = $HBoxContainer/Play
-@onready var _go_forward_button : Button = $HBoxContainer/Forwards
+@onready var _go_backward_button : Button = $FlowContainer/HBoxContainer/Backwards
+@onready var _play_button : Button = $FlowContainer/HBoxContainer/Play
+@onready var _go_forward_button : Button = $FlowContainer/HBoxContainer/Forwards
 
-@onready var _wpm_spin_box : SpinBox = $HBoxContainer/WordsPerMinute/WPMSpinBox
-@onready var _wpm_hslider : HSlider = $HBoxContainer/WordsPerMinute/WPMHSlider
+@onready var _wpm_spin_box : SpinBox = $FlowContainer/WordsPerMinute/WPMSpinBox
+@onready var _wpm_hslider : HSlider = $FlowContainer/WordsPerMinute/WPMHSlider
+
+@onready var _wpm_text : RichTextLabel = $FlowContainer/WordsPerMinute/WPMText
 
 signal go_backward
 signal play(can_play : bool)
@@ -46,6 +48,13 @@ func _ready() -> void:
 	set_paused(true)
 	
 	Global.changed_theme.connect(_changed_theme)
+	
+	Settings.changed_language.connect(_set_text_by_language)
+	_set_text_by_language(Settings.get_language())
+
+func _set_text_by_language(_language : Settings.Languages) -> void:
+	_wpm_text.text = tr("Words Per Minute") + " (" + tr("WPM") + ")"
+	_wpm_spin_box.suffix = tr("WPM")
 
 func _changed_theme(_theme : Global.Themes) -> void:
 	var current_theme : Theme
@@ -80,8 +89,7 @@ func _on_backwards_pressed() -> void:
 	go_backward.emit()
 
 func _on_play_pressed() -> void:
-	if not _is_paused:
-		set_paused(not _is_paused)
+	set_paused(not _is_paused)
 
 func set_paused(is_paused : bool) -> void:
 	if is_paused == _is_paused:

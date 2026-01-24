@@ -9,11 +9,12 @@ signal changed_theme(theme : Themes)
 var _current_theme : Theme
 
 func _ready() -> void:
-	set_theme(Themes.DARK)
-	
 	changed_theme.emit.call_deferred(_theme)
 
 func split_text_by_space(text : String) -> PackedStringArray:
+	if is_only_whitespace(text):
+		return []
+	
 	var regex := RegEx.new()
 	regex.compile("\\s+")
 	text = regex.sub(text, " ", true)
@@ -30,7 +31,7 @@ func is_only_whitespace(text : String) -> bool:
 func set_theme(theme : Themes) -> void:
 	if theme != _theme:
 		_theme = theme
-		changed_theme.emit(_theme)
+		changed_theme.emit.call_deferred(_theme)
 
 func get_theme_type() -> Themes:
 	return _theme

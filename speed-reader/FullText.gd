@@ -22,10 +22,12 @@ var _fade_tween : Tween
 var _last_word_in_button : Word
 var _currently_word_in_button : Word
 
-@onready var _left_page_button : Button = $"../Bottom/HBoxContainer/LeftPage"
-@onready var _page_spin_box : SpinBox = $"../Bottom/HBoxContainer/HBoxContainer/PageSpinBox"
-@onready var _pages_text : RichTextLabel = $"../Bottom/HBoxContainer/HBoxContainer/PagesText"
-@onready var _right_page_button : Button = $"../Bottom/HBoxContainer/RightPage"
+@onready var _left_page_button : Button = $"../../../Bottom/FlowContainer/LeftPage"
+@onready var _page_spin_box : SpinBox = $"../../../Bottom/FlowContainer/HBoxContainer/PageSpinBox"
+@onready var _pages_text : RichTextLabel = $"../../../Bottom/FlowContainer/HBoxContainer/PagesText"
+@onready var _right_page_button : Button = $"../../../Bottom/FlowContainer/RightPage"
+
+@onready var _text_container : TextContainer = $"../../../.."
 
 var _last_size := Vector2.ZERO
 
@@ -35,8 +37,14 @@ signal changed_page(page : String)
 var _previous_page : String = ""
 var _next_page : String = ""
 
-var _last_word_idx_in_focus : int = -1
-var word_in_focus : Word
+var _last_word_byte_pos_in_focus : int = -1
+var _page_idx_of_last_word : int = -1
+var _found_word_byte_pos : bool = true
+
+var _word_in_focus : Word
+
+var _after_next_page_to_set : int = -1
+var _next_page_to_set : int = -1
 
 func _ready() -> void:
 	add_theme_font_override("normal_font", _font)
@@ -51,6 +59,12 @@ func _ready() -> void:
 	ReaderThread.will_calculate_pages.connect(_reset)
 	
 	Global.changed_theme.connect(_changed_theme)
+	
+	_text_container.will_open_diferent_file.connect(_will_open_diferent_file)
+
+func _will_open_diferent_file() -> void:
+	_last_word_byte_pos_in_focus = -1
+	_found_word_byte_pos = true
 
 func _changed_theme(_theme : Global.Themes) -> void:
 	_word_button.modulate = _get_word_button_color()
@@ -63,8 +77,27 @@ func _resized() -> void:
 		_paragraph_width = size.x
 		_paragraph.width = size.x
 		_maximum_lines = _calculate_maximum_lines()
-	if _last_word_idx_in_focus >= 0:
-		set_word_idx_in_focus(_last_word_idx_in_focus)
+		if _text_container.can_reopen_file():
+			if _word_in_focus:
+				var page_words : Array[Dictionary] = ReaderThread.get_page_words_with_positions(_currently_page_idx)
+				_found_word_byte_pos = not page_words.is_empty()
+				if page_words:
+					var idx : int = _word_in_focus.idx if _word_in_focus.idx < page_words.size() else 0
+					_last_word_byte_pos_in_focus = page_words[idx]["pos"]
+				else:
+					_last_word_byte_pos_in_focus = -1
+				_word_in_focus = null
+			_text_container.reopen_file()
+
+func set_last_word_byte_pos_in_focus(last_word_byte_pos_in_focus : int) -> void:
+	_last_word_byte_pos_in_focus = last_word_byte_pos_in_focus
+
+func get_page_n_word_idx() -> int:
+	var page_words : Array[Dictionary] = ReaderThread.get_page_words_with_positions(_currently_page_idx)
+	
+	var idx : int = _word_in_focus.idx if _word_in_focus and page_words and _word_in_focus.idx < page_words.size() else 0
+	
+	return page_words[idx]["pos"] if page_words else 0
 
 func _physics_process(_delta: float) -> void:
 	if not visible:
@@ -85,7 +118,7 @@ func _physics_process(_delta: float) -> void:
 
 func _reset() -> void:
 	_full_text = ""
-	_last_word_idx_in_focus = -1
+	#_last_word_idx_in_focus = -1
 	_currently_page_idx = -1
 	_quant_of_pages = 0
 	_clear_letter_n_words()
@@ -111,13 +144,63 @@ func _calculated_all_pages(_pages : int) -> void:
 	if _currently_page_idx < 0:
 		set_page(0)
 
+func _process(_delta: float) -> void:
+	if _next_page_to_set >= 0:
+		set_page(_next_page_to_set)
+		await get_tree().create_timer(0.1).timeout
+		_next_page_to_set = _after_next_page_to_set
+		_after_next_page_to_set = -1
+
 func _calculated_pages(pages : int) -> void:
 	_quant_of_pages = pages
 	
 	_page_spin_box.max_value = _quant_of_pages
 	
+	
+	#if _last_word_byte_pos_in_focus >= 0:
+		##print(_last_word_byte_pos_in_focus)
+		#if _page_idx_of_last_word < 0:
+			#print("THE PAGE IDX HAS TO BE: ")
+			#print(_page_idx_of_last_word)
+			#_page_idx_of_last_word = ReaderThread.get_page_index_by_file_pos(_last_word_byte_pos_in_focus)
+			##print(_page_idx_of_last_word)
+			#if _page_idx_of_last_word < 0:
+				##print(_page_idx_of_last_word)
+				#_last_word_byte_pos_in_focus = -1
+	if not _found_word_byte_pos:
+		var page : int = _quant_of_pages - 2
+		if _next_page_to_set < 0:
+			_next_page_to_set = page
+		elif page > _after_next_page_to_set:
+			_after_next_page_to_set = page
+	
+	if _last_word_byte_pos_in_focus >= 0:
+		if _page_idx_of_last_word < 0:
+			_page_idx_of_last_word = ReaderThread.get_page_index_by_file_pos(_last_word_byte_pos_in_focus)
+			var page : int = _quant_of_pages - 2
+			if _next_page_to_set < 0:
+				_next_page_to_set = page
+			elif page > _after_next_page_to_set:
+				_after_next_page_to_set = page
+		elif _quant_of_pages - 1 < _page_idx_of_last_word:
+			var page : int = _quant_of_pages - 2
+			if _next_page_to_set < 0:
+				_next_page_to_set = page
+			if page > _after_next_page_to_set:
+				_after_next_page_to_set = page
+		else:
+			_next_page_to_set = -1
+			_after_next_page_to_set = -1
+			set_page(_page_idx_of_last_word)
+			var idx := ReaderThread.get_word_idx_in_page_by_pos(_page_idx_of_last_word, _last_word_byte_pos_in_focus)
+			clicked_on_word.emit("", idx)
+			set_word_idx_in_focus(idx)
+			_last_word_byte_pos_in_focus = -1
+			_page_idx_of_last_word = -1
+	
 	if _currently_page_idx < 0 and _quant_of_pages > 2: ## WARNING IS IT RIGHT?
 		set_page(0)
+	
 	_page_spin_box.value = _currently_page_idx + 1
 	_pages_text.text = "/" + str(_quant_of_pages)
 	if _currently_page_idx == 0:
@@ -129,12 +212,20 @@ func _calculated_pages(pages : int) -> void:
 	else:
 		_right_page_button.disabled = false
 
+func go_to_next_non_blank_page() -> void:
+	var page : String = " "
+	while Global.is_only_whitespace(page) and _currently_page_idx + 1 < _quant_of_pages:
+		_currently_page_idx += 1
+		page = ReaderThread.get_page_text(_currently_page_idx)
+	
+	set_page(_currently_page_idx)
+
 func set_page(page_idx : int) -> void:
 	if page_idx < 0 or page_idx >= _quant_of_pages:
 		return
 
-	_page_spin_box.value = page_idx + 1
-	_pages_text.text = "/" + str(_quant_of_pages)
+	#_page_spin_box.value = page_idx + 1
+	#_pages_text.text = "/" + str(_quant_of_pages)
 
 	if page_idx == _currently_page_idx - 1 and not _previous_page.is_empty():
 		_next_page = _full_text
@@ -176,6 +267,10 @@ func set_page(page_idx : int) -> void:
 		_right_page_button.disabled = true
 
 	_currently_page_idx = page_idx
+	
+	_page_spin_box.value = _currently_page_idx + 1
+	_pages_text.text = "/" + str(_quant_of_pages)
+	
 	set_full_text(_full_text)
 	changed_page.emit(_full_text)
 
@@ -301,8 +396,8 @@ func _clear_letter_n_words() -> void:
 	_currently_page_words.clear()
 
 func _calculate_words() -> void:
-	if _full_text.is_empty():
-		return
+	#if _full_text.is_empty():
+		#return
 	
 	_paragraph.clear()
 	_paragraph.add_string(_full_text, _font, _font_size)
@@ -377,23 +472,23 @@ func _calculate_words() -> void:
 		_currently_page_words.append(_current_word)
 
 func set_word_idx_in_focus(idx : int) -> void:
+	if visible:
+		queue_redraw()
+	
 	if idx < 0 or idx >= _currently_page_words.size():
 		return
 	
-	_last_word_idx_in_focus = idx
+	#_last_word_idx_in_focus = idx
 	
-	if word_in_focus:
-		word_in_focus.in_focus = false
+	if _word_in_focus:
+		_word_in_focus.in_focus = false
 	
-	word_in_focus = _currently_page_words[idx]
-	word_in_focus.in_focus = true
-	
-	if visible:
-		queue_redraw()
+	_word_in_focus = _currently_page_words[idx]
+	_word_in_focus.in_focus = true
 
 func _draw() -> void:
-	if _full_text.is_empty():
-		return
+	#if _full_text.is_empty():
+		#return
 	
 	# draw the paragraph to this canvas item
 	#_paragraph.draw(get_canvas_item(), Vector2.ZERO)
