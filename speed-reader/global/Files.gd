@@ -65,7 +65,7 @@ func get_text_from_imported_file(file_path : String) -> void:
 	if ReaderThread.is_calculating_pages():
 		ReaderThread.force_to_end()
 		await ReaderThread.ended_by_force
-	ReaderThread.calculate_pages(file_path, FullText.get_font(), FullText.get_font_size(), FullText.get_paragraph_width(), FullText.get_max_lines())
+	ReaderThread.calculate_pages(file_path, FullText.get_font(), FullText.get_font_size(), FullText.get_paragraph_width(), FullText.get_max_lines(), FullText.get_max_words())
 
 func save_file(file_path : String, data : String, overrides : bool = false) -> Error:
 	if not overrides and FileAccess.file_exists(file_path):

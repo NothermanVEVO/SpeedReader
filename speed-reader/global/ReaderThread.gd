@@ -1,4 +1,4 @@
-extends Node
+extends Node ## 10083
 
 var _thread := Thread.new()
 
@@ -6,6 +6,7 @@ var _file_path : String
 var _font : Font
 var _font_size : int
 var _max_lines : int
+var _max_words : int
 var _width : float
 
 var _current_pages_calculated : int = 0
@@ -20,7 +21,7 @@ signal calculated_pages(pages : int)
 signal calculated_all_pages(pages : int) ## BASICALLY YELLS THAT THE PROCESS ENDED
 signal ended_by_force
 
-func calculate_pages(file_path : String, font : Font, font_size : int, width : float, max_lines : int) -> void:
+func calculate_pages(file_path : String, font : Font, font_size : int, width : float, max_lines : int, max_words : int) -> void:
 	if _thread.is_started():
 		return
 	_file_path = file_path
@@ -28,6 +29,7 @@ func calculate_pages(file_path : String, font : Font, font_size : int, width : f
 	_font_size = font_size
 	_width = width
 	_max_lines = max_lines
+	_max_words = max_words
 	will_calculate_pages.emit()
 	_calculated_all_pages = false
 	_thread.start(_calculate_pages)
@@ -38,7 +40,47 @@ func _ended() -> void:
 		_force_to_end = false
 		ended_by_force.emit()
 
+#func _max_tokens_that_fit(paragraph: TextParagraph, tokens: Array[String], start_index: int) -> int:
+	#var max_available := tokens.size() - start_index
+	#if max_available <= 0:
+		#return 0
+#
+	## 1) crescimento exponencial
+	#var step := 32
+	#var count := step
+#
+	#while count <= max_available:
+		#var text := "".join(tokens.slice(start_index, start_index + count))
+		#if _fits_in_page(paragraph, text):
+			#step *= 2
+			#count += step
+		#else:
+			#break
+#
+	## agora temos um range:
+	## (count - step) cabe, count não cabe (ou passou do limite)
+	#var high : int = min(count, max_available)
+	#var low : int = max(1, high - step)
+	#var best := low
+#
+	## 2) busca binária no range pequeno
+	#while low <= high:
+		#@warning_ignore("integer_division")
+		#var mid := (low + high) / 2
+#
+		#var text := "".join(tokens.slice(start_index, start_index + mid))
+		#if _fits_in_page(paragraph, text):
+			#best = mid
+			#low = mid + 1
+		#else:
+			#high = mid - 1
+#
+	#return best
+
+#func _calculate_pages_test() -> void:
 func _calculate_pages() -> void:
+	var start_ms := Time.get_ticks_msec()
+	
 	if not FileAccess.file_exists(_file_path):
 		return
 
@@ -51,18 +93,7 @@ func _calculate_pages() -> void:
 	_pages_position_in_file.append(0)
 	_current_pages_calculated = 1
 
-	var page_text := ""
-
-	var byte_offset := 0
-	var word_start_offset := byte_offset
-
-	var last_remaining_word : String = ""
-	
-	var check_for_new_page : bool = false
-
-	var word : String = ""
-
-	var next_char : Dictionary = {}
+	var remaining_words : Array[Word] = []
 
 	while not file.eof_reached():
 		if _force_to_end:
@@ -70,55 +101,38 @@ func _calculate_pages() -> void:
 			_ended.call_deferred()
 			return
 		
-		var current_char : Dictionary
-		if next_char.is_empty():
-			current_char = read_utf8_char(file)
-		else:
-			current_char = next_char
-			next_char = read_utf8_char(file)
+		var words : Array[Word] = get_chunk_of_words(file, remaining_words)
+		remaining_words.clear()
 		
-		if current_char.is_empty():
-			break
+		var left : int = 0
+		var right : int = words.size() - 1
 		
-		if not last_remaining_word.is_empty():
-			paragraph.clear()
-			paragraph.add_string(page_text + last_remaining_word, _font, _font_size)
-			#byte_offset += word.to_utf8_buffer().size() ## WARNING IS THIS REALLY NEEDED?
-			if paragraph.get_line_count() > _max_lines:
-				_pages_position_in_file.append(word_start_offset)
-				#pages.append(page_text)
-				page_text = ""
-				_current_pages_calculated += 1
-				calculated_pages.emit.call_deferred(_current_pages_calculated)
+		var last_word_in_page : Word = null
+		var last_word_pos_array : int = -1
+		
+		var page_start := _pages_position_in_file[-1]
+
+		while left <= right:
+			@warning_ignore("integer_division")
+			var mid := (left + right) / 2
+
+			var candidate_end := words[mid].end_byte_pos
+
+			if _fits_range(paragraph, file, page_start, candidate_end):
+				last_word_in_page = words[mid]
+				last_word_pos_array = mid
+				left = mid + 1
 			else:
-				page_text += last_remaining_word
-			last_remaining_word = ""
-			
-		var has_next_character = not next_char.is_empty()
-		if word.is_empty():
-			word_start_offset = byte_offset
-		if Global.is_whitespace(current_char["char"]):
-			word += current_char["char"]
-			check_for_new_page = true
-		else:
-			word += current_char["char"]
-			check_for_new_page = has_next_character and Global.is_whitespace(next_char["char"])
-			
-		if check_for_new_page:
-			paragraph.clear()
-			paragraph.add_string(page_text + word, _font, _font_size)
-			byte_offset += word.to_utf8_buffer().size()
-			if paragraph.get_line_count() > _max_lines:
-				#pages.append(page_text)
-				page_text = ""
-				last_remaining_word = word
-				_pages_position_in_file.append(word_start_offset)
-				word = ""
-				_current_pages_calculated += 1
-				calculated_pages.emit.call_deferred(_current_pages_calculated)
-			else:
-				page_text += word
-				word = ""
+				right = mid - 1
+
+		if last_word_pos_array < words.size() - 1:
+			remaining_words = words.slice(last_word_pos_array + 1)
+		
+		if last_word_in_page:
+			_pages_position_in_file.append(last_word_in_page.end_byte_pos - 1)
+			file.seek(last_word_in_page.end_byte_pos)
+			_current_pages_calculated += 1
+			calculated_pages.emit.call_deferred(_current_pages_calculated)
 	
 	calculated_pages.emit.call_deferred(_current_pages_calculated)
 	calculated_all_pages.emit.call_deferred(_current_pages_calculated)
@@ -127,7 +141,150 @@ func _calculate_pages() -> void:
 	
 	file.close()
 	
+	var end_ms := Time.get_ticks_msec()
+	var elapsed_ms := end_ms - start_ms
+	var elapsed_s := float(elapsed_ms) / 1000.0
+
+	var pages : float = max(_current_pages_calculated - 1, 1)
+	var pages_per_sec : float = float(pages) / max(elapsed_s, 0.001)
+
+	print("=== CALC PAGES DONE ===")
+	print("Páginas:", pages)
+	print("Tempo:", elapsed_ms, "ms (", elapsed_s, "s )")
+	print("Páginas/s:", pages_per_sec)
+	
+	## DEBUG
+	for i in _pages_position_in_file.size():
+		var text := get_page_text(i)
+		paragraph.clear()
+		paragraph.add_string(text, _font, _font_size)
+		if paragraph.get_line_count() > _max_lines:
+			print(i)
+	
+	print("acabou")
+	
 	_ended.call_deferred()
+
+func _fits_range(paragraph: TextParagraph, file: FileAccess, start: int, end: int) -> bool:
+	if end <= start:
+		return true
+
+	var old_pos := file.get_position()
+
+	file.seek(start)
+	var bytes := file.get_buffer(end - start)
+	var text := bytes.get_string_from_utf8()
+
+	paragraph.clear()
+	paragraph.add_string(text, _font, _font_size)
+
+	file.seek(old_pos)
+
+	return paragraph.get_line_count() <= _max_lines
+
+#func _calculate_pages() -> void:
+	#var start_ms := Time.get_ticks_msec()
+	#
+	#if not FileAccess.file_exists(_file_path):
+		#return
+#
+	#var paragraph := TextParagraph.new()
+	#paragraph.width = _width
+#
+	#var file := FileAccess.open(_file_path, FileAccess.READ)
+#
+	#_pages_position_in_file.clear()
+	#_pages_position_in_file.append(0)
+	#_current_pages_calculated = 1
+#
+	#var page_text := ""
+#
+	#var byte_offset := 0
+	#var word_start_offset := byte_offset
+#
+	#var last_remaining_word : String = ""
+	#
+	#var check_for_new_page : bool = false
+#
+	#var word : String = ""
+#
+	#var next_char : Dictionary = {}
+#
+	#while not file.eof_reached():
+		#if _force_to_end:
+			#file.close()
+			#_ended.call_deferred()
+			#return
+		#
+		#var current_char : Dictionary
+		#if next_char.is_empty():
+			#current_char = read_utf8_char(file)
+		#else:
+			#current_char = next_char
+			#next_char = read_utf8_char(file)
+		#
+		#if current_char.is_empty():
+			#break
+		#
+		#if not last_remaining_word.is_empty():
+			#paragraph.clear()
+			#paragraph.add_string(page_text + last_remaining_word, _font, _font_size)
+			#if paragraph.get_line_count() > _max_lines:
+				#_pages_position_in_file.append(word_start_offset)
+				#page_text = ""
+				#_current_pages_calculated += 1
+				#calculated_pages.emit.call_deferred(_current_pages_calculated)
+			#else:
+				#page_text += last_remaining_word
+			#last_remaining_word = ""
+			#
+		#var has_next_character = not next_char.is_empty()
+		#if word.is_empty():
+			#word_start_offset = byte_offset
+		#if Global.is_whitespace(current_char["char"]):
+			#word += current_char["char"]
+			#check_for_new_page = true
+		#else:
+			#word += current_char["char"]
+			#check_for_new_page = has_next_character and Global.is_whitespace(next_char["char"])
+			#
+		#if check_for_new_page:
+			#paragraph.clear()
+			#paragraph.add_string(page_text + word, _font, _font_size)
+			#byte_offset += word.to_utf8_buffer().size()
+			#if paragraph.get_line_count() > _max_lines:
+				#page_text = ""
+				#last_remaining_word = word
+				#_pages_position_in_file.append(word_start_offset)
+				#word = ""
+				#_current_pages_calculated += 1
+				#calculated_pages.emit.call_deferred(_current_pages_calculated)
+			#else:
+				#page_text += word
+				#word = ""
+	#
+	#calculated_pages.emit.call_deferred(_current_pages_calculated)
+	#calculated_all_pages.emit.call_deferred(_current_pages_calculated)
+	#
+	#_calculated_all_pages = true
+	#
+	#file.close()
+	#
+	#var end_ms := Time.get_ticks_msec()
+	#var elapsed_ms := end_ms - start_ms
+	#var elapsed_s := float(elapsed_ms) / 1000.0
+#
+	#var pages : int = max(_current_pages_calculated - 1, 1)
+	#var pages_per_sec : float = float(pages) / max(elapsed_s, 0.001)
+#
+	#print("=== CALC PAGES DONE ===")
+	#print("Páginas:", pages)
+	#print("Tempo:", elapsed_ms, "ms (", elapsed_s, "s )")
+	#print("Páginas/s:", pages_per_sec)
+	#
+	#_ended.call_deferred()
+	
+	#_calculate_pages_test()
 
 func read_utf8_char(file : FileAccess) -> Dictionary:
 	if file.eof_reached():
@@ -168,6 +325,60 @@ func read_utf8_char(file : FileAccess) -> Dictionary:
 		"start": start_pos,
 		"end": end_pos
 	}
+
+func get_chunk_of_words(file : FileAccess, remaining_words : Array[Word] = []) -> Array[Word]:
+	var words : Array[Word] = []
+	
+	var current_word := Word.new("", -1, -1)
+	
+	if not remaining_words.is_empty():
+		file.seek(remaining_words[-1].end_byte_pos)
+		words.append_array(remaining_words)
+	
+	while not file.eof_reached():
+		var current_char := read_utf8_char(file)
+		if current_char.is_empty():
+			break
+		
+		#if current_char["char"] == "\r":
+			#continue
+		
+		if current_word.word.is_empty():
+			current_word.word += current_char["char"]
+			current_word.start_byte_pos = current_char["start"]
+			if Global.is_whitespace(current_word.word):
+				current_word.end_byte_pos = current_char["end"]
+				words.append(current_word)
+				current_word = Word.new("", -1, -1)
+		else:
+			if Global.is_whitespace(current_char["char"]):
+				current_word.end_byte_pos = current_char["end"]
+				words.append(current_word)
+				current_word = Word.new("", -1, -1)
+				if words.size() < _max_words:
+					words.append(Word.new(current_char["char"], current_char["start"], current_char["end"]))
+				else:
+					file.seek(current_char["start"])
+					return words
+			else:
+				current_word.end_byte_pos = current_char["end"]
+				current_word.word += current_char["char"]
+		
+		if words.size() == _max_words:
+			return words
+	
+	if not current_word.word.is_empty() and words.size() < _max_words:
+		words.append(current_word)
+	
+	return words
+
+func get_text_from_words(words : Array[Word]) -> String:
+	var text : String = ""
+	
+	for word in words:
+		text += word.word
+	
+	return text
 
 func get_page_text(page_index : int) -> String:
 	var file := FileAccess.open(_file_path, FileAccess.READ)
@@ -337,34 +548,6 @@ func get_page_index_by_file_pos(file_pos: int) -> int:
 
 	return -1
 
-#func get_page_index_by_file_pos(file_pos: int) -> int:
-	#if _pages_position_in_file.is_empty():
-		#return -1
-#
-	#if file_pos < _pages_position_in_file[0]:
-		#return -1
-#
-	#var low := 0
-	#var high := _pages_position_in_file.size() - 1
-#
-	#while low <= high:
-		#@warning_ignore("integer_division")
-		#var mid := (low + high) / 2
-		#var start := _pages_position_in_file[mid]
-		#var next_start := INF
-#
-		#if mid + 1 < _pages_position_in_file.size():
-			#next_start = _pages_position_in_file[mid + 1]
-#
-		#if file_pos >= start and file_pos < next_start:
-			#return mid
-		#elif file_pos < start:
-			#high = mid - 1
-		#else:
-			#low = mid + 1
-#
-	#return _pages_position_in_file.size() - 1
-
 func get_total_of_pages() -> int:
 	return _current_pages_calculated
 
@@ -394,3 +577,17 @@ func get_file_sha256_stream(path: String) -> String:
 
 	var hash_bytes := ctx.finish()
 	return hash_bytes.hex_encode()
+
+class Word:
+	var word : String
+	var start_byte_pos : int
+	var end_byte_pos : int
+	
+	@warning_ignore("shadowed_variable")
+	func _init(word : String, start_byte_pos : int, end_byte_pos : int) -> void:
+		self.word = word
+		self.start_byte_pos = start_byte_pos
+		self.end_byte_pos = end_byte_pos
+	
+	func to_text() -> String:
+		return "Word: " + str(word) + " | Start byte: " + str(start_byte_pos) + " | End byte: " + str(end_byte_pos)

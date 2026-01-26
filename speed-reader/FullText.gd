@@ -4,6 +4,7 @@ class_name FullText
 
 var _full_text : String
 static var _maximum_lines : int = -1
+static var _maximum_words : int = -1
 var _currently_page_idx : int = -1
 var _quant_of_pages : int = 0
 
@@ -77,6 +78,7 @@ func _resized() -> void:
 		_paragraph_width = size.x
 		_paragraph.width = size.x
 		_maximum_lines = _calculate_maximum_lines()
+		_maximum_words = _calculate_maximum_words()
 		if _text_container.can_reopen_file():
 			if _word_in_focus:
 				var page_words : Array[Dictionary] = ReaderThread.get_page_words_with_positions(_currently_page_idx)
@@ -140,6 +142,9 @@ static func get_paragraph_width() -> float:
 static func get_max_lines() -> int:
 	return _maximum_lines
 
+static func get_max_words() -> int:
+	return _maximum_words
+
 func _calculated_all_pages(_pages : int) -> void:
 	if _currently_page_idx < 0:
 		set_page(0)
@@ -156,17 +161,6 @@ func _calculated_pages(pages : int) -> void:
 	
 	_page_spin_box.max_value = _quant_of_pages
 	
-	
-	#if _last_word_byte_pos_in_focus >= 0:
-		##print(_last_word_byte_pos_in_focus)
-		#if _page_idx_of_last_word < 0:
-			#print("THE PAGE IDX HAS TO BE: ")
-			#print(_page_idx_of_last_word)
-			#_page_idx_of_last_word = ReaderThread.get_page_index_by_file_pos(_last_word_byte_pos_in_focus)
-			##print(_page_idx_of_last_word)
-			#if _page_idx_of_last_word < 0:
-				##print(_page_idx_of_last_word)
-				#_last_word_byte_pos_in_focus = -1
 	if not _found_word_byte_pos:
 		var page : int = _quant_of_pages - 2
 		if _next_page_to_set < 0:
@@ -501,6 +495,46 @@ func _draw() -> void:
 		var color : Color = theme_text_color if letter.word_parent and not letter.word_parent.in_focus else Color.RED
 		draw_string(_font, pos, letter.letter, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size, color)
 
+func _calculate_maximum_words() -> int:
+	var paragraph := TextParagraph.new()
+	paragraph.width = size.x
+	
+	@warning_ignore("shadowed_variable_base_class")
+	var text := ""
+	
+	# Get the primary text server
+	var text_server = TextServerManager.get_primary_interface()
+	var jumped_line : bool = false
+	
+	while not jumped_line:
+		
+		text += "|"
+		paragraph.clear()
+		paragraph.add_string(text, _font, _font_size)
+		
+		# for each line
+		for i in paragraph.get_line_count():
+			var x = 0.0
+
+			# get the rid of the line
+			var line_rid = paragraph.get_line_rid(i)
+		
+			# get all the glyphs that compose the line
+			var glyphs = text_server.shaped_text_get_glyphs(line_rid)
+
+			# for each glyph
+			for glyph in glyphs:
+				var advance : float = glyph.get("advance", 0)
+				if x + advance >= paragraph.width:
+					jumped_line = true
+					break
+				x += advance
+
+			if jumped_line:
+				break
+	
+	return (text.length() - 1) * _maximum_lines
+
 func _calculate_maximum_lines() -> int:
 	var paragraph := TextParagraph.new()
 	paragraph.width = size.x
@@ -541,6 +575,7 @@ func _calculate_maximum_lines() -> int:
 			y += ascent + descent
 			if found_maximum_lines:
 				break
+	
 	return maximum_lines
 
 class Letter:
