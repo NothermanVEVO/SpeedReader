@@ -153,7 +153,7 @@ func _calculate_pages() -> void:
 	print("Tempo:", elapsed_ms, "ms (", elapsed_s, "s )")
 	print("Páginas/s:", pages_per_sec)
 	
-	## DEBUG
+	## DEBUG ## TO CHECK IF A PAGE HAS MORE LINES THAN IT SHOULD
 	for i in _pages_position_in_file.size():
 		var text := get_page_text(i)
 		paragraph.clear()

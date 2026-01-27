@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://dken4cvi5kx5f"]
+
+[node name="Books" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="LeftBar" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LeftBar"]
+layout_mode = 2
+
+[node name="FlowContainer" type="FlowContainer" parent="HBoxContainer/LeftBar/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="HBoxContainer/LeftBar/VBoxContainer/FlowContainer"]
+layout_mode = 2
+text = "="
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/LeftBar/VBoxContainer/FlowContainer"]
+layout_mode = 2
+text = "SpeedReader"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="FlowContainer2" type="FlowContainer" parent="HBoxContainer/LeftBar/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+vertical = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/LeftBar/VBoxContainer/FlowContainer2"]
+layout_mode = 2
+text = "Listas"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="ItemList" type="ItemList" parent="HBoxContainer/LeftBar/VBoxContainer/FlowContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+auto_width = true
+auto_height = true
+item_count = 9
+item_0/text = "Todos"
+item_1/text = "---------------------"
+item_1/selectable = false
+item_1/disabled = true
+item_2/text = "Lendo"
+item_3/text = "Re-lendo"
+item_4/text = "Planejo ler"
+item_5/text = "Dando um tempo"
+item_6/text = "Larguei"
+item_7/text = "---------------------"
+item_7/selectable = false
+item_7/disabled = true
+item_8/text = "Nova lista"
