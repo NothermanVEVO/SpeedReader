@@ -13,8 +13,6 @@ var _book : Book
 func load_book(book : Book) -> void:
 	_book = book
 	
-	print(self.get_children())
-	
 	_title_text.text = book.name
 	
 	if FileAccess.file_exists(book.current_dir_path + "/cover.png"):

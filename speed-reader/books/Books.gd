@@ -36,7 +36,6 @@ func load_all_extracted_resources() -> Array[Book]:
 
 	var dir := DirAccess.open(Files.EXTRACTED_TEXTS_PATH)
 	if dir == null:
-		print("Erro: não foi possível abrir ", Files.EXTRACTED_TEXTS_PATH)
 		return result
 
 	dir.list_dir_begin()
@@ -46,32 +45,24 @@ func load_all_extracted_resources() -> Array[Book]:
 		if folder_name == "":
 			break
 
-		# Ignorar "." e ".."
 		if folder_name.begins_with("."):
 			continue
 
 		var folder_path := Files.EXTRACTED_TEXTS_PATH + "/" + folder_name
 
-		# Só continuar se for pasta
 		if not dir.current_is_dir():
 			continue
 
-		# Caminho do .tres (mesmo nome da pasta)
 		var tres_path := folder_path + "/" + folder_name + ".tres"
 
 		if not FileAccess.file_exists(tres_path):
-			print("Arquivo não encontrado: ", tres_path)
 			continue
 
-		# Carregar o Resource
-		print(tres_path)
 		var res : Book = ResourceLoader.load(tres_path)
 
 		if res == null:
-			print("Erro ao carregar: ", tres_path)
 			continue
 
-		# Salvar o diretório dentro do Resource
 		res.current_dir_path = folder_path
 
 		result.append(res)
