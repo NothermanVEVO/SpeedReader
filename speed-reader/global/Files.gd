@@ -1,6 +1,6 @@
 extends Node
 
-const EXTRACTED_TEXTS_PATH : String = "user://texts"
+const EXTRACTED_TEXTS_PATH : String = "user://books"
 const TOOLS_PATH : String = "user://tools"
 const EXTRACT_FILE_PATH : String = TOOLS_PATH + "/extract_text.exe"
 
@@ -20,14 +20,23 @@ func _ready() -> void:
 		f.close()
 
 func import(from_path : String, to_path : String) -> Error:
+	var dir_path : String = to_path.get_base_dir()
+	
 	if not FileAccess.file_exists(from_path):
 		return ERR_FILE_NOT_FOUND
 	
 	if not from_path.get_extension() in VALID_EXTENSION_IN_EXTRACTION:
 		return ERR_INVALID_DATA
 	
+	if DirAccess.dir_exists_absolute(dir_path):
+		return ERR_ALREADY_EXISTS
+	
 	if FileAccess.file_exists(to_path):
 		return ERR_ALREADY_EXISTS
+	
+	var dir_status : Error = DirAccess.make_dir_absolute(dir_path)
+	if dir_status != OK:
+		return dir_status
 	
 	if from_path.get_extension() == "txt":
 		var data := FileAccess.get_file_as_bytes(from_path)

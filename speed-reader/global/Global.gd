@@ -47,3 +47,20 @@ func get_theme_text_color() -> Color:
 			return Color.BLACK
 		_:
 			return Color.WHITE
+
+func get_UUID() -> String:
+	var rng := RandomNumberGenerator.new()
+	
+	var values = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+	var begin := ""
+	var middle := ""
+	var end := ""
+	
+	for i in range(12):
+		begin += values.substr(rng.randi_range(0, values.length() - 1), 1)
+	for i in range(10):
+		middle += values.substr(rng.randi_range(0, values.length() - 1), 1)
+	for i in range(16):
+		end += values.substr(rng.randi_range(0, values.length() - 1), 1)
+	
+	return begin + "-" + middle + "-" + end

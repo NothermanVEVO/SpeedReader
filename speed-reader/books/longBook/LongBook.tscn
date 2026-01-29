@@ -1,0 +1,85 @@
+[gd_scene load_steps=2 format=3 uid="uid://exam10hddvew"]
+
+[ext_resource type="Script" uid="uid://uw8m82mkg5u8" path="res://books/longBook/LongBook.gd" id="1_7m312"]
+
+[node name="LongBook" type="HBoxContainer"]
+custom_minimum_size = Vector2(0, 170)
+theme_override_constants/separation = 8
+script = ExtResource("1_7m312")
+
+[node name="Cover" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(110, 170)
+layout_mode = 2
+expand_mode = 1
+
+[node name="Info" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Title" type="RichTextLabel" parent="Info"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Reading" type="OptionButton" parent="Info"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+selected = 0
+item_count = 5
+popup/item_0/text = "Planejo ler"
+popup/item_0/id = 0
+popup/item_1/text = "Lendo"
+popup/item_1/id = 1
+popup/item_2/text = "Re-lendo"
+popup/item_2/id = 2
+popup/item_3/text = "Dando um tempo"
+popup/item_3/id = 3
+popup/item_4/text = "Larguei"
+popup/item_4/id = 4
+
+[node name="Stars" type="SpinBox" parent="Info"]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+max_value = 10.0
+suffix = "Estrelas"
+
+[node name="TagsContainer" type="HBoxContainer" parent="Info"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TagsText" type="RichTextLabel" parent="Info/TagsContainer"]
+layout_mode = 2
+text = "Tags: "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Info/TagsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_scroll_mode = 0
+
+[node name="Tags" type="FlowContainer" parent="Info/TagsContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+
+[node name="Buttons" type="FlowContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="Edit" type="Button" parent="Buttons"]
+layout_mode = 2
+text = "Editar"
+
+[node name="Remove" type="Button" parent="Buttons"]
+layout_mode = 2
+text = "Excluir"
+
+[connection signal="item_selected" from="Info/Reading" to="." method="_on_reading_item_selected"]
+[connection signal="value_changed" from="Info/Stars" to="." method="_on_stars_value_changed"]

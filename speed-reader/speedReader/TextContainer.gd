@@ -37,7 +37,7 @@ func _ready() -> void:
 	_file_menu_button.get_popup().id_pressed.connect(_file_menu_button_id_pressed)
 	
 	_input_dialog.title = tr("Name of the folder")
-	_input_dialog.define_text(tr("Type the name of the folder") + ":")
+	_input_dialog.define_placeholder_text(tr("Type the name of the folder") + ":")
 	_input_dialog.text_confirmed.connect(_input_dialog_text_confirmed)
 	
 	_player.play.connect(_is_playing)

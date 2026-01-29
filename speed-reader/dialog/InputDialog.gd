@@ -13,13 +13,16 @@ func _ready() -> void:
 	confirmed.connect(_confirmed)
 	_line_edit.text_submitted.connect(_line_edit_text_submitted)
 
+func define_placeholder_text(placeholder_text : String) -> void:
+	_line_edit.placeholder_text = placeholder_text
+
 func define_text(text : String) -> void:
-	_line_edit.placeholder_text = text
+	_line_edit.text = text
 
 func _line_edit_text_submitted(text : String) -> void:
 	visible = false
-	text_confirmed.emit(text)
 	_line_edit.text = ""
+	text_confirmed.emit(text)
 
 func _confirmed() -> void:
 	text_confirmed.emit(_line_edit.text)

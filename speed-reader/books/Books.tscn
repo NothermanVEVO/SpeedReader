@@ -1,0 +1,282 @@
+[gd_scene load_steps=3 format=3 uid="uid://dken4cvi5kx5f"]
+
+[ext_resource type="Script" uid="uid://peileisktac3" path="res://books/Books.gd" id="1_xue48"]
+[ext_resource type="Script" uid="uid://ckutroofw2701" path="res://dialog/InputDialog.gd" id="2_mmmtf"]
+
+[node name="Books" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xue48")
+
+[node name="FileDialog" type="FileDialog" parent="."]
+use_native_dialog = true
+
+[node name="AcceptDialog" type="AcceptDialog" parent="."]
+force_native = true
+
+[node name="InputDialog" type="AcceptDialog" parent="."]
+force_native = true
+script = ExtResource("2_mmmtf")
+metadata/_custom_type_script = "uid://ckutroofw2701"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="LeftBar" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LeftBar"]
+layout_mode = 2
+
+[node name="SpeedReader" type="FlowContainer" parent="HBoxContainer/LeftBar/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+alignment = 1
+vertical = true
+
+[node name="Button" type="Button" parent="HBoxContainer/LeftBar/VBoxContainer/SpeedReader"]
+layout_mode = 2
+text = "="
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/LeftBar/VBoxContainer/SpeedReader"]
+layout_mode = 2
+text = "SpeedReader"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Lists" type="FlowContainer" parent="HBoxContainer/LeftBar/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+vertical = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/LeftBar/VBoxContainer/Lists"]
+layout_mode = 2
+text = "Listas"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="ItemList" type="ItemList" parent="HBoxContainer/LeftBar/VBoxContainer/Lists"]
+layout_mode = 2
+size_flags_vertical = 3
+auto_width = true
+auto_height = true
+item_count = 10
+item_0/text = "Todos"
+item_1/text = "---------------------"
+item_1/selectable = false
+item_1/disabled = true
+item_2/text = "Planejo ler"
+item_3/text = "Lendo"
+item_4/text = "Re-lendo"
+item_5/text = "Dando um tempo"
+item_6/text = "Larguei"
+item_7/text = "---------------------"
+item_7/selectable = false
+item_7/disabled = true
+item_8/text = "+ Nova lista"
+item_9/selectable = false
+item_9/disabled = true
+
+[node name="MiddleBar" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MiddleBar"]
+layout_mode = 2
+
+[node name="TopBar" type="MarginContainer" parent="HBoxContainer/MiddleBar/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="Type" type="FlowContainer" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer"]
+layout_mode = 2
+alignment = 1
+vertical = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Type"]
+layout_mode = 2
+text = "Tipo:"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="ShowTypeOption" type="OptionButton" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Type"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+text_overrun_behavior = 3
+selected = 0
+item_count = 2
+popup/item_0/text = "Longo"
+popup/item_0/id = 0
+popup/item_1/text = "Bloco"
+popup/item_1/id = 1
+
+[node name="Sort" type="FlowContainer" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer"]
+layout_mode = 2
+alignment = 1
+vertical = true
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Sort"]
+layout_mode = 2
+text = "Organizar:"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="SortOption" type="OptionButton" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Sort"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text_overrun_behavior = 3
+selected = 0
+fit_to_longest_item = false
+item_count = 4
+popup/item_0/text = "Mais recente"
+popup/item_0/id = 0
+popup/item_1/text = "Mais antigo"
+popup/item_1/id = 3
+popup/item_2/text = "Alfabética (Crescente)"
+popup/item_2/id = 2
+popup/item_3/text = "Alfabética (Decrescente)"
+popup/item_3/id = 3
+
+[node name="New Tag" type="Button" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer"]
+layout_mode = 2
+text = "Nova tag"
+
+[node name="New File" type="Button" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Novo arquivo"
+
+[node name="Books" type="ScrollContainer" parent="HBoxContainer/MiddleBar/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+follow_focus = true
+horizontal_scroll_mode = 0
+
+[node name="LongBooks" type="VBoxContainer" parent="HBoxContainer/MiddleBar/VBoxContainer/Books"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="BlockBooks" type="FlowContainer" parent="HBoxContainer/MiddleBar/VBoxContainer/Books"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="RightBar" type="MarginContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/RightBar"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Top" type="HBoxContainer" parent="HBoxContainer/RightBar/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Cover" type="TextureRect" parent="HBoxContainer/RightBar/VBoxContainer/Top"]
+custom_minimum_size = Vector2(128, 192)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+expand_mode = 1
+
+[node name="Title" type="RichTextLabel" parent="HBoxContainer/RightBar/VBoxContainer/Top"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TagsContainer" type="HBoxContainer" parent="HBoxContainer/RightBar/VBoxContainer"]
+layout_mode = 2
+
+[node name="TagsText" type="RichTextLabel" parent="HBoxContainer/RightBar/VBoxContainer/TagsContainer"]
+layout_mode = 2
+text = "Tags: "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/RightBar/VBoxContainer/TagsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_scroll_mode = 0
+
+[node name="Tags" type="FlowContainer" parent="HBoxContainer/RightBar/VBoxContainer/TagsContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+
+[node name="Reading" type="OptionButton" parent="HBoxContainer/RightBar/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+selected = 0
+fit_to_longest_item = false
+item_count = 5
+popup/item_0/text = "Planejo ler"
+popup/item_0/id = 0
+popup/item_1/text = "Lendo"
+popup/item_1/id = 1
+popup/item_2/text = "Re-lendo"
+popup/item_2/id = 2
+popup/item_3/text = "Dando um tempo"
+popup/item_3/id = 3
+popup/item_4/text = "Larguei"
+popup/item_4/id = 4
+
+[node name="Stars" type="SpinBox" parent="HBoxContainer/RightBar/VBoxContainer"]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+max_value = 10.0
+suffix = "Estrelas"
+
+[node name="Comments" type="TextEdit" parent="HBoxContainer/RightBar/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "Escreva o comentário aqui..."
+scroll_smooth = true
+caret_blink = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/RightBar/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="Edit" type="Button" parent="HBoxContainer/RightBar/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Editar"
+
+[node name="Save" type="Button" parent="HBoxContainer/RightBar/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+disabled = true
+text = "Salvar"
+
+[connection signal="file_selected" from="FileDialog" to="." method="_on_file_dialog_file_selected"]
+[connection signal="item_selected" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Type/ShowTypeOption" to="." method="_on_show_type_option_item_selected"]
+[connection signal="item_selected" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Sort/SortOption" to="." method="_on_sort_option_item_selected"]
+[connection signal="pressed" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/New File" to="." method="_on_new_file_pressed"]

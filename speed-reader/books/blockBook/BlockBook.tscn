@@ -1,0 +1,92 @@
+[gd_scene load_steps=2 format=3 uid="uid://dxpflo81fh6q"]
+
+[ext_resource type="Script" uid="uid://c7jftnrtl82eh" path="res://books/blockBook/BlockBook.gd" id="1_ee0dj"]
+
+[node name="BlockBook" type="MarginContainer"]
+custom_minimum_size = Vector2(200, 580)
+size_flags_vertical = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("1_ee0dj")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Cover" type="TextureRect" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 256)
+layout_mode = 2
+expand_mode = 1
+
+[node name="Info" type="VBoxContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Title" type="RichTextLabel" parent="ScrollContainer/VBoxContainer/Info"]
+layout_mode = 2
+fit_content = true
+
+[node name="Reading" type="OptionButton" parent="ScrollContainer/VBoxContainer/Info"]
+layout_mode = 2
+selected = 0
+fit_to_longest_item = false
+item_count = 5
+popup/item_0/text = "Planejo ler"
+popup/item_0/id = 0
+popup/item_1/text = "Lendo"
+popup/item_1/id = 1
+popup/item_2/text = "Re-lendo"
+popup/item_2/id = 2
+popup/item_3/text = "Dando um tempo"
+popup/item_3/id = 3
+popup/item_4/text = "Larguei"
+popup/item_4/id = 4
+
+[node name="Stars" type="SpinBox" parent="ScrollContainer/VBoxContainer/Info"]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+max_value = 10.0
+suffix = "Estrelas"
+
+[node name="Tags" type="ScrollContainer" parent="ScrollContainer/VBoxContainer/Info"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="FlowContainer" type="FlowContainer" parent="ScrollContainer/VBoxContainer/Info/Tags"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TagsText" type="RichTextLabel" parent="ScrollContainer/VBoxContainer/Info/Tags/FlowContainer"]
+layout_mode = 2
+text = "Tags: "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Buttons" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Edit" type="Button" parent="ScrollContainer/VBoxContainer/Buttons"]
+layout_mode = 2
+text = "Editar"
+
+[node name="Remove" type="Button" parent="ScrollContainer/VBoxContainer/Buttons"]
+layout_mode = 2
+text = "Excluir"
+
+[connection signal="item_selected" from="ScrollContainer/VBoxContainer/Info/Reading" to="." method="_on_reading_item_selected"]
+[connection signal="value_changed" from="ScrollContainer/VBoxContainer/Info/Stars" to="." method="_on_stars_value_changed"]
