@@ -1,12 +1,16 @@
 extends MarginContainer
 
+class_name Books
+
+const FILE_ICON : CompressedTexture2D = preload("res://assets/icons/file.png")
+
 @onready var _long_books : VBoxContainer = $HBoxContainer/MiddleBar/VBoxContainer/Books/LongBooks
 @onready var _block_books : FlowContainer = $HBoxContainer/MiddleBar/VBoxContainer/Books/BlockBooks
 
 const _LONG_BOOK_SCENE : PackedScene = preload("res://books/longBook/LongBook.tscn")
 const _BLOCK_BOOK_SCENE : PackedScene = preload("res://books/blockBook/BlockBook.tscn")
 
-enum ShowType {LONG, BLOCK}
+enum ShowType {LONG = 0, BLOCK = 1}
 var _current_show_type : ShowType
 
 enum SortType {LATEST, OLDEST, ALPHABETICAL_ASCEDING, ALPHABETICAL_DESCEDING}
@@ -30,6 +34,30 @@ func _ready() -> void:
 	var books := load_all_extracted_resources()
 	for book in books:
 		add_book(book)
+
+func _set_current_show_type(show_type : ShowType) -> void:
+	_clear_books_nodes() ## CLEARS FIRST
+	
+	_current_show_type = show_type
+	
+	match _current_show_type:
+		ShowType.LONG:
+			_long_books.visible = true
+			_block_books.visible = false
+		ShowType.BLOCK:
+			_long_books.visible = false
+			_block_books.visible = true
+	
+	for book in _books:
+		add_book(book, false)
+
+func _clear_books_nodes() -> void:
+	var books_size : int = _books.size()
+	for i in books_size:
+		remove_book(_books[i], false)
+
+func _set_current_sort_type(sort_type : SortType) -> void:
+	_current_sort_type = sort_type
 
 func load_all_extracted_resources() -> Array[Book]:
 	var result : Array[Book] = []
@@ -71,8 +99,9 @@ func load_all_extracted_resources() -> Array[Book]:
 
 	return result
 
-func add_book(book : Book) -> void:
-	_books.append(book)
+func add_book(book : Book, append_resource_book : bool = true) -> void:
+	if append_resource_book:
+		_books.append(book)
 	
 	match _current_show_type:
 		ShowType.LONG:
@@ -84,10 +113,27 @@ func add_book(book : Book) -> void:
 			_block_books.add_child(block_book)
 			block_book.load_book(book) # NEED TO BE AFTER BECAUSE OF THE _READY
 	
-	changed_books_order.emit()
+	if append_resource_book:
+		changed_books_order.emit()
 
-func remove_book(book : Book) -> void:
-	_books.erase(book)
+func remove_book(book : Book, erase_resource_book : bool = true) -> void:
+	match _current_show_type:
+		ShowType.LONG:
+			for child in _long_books.get_children():
+				if child is LongBook and child.get_book() == book:
+					_long_books.remove_child(child)
+					child.queue_free()
+					break
+		ShowType.BLOCK:
+			for child in _block_books.get_children():
+				if child is BlockBook and child.get_book() == book:
+					_block_books.remove_child(child)
+					child.queue_free()
+					break
+	
+	if erase_resource_book:
+		_books.erase(book)
+		changed_books_order.emit()
 
 func _on_new_file_pressed() -> void:
 	_file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
@@ -149,7 +195,7 @@ func _input_dialog_text_confirmed(text : String) -> void:
 		_open_accept_dialog_on_import(status)
 
 func _on_show_type_option_item_selected(index: int) -> void:
-	_current_show_type = index as ShowType
+	_set_current_show_type(index as ShowType)
 
 func _on_sort_option_item_selected(index: int) -> void:
-	_current_sort_type = index as SortType
+	_set_current_sort_type(index as SortType)

@@ -120,6 +120,7 @@ autowrap_mode = 0
 [node name="ShowTypeOption" type="OptionButton" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Type"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text_overrun_behavior = 3
 selected = 0
 item_count = 2

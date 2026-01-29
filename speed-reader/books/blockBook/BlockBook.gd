@@ -20,7 +20,7 @@ func load_book(book : Book) -> void:
 		if image:
 			_cover_image.texture = ImageTexture.create_from_image(image)
 	if not _cover_image.texture:
-		pass
+		_cover_image.texture = Books.FILE_ICON
 	
 	_reading_type.selected = book.reading_type
 	_stars.value = book.stars
