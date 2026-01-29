@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://dken4cvi5kx5f"]
+[gd_scene load_steps=4 format=3 uid="uid://dken4cvi5kx5f"]
 
 [ext_resource type="Script" uid="uid://peileisktac3" path="res://books/Books.gd" id="1_xue48"]
 [ext_resource type="Script" uid="uid://ckutroofw2701" path="res://dialog/InputDialog.gd" id="2_mmmtf"]
+[ext_resource type="Script" uid="uid://ckliwujw5g2pu" path="res://books/BookInfo.gd" id="3_mmmtf"]
 
 [node name="Books" type="MarginContainer"]
 anchors_preset = 15
@@ -176,6 +177,7 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/separation = 8
 
 [node name="BlockBooks" type="FlowContainer" parent="HBoxContainer/MiddleBar/VBoxContainer/Books"]
 visible = false
@@ -184,36 +186,38 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="RightBar" type="MarginContainer" parent="HBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
+script = ExtResource("3_mmmtf")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/RightBar"]
+[node name="BookInfo" type="VBoxContainer" parent="HBoxContainer/RightBar"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Top" type="HBoxContainer" parent="HBoxContainer/RightBar/VBoxContainer"]
+[node name="Top" type="HBoxContainer" parent="HBoxContainer/RightBar/BookInfo"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Cover" type="TextureRect" parent="HBoxContainer/RightBar/VBoxContainer/Top"]
+[node name="Cover" type="TextureRect" parent="HBoxContainer/RightBar/BookInfo/Top"]
 custom_minimum_size = Vector2(128, 192)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 expand_mode = 1
 
-[node name="Title" type="RichTextLabel" parent="HBoxContainer/RightBar/VBoxContainer/Top"]
+[node name="Title" type="RichTextLabel" parent="HBoxContainer/RightBar/BookInfo/Top"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TagsContainer" type="HBoxContainer" parent="HBoxContainer/RightBar/VBoxContainer"]
+[node name="TagsContainer" type="HBoxContainer" parent="HBoxContainer/RightBar/BookInfo"]
 layout_mode = 2
 
-[node name="TagsText" type="RichTextLabel" parent="HBoxContainer/RightBar/VBoxContainer/TagsContainer"]
+[node name="TagsText" type="RichTextLabel" parent="HBoxContainer/RightBar/BookInfo/TagsContainer"]
 layout_mode = 2
 text = "Tags: "
 fit_content = true
@@ -222,17 +226,17 @@ autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/RightBar/VBoxContainer/TagsContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/RightBar/BookInfo/TagsContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 horizontal_scroll_mode = 0
 
-[node name="Tags" type="FlowContainer" parent="HBoxContainer/RightBar/VBoxContainer/TagsContainer/ScrollContainer"]
+[node name="Tags" type="FlowContainer" parent="HBoxContainer/RightBar/BookInfo/TagsContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
 
-[node name="Reading" type="OptionButton" parent="HBoxContainer/RightBar/VBoxContainer"]
+[node name="Reading" type="OptionButton" parent="HBoxContainer/RightBar/BookInfo"]
 layout_mode = 2
 size_flags_horizontal = 0
 selected = 0
@@ -249,31 +253,32 @@ popup/item_3/id = 3
 popup/item_4/text = "Larguei"
 popup/item_4/id = 4
 
-[node name="Stars" type="SpinBox" parent="HBoxContainer/RightBar/VBoxContainer"]
+[node name="Stars" type="SpinBox" parent="HBoxContainer/RightBar/BookInfo"]
 custom_minimum_size = Vector2(128, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 max_value = 10.0
 suffix = "Estrelas"
 
-[node name="Comments" type="TextEdit" parent="HBoxContainer/RightBar/VBoxContainer"]
+[node name="Comments" type="TextEdit" parent="HBoxContainer/RightBar/BookInfo"]
 layout_mode = 2
 size_flags_vertical = 3
 placeholder_text = "Escreva o comentário aqui..."
 scroll_smooth = true
 caret_blink = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/RightBar/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/RightBar/BookInfo"]
 layout_mode = 2
 alignment = 2
 
-[node name="Edit" type="Button" parent="HBoxContainer/RightBar/VBoxContainer/HBoxContainer"]
+[node name="Edit" type="Button" parent="HBoxContainer/RightBar/BookInfo/HBoxContainer"]
 layout_mode = 2
 text = "Editar"
 
-[node name="Save" type="Button" parent="HBoxContainer/RightBar/VBoxContainer/HBoxContainer"]
+[node name="Save" type="Button" parent="HBoxContainer/RightBar/BookInfo/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
+mouse_default_cursor_shape = 2
 disabled = true
 text = "Salvar"
 
@@ -281,3 +286,7 @@ text = "Salvar"
 [connection signal="item_selected" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Type/ShowTypeOption" to="." method="_on_show_type_option_item_selected"]
 [connection signal="item_selected" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Sort/SortOption" to="." method="_on_sort_option_item_selected"]
 [connection signal="pressed" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/New File" to="." method="_on_new_file_pressed"]
+[connection signal="item_selected" from="HBoxContainer/RightBar/BookInfo/Reading" to="HBoxContainer/RightBar" method="_on_reading_item_selected"]
+[connection signal="value_changed" from="HBoxContainer/RightBar/BookInfo/Stars" to="HBoxContainer/RightBar" method="_on_stars_value_changed"]
+[connection signal="text_changed" from="HBoxContainer/RightBar/BookInfo/Comments" to="HBoxContainer/RightBar" method="_on_comments_text_changed"]
+[connection signal="pressed" from="HBoxContainer/RightBar/BookInfo/HBoxContainer/Save" to="HBoxContainer/RightBar" method="_on_save_pressed"]

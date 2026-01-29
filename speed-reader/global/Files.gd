@@ -6,6 +6,8 @@ const EXTRACT_FILE_PATH : String = TOOLS_PATH + "/extract_text.exe"
 
 const VALID_EXTENSION_IN_EXTRACTION : Array[String] = ["txt", "pdf", "doc", "docx", "epub"]
 
+signal saved_book(book : Book)
+
 func _ready() -> void:
 	if not DirAccess.dir_exists_absolute(EXTRACTED_TEXTS_PATH):
 		DirAccess.make_dir_absolute(EXTRACTED_TEXTS_PATH)
@@ -86,6 +88,12 @@ func save_file(file_path : String, data : String, overrides : bool = false) -> E
 		return OK
 	else:
 		return FAILED
+
+func save_book(book : Book) -> Error:
+	var status := ResourceSaver.save(book, book.current_dir_path + "/" + book.name + ".tres")
+	if status == OK:
+		saved_book.emit(book)
+	return status
 
 func open_extracted_texts_folder() -> void:
 	var abs_path := ProjectSettings.globalize_path(Files.EXTRACTED_TEXTS_PATH)

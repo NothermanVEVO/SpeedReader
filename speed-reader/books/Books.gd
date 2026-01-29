@@ -6,6 +6,7 @@ const FILE_ICON : CompressedTexture2D = preload("res://assets/icons/file.png")
 
 @onready var _long_books : VBoxContainer = $HBoxContainer/MiddleBar/VBoxContainer/Books/LongBooks
 @onready var _block_books : FlowContainer = $HBoxContainer/MiddleBar/VBoxContainer/Books/BlockBooks
+@onready var _book_info : BookInfo = $HBoxContainer/RightBar
 
 const _LONG_BOOK_SCENE : PackedScene = preload("res://books/longBook/LongBook.tscn")
 const _BLOCK_BOOK_SCENE : PackedScene = preload("res://books/blockBook/BlockBook.tscn")
@@ -24,6 +25,9 @@ var _books : Array[Book] = []
 
 var _last_file_path : String = ""
 
+var _last_toggled_long_book : LongBook
+var _last_toggled_block_book : BlockBook
+
 signal changed_books_order
 
 func _ready() -> void:
@@ -36,20 +40,40 @@ func _ready() -> void:
 		add_book(book)
 
 func _set_current_show_type(show_type : ShowType) -> void:
+	var _last_pressed_book : Book
+	
+	match show_type:
+		ShowType.LONG:
+			if _last_toggled_block_book:
+				_last_pressed_book = _last_toggled_block_book.get_book()
+				_last_toggled_block_book = null
+		ShowType.BLOCK:
+			if _last_toggled_long_book:
+				_last_pressed_book = _last_toggled_long_book.get_book()
+				_last_toggled_long_book = null
+	
 	_clear_books_nodes() ## CLEARS FIRST
 	
 	_current_show_type = show_type
 	
+	for book in _books:
+		add_book(book, false)
+	
 	match _current_show_type:
 		ShowType.LONG:
+			if _last_pressed_book:
+				for child in _long_books.get_children():
+					if child is LongBook and child.get_book() == _last_pressed_book:
+						child.button_pressed = true
 			_long_books.visible = true
 			_block_books.visible = false
 		ShowType.BLOCK:
+			if _last_pressed_book:
+				for child in _block_books.get_children():
+					if child is BlockBook and child.get_book() == _last_pressed_book:
+						child.set_pressed()
 			_long_books.visible = false
 			_block_books.visible = true
-	
-	for book in _books:
-		add_book(book, false)
 
 func _clear_books_nodes() -> void:
 	var books_size : int = _books.size()
@@ -108,10 +132,12 @@ func add_book(book : Book, append_resource_book : bool = true) -> void:
 			var long_book : LongBook = _LONG_BOOK_SCENE.instantiate()
 			_long_books.add_child(long_book)
 			long_book.load_book(book) # NEED TO BE AFTER BECAUSE OF THE _READY
+			long_book.has_toggled.connect(_has_toggled_long_book)
 		ShowType.BLOCK:
 			var block_book : BlockBook = _BLOCK_BOOK_SCENE.instantiate()
 			_block_books.add_child(block_book)
 			block_book.load_book(book) # NEED TO BE AFTER BECAUSE OF THE _READY
+			block_book.has_toggled.connect(_has_toggled_block_book)
 	
 	if append_resource_book:
 		changed_books_order.emit()
@@ -121,12 +147,14 @@ func remove_book(book : Book, erase_resource_book : bool = true) -> void:
 		ShowType.LONG:
 			for child in _long_books.get_children():
 				if child is LongBook and child.get_book() == book:
+					child.has_toggled.disconnect(_has_toggled_long_book)
 					_long_books.remove_child(child)
 					child.queue_free()
 					break
 		ShowType.BLOCK:
 			for child in _block_books.get_children():
 				if child is BlockBook and child.get_book() == book:
+					child.has_toggled.disconnect(_has_toggled_block_book)
 					_block_books.remove_child(child)
 					child.queue_free()
 					break
@@ -134,6 +162,40 @@ func remove_book(book : Book, erase_resource_book : bool = true) -> void:
 	if erase_resource_book:
 		_books.erase(book)
 		changed_books_order.emit()
+
+func _has_toggled_long_book(long_book : LongBook, toggled_on : bool) -> void:
+	if _last_toggled_long_book and not toggled_on and _last_toggled_long_book == long_book:
+		_book_info.visible = false
+		_last_toggled_long_book = null
+		return
+	
+	if _last_toggled_long_book and long_book != _last_toggled_long_book:
+		if toggled_on:
+			_last_toggled_long_book.button_pressed = false
+			_last_toggled_long_book = null
+	
+	if toggled_on:
+		_last_toggled_long_book = long_book
+		if not _book_info.get_book() or (_book_info.get_book() and _book_info.get_book() != long_book.get_book()):
+			_book_info.load_book(long_book.get_book())
+		_book_info.visible = true
+
+func _has_toggled_block_book(block_book : BlockBook, toggled_on : bool) -> void:
+	if _last_toggled_block_book and not toggled_on and _last_toggled_block_book == block_book:
+		_book_info.visible = false
+		_last_toggled_block_book = null
+		return
+	
+	if _last_toggled_block_book and block_book != _last_toggled_block_book:
+		if toggled_on:
+			_last_toggled_block_book.set_unpressed()
+			_last_toggled_block_book = null
+	
+	if toggled_on:
+		_last_toggled_block_book = block_book
+		if not _book_info.get_book() or (_book_info.get_book() and _book_info.get_book() != block_book.get_book()):
+			_book_info.load_book(block_book.get_book())
+		_book_info.visible = true
 
 func _on_new_file_pressed() -> void:
 	_file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
@@ -187,7 +249,7 @@ func _input_dialog_text_confirmed(text : String) -> void:
 	if status == OK:
 		var book := Book.new(text, 0, 0, "", [])
 		book.current_dir_path = import_file_path.get_base_dir()
-		var book_status := ResourceSaver.save(book, import_file_path.get_basename() + ".tres")
+		var book_status := Files.save_book(book)
 		_open_accept_dialog_on_import(book_status)
 		if book_status == OK:
 			add_book(book)
