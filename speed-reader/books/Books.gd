@@ -42,17 +42,14 @@ func _ready() -> void:
 func _set_current_show_type(show_type : ShowType) -> void:
 	var _last_pressed_book : Book
 	
-	match show_type:
-		ShowType.LONG:
-			if _last_toggled_block_book:
-				_last_pressed_book = _last_toggled_block_book.get_book()
-				_last_toggled_block_book = null
-		ShowType.BLOCK:
-			if _last_toggled_long_book:
-				_last_pressed_book = _last_toggled_long_book.get_book()
-				_last_toggled_long_book = null
+	if _last_toggled_block_book:
+		_last_pressed_book = _last_toggled_block_book.get_book()
+		_last_toggled_block_book = null
+	if _last_toggled_long_book:
+		_last_pressed_book = _last_toggled_long_book.get_book()
+		_last_toggled_long_book = null
 	
-	_clear_books_nodes() ## CLEARS FIRST
+	_clear_books_nodes() ## NEEDS TO CLEAR BEFORE CHANGING TYPE
 	
 	_current_show_type = show_type
 	
@@ -82,6 +79,18 @@ func _clear_books_nodes() -> void:
 
 func _set_current_sort_type(sort_type : SortType) -> void:
 	_current_sort_type = sort_type
+	
+	match _current_sort_type:
+		SortType.LATEST:
+			sort_books_by_latest()
+		SortType.OLDEST:
+			sort_books_by_oldest()
+		SortType.ALPHABETICAL_ASCEDING:
+			sort_books_by_name_ascending()
+		SortType.ALPHABETICAL_DESCEDING:
+			sort_books_by_name_descending()
+	
+	_set_current_show_type(_current_show_type)
 
 func load_all_extracted_resources() -> Array[Book]:
 	var result : Array[Book] = []
@@ -162,6 +171,28 @@ func remove_book(book : Book, erase_resource_book : bool = true) -> void:
 	if erase_resource_book:
 		_books.erase(book)
 		changed_books_order.emit()
+
+func sort_books_by_latest() -> void:
+	_books.sort_custom(func(a: Book, b: Book) -> bool:
+		return a.creation_time > b.creation_time
+	)
+
+func sort_books_by_oldest() -> void:
+	_books.sort_custom(func(a: Book, b: Book) -> bool:
+		return a.creation_time < b.creation_time
+	)
+
+func sort_books_by_name_ascending() -> void:
+	_books.sort_custom(func(a: Book, b: Book) -> bool:
+		return (a.name.strip_edges().to_lower()
+			< b.name.strip_edges().to_lower())
+	)
+
+func sort_books_by_name_descending() -> void:
+	_books.sort_custom(func(a: Book, b: Book) -> bool:
+		return (a.name.strip_edges().to_lower()
+			> b.name.strip_edges().to_lower())
+	)
 
 func _has_toggled_long_book(long_book : LongBook, toggled_on : bool) -> void:
 	if _last_toggled_long_book and not toggled_on and _last_toggled_long_book == long_book:
@@ -249,10 +280,12 @@ func _input_dialog_text_confirmed(text : String) -> void:
 	if status == OK:
 		var book := Book.new(text, 0, 0, "", [])
 		book.current_dir_path = import_file_path.get_base_dir()
+		book.creation_time = Time.get_unix_time_from_system()
 		var book_status := Files.save_book(book)
 		_open_accept_dialog_on_import(book_status)
 		if book_status == OK:
 			add_book(book)
+			_set_current_sort_type(_current_sort_type)
 	else:
 		_open_accept_dialog_on_import(status)
 

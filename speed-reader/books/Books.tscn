@@ -145,6 +145,7 @@ autowrap_mode = 0
 [node name="SortOption" type="OptionButton" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Sort"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text_overrun_behavior = 3
 selected = 0
 fit_to_longest_item = false
@@ -157,6 +158,10 @@ popup/item_2/text = "Alfabética (Crescente)"
 popup/item_2/id = 2
 popup/item_3/text = "Alfabética (Decrescente)"
 popup/item_3/id = 3
+
+[node name="Filter" type="Button" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer"]
+layout_mode = 2
+text = "Filtrar"
 
 [node name="New Tag" type="Button" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer"]
 layout_mode = 2

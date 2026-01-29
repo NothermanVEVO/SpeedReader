@@ -8,6 +8,7 @@ class_name Book
 @export var stars : int
 @export var comment : String
 @export var tags : Array[int]
+@export var creation_time : float
 
 var current_dir_path : String = ""
 
