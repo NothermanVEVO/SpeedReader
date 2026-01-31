@@ -2,7 +2,7 @@ extends MarginContainer
 
 class_name BlockBook
 
-var _book : Book
+var _book : BookResource
 
 @onready var _button : Button = $ScrollContainer/Button
 @onready var _vbox_container : VBoxContainer = $ScrollContainer/Button/VBoxContainer
@@ -23,14 +23,14 @@ func _ready() -> void:
 	
 	Files.saved_book.connect(_files_saved_book)
 
-func _files_saved_book(book : Book) -> void:
+func _files_saved_book(book : BookResource) -> void:
 	if _book and _book == book:
 		load_book(_book)
 
 func _vbox_resized() -> void:
 	_button.custom_minimum_size = _vbox_container.size
 
-func load_book(book : Book) -> void:
+func load_book(book : BookResource) -> void:
 	_book = book
 	
 	_title_text.text = book.name
@@ -49,7 +49,7 @@ func load_book(book : Book) -> void:
 	
 	_just_loaded_book = false
 
-func get_book() -> Book:
+func get_book() -> BookResource:
 	return _book
 
 func set_pressed() -> void:

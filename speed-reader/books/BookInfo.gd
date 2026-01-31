@@ -2,7 +2,7 @@ extends MarginContainer
 
 class_name BookInfo
 
-var _book : Book
+var _book : BookResource
 
 @onready var _cover_image : TextureRect = $BookInfo/Top/Cover
 @onready var _title_text : RichTextLabel = $BookInfo/Top/Title
@@ -15,11 +15,11 @@ var _book : Book
 func _ready() -> void:
 	Files.saved_book.connect(_files_saved_book)
 
-func _files_saved_book(book : Book) -> void:
+func _files_saved_book(book : BookResource) -> void:
 	if _book and _book == book:
 		load_book(_book)
 
-func load_book(book : Book) -> void:
+func load_book(book : BookResource) -> void:
 	_book = book
 	
 	_save_button.disabled = true
@@ -37,7 +37,7 @@ func load_book(book : Book) -> void:
 	_stars.value = book.stars
 	_comment_text.text = book.comment
 
-func get_book() -> Book:
+func get_book() -> BookResource:
 	return _book
 
 func _on_reading_item_selected(index: int) -> void:

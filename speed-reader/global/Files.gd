@@ -3,10 +3,13 @@ extends Node
 const EXTRACTED_TEXTS_PATH : String = "user://books"
 const TOOLS_PATH : String = "user://tools"
 const EXTRACT_FILE_PATH : String = TOOLS_PATH + "/extract_text.exe"
+const TAGS_PATH : String = "user://tags.tres"
 
 const VALID_EXTENSION_IN_EXTRACTION : Array[String] = ["txt", "pdf", "doc", "docx", "epub"]
 
-signal saved_book(book : Book)
+var _tags : TagsResource
+
+signal saved_book(book : BookResource)
 
 func _ready() -> void:
 	if not DirAccess.dir_exists_absolute(EXTRACTED_TEXTS_PATH):
@@ -14,6 +17,15 @@ func _ready() -> void:
 
 	if not DirAccess.dir_exists_absolute(TOOLS_PATH):
 		DirAccess.make_dir_absolute(TOOLS_PATH)
+
+	if not FileAccess.file_exists(TAGS_PATH):
+		_tags = TagsResource.new()
+		ResourceSaver.save(_tags, TAGS_PATH)
+	else:
+		_tags = ResourceLoader.load(TAGS_PATH)
+		print(_tags)
+		for tag in _tags.tags:
+			print(tag.name)
 
 	if not FileAccess.file_exists(EXTRACT_FILE_PATH):
 		var data := FileAccess.get_file_as_bytes("res://extern/extract_text/extract_text.exe")
@@ -89,10 +101,30 @@ func save_file(file_path : String, data : String, overrides : bool = false) -> E
 	else:
 		return FAILED
 
-func save_book(book : Book) -> Error:
+func save_book(book : BookResource) -> Error:
 	var status := ResourceSaver.save(book, book.current_dir_path + "/" + book.name + ".tres")
 	if status == OK:
 		saved_book.emit(book)
+	return status
+
+func can_add_tag(new_tag : TagResource) -> bool:
+	for tag in _tags.tags:
+		if tag.name == new_tag.name:
+			return false
+	return true
+
+func add_tag(tag : TagResource) -> Error:
+	_tags.tags.append(tag)
+	var status := ResourceSaver.save(_tags, TAGS_PATH)
+	if status != OK:
+		_tags.tags.erase(tag)
+	return status
+
+func remove_tag(tag : TagResource) -> Error:
+	_tags.tags.erase(tag)
+	var status := ResourceSaver.save(_tags, TAGS_PATH)
+	if status != OK:
+		_tags.tags.append(tag)
 	return status
 
 func open_extracted_texts_folder() -> void:

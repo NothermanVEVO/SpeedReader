@@ -1,0 +1,152 @@
+[gd_scene format=3 uid="uid://cww7m0lkfi13d"]
+
+[node name="TagsWindow" type="Window"]
+oversampling_override = 1.0
+title = "Tags"
+initial_position = 3
+size = Vector2i(1152, 648)
+current_screen = 0
+force_native = true
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TitleContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TitleContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 26
+text = "Tags"
+fit_content = true
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NewButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+mouse_default_cursor_shape = 2
+text = "Nova tag"
+
+[node name="SearchContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/SearchContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/SearchContainer/HBoxContainer"]
+layout_mode = 2
+text = "Pesquisar"
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/SearchContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Pesquisar"
+clear_button_enabled = true
+
+[node name="TagsContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TagsContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/TagsContainer/MarginContainer"]
+layout_mode = 2
+follow_focus = true
+
+[node name="FlowContainer" type="FlowContainer" parent="MarginContainer/VBoxContainer/TagsContainer/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 10
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/TagsContainer/MarginContainer/ScrollContainer/FlowContainer"]
+layout_mode = 2
+text = "Tag insana"
+
+[node name="OptionsContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/OptionsContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 20
+text = "Opções:"
+fit_content = true
+autowrap_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="InclusionContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/InclusionContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/InclusionContainer/HBoxContainer"]
+layout_mode = 2
+text = "Modo de Inclusão:"
+fit_content = true
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="OptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/InclusionContainer/HBoxContainer"]
+layout_mode = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "E"
+popup/item_0/id = 0
+popup/item_1/text = "Ou"
+popup/item_1/id = 1
+
+[node name="ExclusionContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/ExclusionContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/ExclusionContainer/HBoxContainer"]
+layout_mode = 2
+text = "Modo de Exclusão:"
+fit_content = true
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="OptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/ExclusionContainer/HBoxContainer"]
+layout_mode = 2
+selected = 1
+item_count = 2
+popup/item_0/text = "E"
+popup/item_0/id = 0
+popup/item_1/text = "Ou"
+popup/item_1/id = 1
+
+[node name="ConfirmButton" type="Button" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Confimar"

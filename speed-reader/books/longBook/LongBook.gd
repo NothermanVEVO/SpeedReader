@@ -2,7 +2,7 @@ extends Button
 
 class_name LongBook
 
-var _book : Book
+var _book : BookResource
 
 @onready var _hbox_container : HBoxContainer = $LongBook
 
@@ -24,7 +24,7 @@ func _ready() -> void:
 	
 	Files.saved_book.connect(_files_saved_book)
 
-func _files_saved_book(book : Book) -> void:
+func _files_saved_book(book : BookResource) -> void:
 	if _book and _book == book:
 		load_book(_book)
 
@@ -36,7 +36,7 @@ func _hbox_resized() -> void:
 	_hbox_container.custom_minimum_size.x = size.x
 	custom_minimum_size.y = _hbox_container.custom_minimum_size.y
 
-func load_book(book : Book) -> void:
+func load_book(book : BookResource) -> void:
 	_book = book
 	
 	_title_text.text = book.name
@@ -55,7 +55,7 @@ func load_book(book : Book) -> void:
 	
 	_just_loaded_book = false
 
-func get_book() -> Book:
+func get_book() -> BookResource:
 	return _book
 
 func _on_reading_item_selected(index: int) -> void:

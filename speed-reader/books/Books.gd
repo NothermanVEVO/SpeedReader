@@ -17,7 +17,7 @@ var _current_show_type : ShowType
 enum SortType {LATEST, OLDEST, ALPHABETICAL_ASCEDING, ALPHABETICAL_DESCEDING}
 var _current_sort_type : SortType
 
-var _books : Array[Book] = []
+var _books : Array[BookResource] = []
 
 @onready var _file_dialog : FileDialog = $FileDialog
 @onready var _accept_dialog : AcceptDialog = $AcceptDialog
@@ -40,7 +40,7 @@ func _ready() -> void:
 		add_book(book)
 
 func _set_current_show_type(show_type : ShowType) -> void:
-	var _last_pressed_book : Book
+	var _last_pressed_book : BookResource
 	
 	if _last_toggled_block_book:
 		_last_pressed_book = _last_toggled_block_book.get_book()
@@ -92,8 +92,8 @@ func _set_current_sort_type(sort_type : SortType) -> void:
 	
 	_set_current_show_type(_current_show_type)
 
-func load_all_extracted_resources() -> Array[Book]:
-	var result : Array[Book] = []
+func load_all_extracted_resources() -> Array[BookResource]:
+	var result : Array[BookResource] = []
 
 	var dir := DirAccess.open(Files.EXTRACTED_TEXTS_PATH)
 	if dir == null:
@@ -119,7 +119,7 @@ func load_all_extracted_resources() -> Array[Book]:
 		if not FileAccess.file_exists(tres_path):
 			continue
 
-		var res : Book = ResourceLoader.load(tres_path)
+		var res : BookResource = ResourceLoader.load(tres_path)
 
 		if res == null:
 			continue
@@ -132,7 +132,7 @@ func load_all_extracted_resources() -> Array[Book]:
 
 	return result
 
-func add_book(book : Book, append_resource_book : bool = true) -> void:
+func add_book(book : BookResource, append_resource_book : bool = true) -> void:
 	if append_resource_book:
 		_books.append(book)
 	
@@ -151,7 +151,7 @@ func add_book(book : Book, append_resource_book : bool = true) -> void:
 	if append_resource_book:
 		changed_books_order.emit()
 
-func remove_book(book : Book, erase_resource_book : bool = true) -> void:
+func remove_book(book : BookResource, erase_resource_book : bool = true) -> void:
 	match _current_show_type:
 		ShowType.LONG:
 			for child in _long_books.get_children():
@@ -173,23 +173,23 @@ func remove_book(book : Book, erase_resource_book : bool = true) -> void:
 		changed_books_order.emit()
 
 func sort_books_by_latest() -> void:
-	_books.sort_custom(func(a: Book, b: Book) -> bool:
+	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
 		return a.creation_time > b.creation_time
 	)
 
 func sort_books_by_oldest() -> void:
-	_books.sort_custom(func(a: Book, b: Book) -> bool:
+	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
 		return a.creation_time < b.creation_time
 	)
 
 func sort_books_by_name_ascending() -> void:
-	_books.sort_custom(func(a: Book, b: Book) -> bool:
+	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
 		return (a.name.strip_edges().to_lower()
 			< b.name.strip_edges().to_lower())
 	)
 
 func sort_books_by_name_descending() -> void:
-	_books.sort_custom(func(a: Book, b: Book) -> bool:
+	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
 		return (a.name.strip_edges().to_lower()
 			> b.name.strip_edges().to_lower())
 	)
@@ -278,7 +278,7 @@ func _input_dialog_text_confirmed(text : String) -> void:
 	_accept_dialog.get_ok_button().disabled = false
 	
 	if status == OK:
-		var book := Book.new(text, 0, 0, "", [])
+		var book := BookResource.new(text, 0, 0, "", [])
 		book.current_dir_path = import_file_path.get_base_dir()
 		book.creation_time = Time.get_unix_time_from_system()
 		var book_status := Files.save_book(book)

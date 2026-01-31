@@ -1,6 +1,6 @@
 extends Resource
 
-class_name Book
+class_name BookResource
 
 @export var _ID : String
 @export var name : String
