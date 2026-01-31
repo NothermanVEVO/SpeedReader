@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dken4cvi5kx5f"]
+[gd_scene load_steps=5 format=3 uid="uid://dken4cvi5kx5f"]
 
 [ext_resource type="Script" uid="uid://peileisktac3" path="res://books/Books.gd" id="1_xue48"]
+[ext_resource type="PackedScene" uid="uid://cww7m0lkfi13d" path="res://windows/tagsWindow/TagsWindow.tscn" id="2_gqpcp"]
 [ext_resource type="Script" uid="uid://ckutroofw2701" path="res://dialog/InputDialog.gd" id="2_mmmtf"]
 [ext_resource type="Script" uid="uid://ckliwujw5g2pu" path="res://books/BookInfo.gd" id="3_mmmtf"]
 
@@ -11,6 +12,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_xue48")
+
+[node name="TagsWindow" parent="." instance=ExtResource("2_gqpcp")]
+size = Vector2i(800, 600)
 
 [node name="FileDialog" type="FileDialog" parent="."]
 use_native_dialog = true
@@ -306,6 +310,7 @@ text = "Salvar"
 [connection signal="file_selected" from="FileDialog" to="." method="_on_file_dialog_file_selected"]
 [connection signal="item_selected" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Type/ShowTypeOption" to="." method="_on_show_type_option_item_selected"]
 [connection signal="item_selected" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Sort/SortOption" to="." method="_on_sort_option_item_selected"]
+[connection signal="pressed" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Filter" to="." method="_on_filter_pressed"]
 [connection signal="pressed" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/New File" to="." method="_on_new_file_pressed"]
 [connection signal="item_selected" from="HBoxContainer/RightBar/BookInfo/Reading" to="HBoxContainer/RightBar" method="_on_reading_item_selected"]
 [connection signal="value_changed" from="HBoxContainer/RightBar/BookInfo/Stars" to="HBoxContainer/RightBar" method="_on_stars_value_changed"]

@@ -35,8 +35,6 @@ func _draw() -> void:
 func set_text(text : String) -> void:
 	_text = text
 	_tag.name = text
-	for tag in Files._tags.tags:
-		print(tag.name)
 	if is_inside_tree():
 		_rich_text_label.clear()
 		_rich_text_label.append_text(text)

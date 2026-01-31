@@ -23,9 +23,6 @@ func _ready() -> void:
 		ResourceSaver.save(_tags, TAGS_PATH)
 	else:
 		_tags = ResourceLoader.load(TAGS_PATH)
-		print(_tags)
-		for tag in _tags.tags:
-			print(tag.name)
 
 	if not FileAccess.file_exists(EXTRACT_FILE_PATH):
 		var data := FileAccess.get_file_as_bytes("res://extern/extract_text/extract_text.exe")

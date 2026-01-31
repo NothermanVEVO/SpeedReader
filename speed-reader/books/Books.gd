@@ -19,6 +19,7 @@ var _current_sort_type : SortType
 
 var _books : Array[BookResource] = []
 
+@onready var _tags_window : Window = $TagsWindow
 @onready var _file_dialog : FileDialog = $FileDialog
 @onready var _accept_dialog : AcceptDialog = $AcceptDialog
 @onready var _input_dialog : InputDialog = $InputDialog
@@ -294,3 +295,6 @@ func _on_show_type_option_item_selected(index: int) -> void:
 
 func _on_sort_option_item_selected(index: int) -> void:
 	_set_current_sort_type(index as SortType)
+
+func _on_filter_pressed() -> void:
+	_tags_window.popup_centered()

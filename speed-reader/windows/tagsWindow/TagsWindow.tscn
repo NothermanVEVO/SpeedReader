@@ -1,12 +1,19 @@
-[gd_scene format=3 uid="uid://cww7m0lkfi13d"]
+[gd_scene load_steps=3 format=3 uid="uid://cww7m0lkfi13d"]
+
+[ext_resource type="Script" uid="uid://ckaire08425tx" path="res://windows/tagsWindow/TagsWindow.gd" id="1_then1"]
+[ext_resource type="PackedScene" uid="uid://b1wrixd3lkb7o" path="res://windows/newTagWindow/NewTagWindow.tscn" id="2_i2uhl"]
 
 [node name="TagsWindow" type="Window"]
 oversampling_override = 1.0
 title = "Tags"
-initial_position = 3
+initial_position = 2
 size = Vector2i(1152, 648)
-current_screen = 0
+visible = false
+exclusive = true
 force_native = true
+script = ExtResource("1_then1")
+
+[node name="NewTagWindow" parent="." instance=ExtResource("2_i2uhl")]
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
@@ -150,3 +157,6 @@ popup/item_1/id = 1
 layout_mode = 2
 size_flags_horizontal = 10
 text = "Confimar"
+
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/NewButton" to="." method="_on_new_button_pressed"]

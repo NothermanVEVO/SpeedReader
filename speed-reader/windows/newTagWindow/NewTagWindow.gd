@@ -24,7 +24,7 @@ func _on_foreground_color_picker_button_color_changed(color: Color) -> void:
 func _on_create_button_pressed() -> void:
 	var tag := _tag_container.get_tag()
 	if not Files.can_add_tag(tag):
-		_accept_dialog.dialog_text = "Erro: Já existe uma tag com o nome: \"" + tag.name + "\""
+		_accept_dialog.dialog_text = "Erro: Já existe uma tag com o nome \"" + tag.name + "\""
 	else:
 		var status := Files.add_tag(tag)
 		if status == OK:
@@ -33,3 +33,7 @@ func _on_create_button_pressed() -> void:
 		else:
 			_accept_dialog.dialog_text = "Erro: Desconhecido!"
 	_accept_dialog.popup_centered()
+
+
+func _on_close_requested() -> void:
+	visible = false
