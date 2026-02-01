@@ -8,9 +8,7 @@ oversampling_override = 1.0
 title = "Tags"
 initial_position = 2
 size = Vector2i(1152, 648)
-visible = false
 exclusive = true
-force_native = true
 script = ExtResource("1_then1")
 
 [node name="NewTagWindow" parent="." instance=ExtResource("2_i2uhl")]
@@ -78,16 +76,12 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 follow_focus = true
 
-[node name="FlowContainer" type="FlowContainer" parent="MarginContainer/VBoxContainer/TagsContainer/MarginContainer/ScrollContainer"]
+[node name="TagsFlowContainer" type="FlowContainer" parent="MarginContainer/VBoxContainer/TagsContainer/MarginContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 10
-
-[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/TagsContainer/MarginContainer/ScrollContainer/FlowContainer"]
-layout_mode = 2
-text = "Tag insana"
 
 [node name="OptionsContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2

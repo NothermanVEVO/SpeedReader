@@ -10,16 +10,17 @@ var _foreground_color : Color
 
 @onready var _rich_text_label : RichTextLabel = $MarginContainer/RichTextLabel
 
-var _tag : TagResource = TagResource.new()
+var _tag : TagResource = TagResource.new("", Color(0.5, 0.5, 0.5, 1.0))
 
 func _ready() -> void:
-	set_text(_tag.name)
-	set_background(_tag.background_color)
-	set_foreground(_tag.foreground_color)
+	set_tag(_tag)
 	resized.connect(_resized)
 
 func set_tag(tag : TagResource) -> void:
 	_tag = tag
+	set_text(_tag.name)
+	set_background(_tag.background_color)
+	set_foreground(_tag.foreground_color)
 
 func get_tag() -> TagResource:
 	return _tag

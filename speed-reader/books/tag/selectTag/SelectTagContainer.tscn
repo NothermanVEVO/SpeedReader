@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://cdk6mbl1omix6"]
+
+[ext_resource type="Script" uid="uid://bk2c7nxwvxwsw" path="res://books/tag/selectTag/SelectTagContainer.gd" id="1_850kh"]
+[ext_resource type="PackedScene" uid="uid://dsfg8hlt3oawe" path="res://books/tag/TagContainer.tscn" id="3_5tkd8"]
+
+[node name="SelectTagContainer" type="MarginContainer"]
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+script = ExtResource("1_850kh")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="IconRect" type="TextureRect" parent="HBoxContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+expand_mode = 1
+
+[node name="Tag" parent="HBoxContainer" instance=ExtResource("3_5tkd8")]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+flat = true
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

@@ -11,6 +11,9 @@ var _tags : TagsResource
 
 signal saved_book(book : BookResource)
 
+signal added_tag(tag : TagResource)
+signal removed_tag(tag : TagResource)
+
 func _ready() -> void:
 	if not DirAccess.dir_exists_absolute(EXTRACTED_TEXTS_PATH):
 		DirAccess.make_dir_absolute(EXTRACTED_TEXTS_PATH)
@@ -23,6 +26,10 @@ func _ready() -> void:
 		ResourceSaver.save(_tags, TAGS_PATH)
 	else:
 		_tags = ResourceLoader.load(TAGS_PATH)
+	
+	#for tag in _tags.tags:
+		#print(tag.name)
+		#print(tag.background_color)
 
 	if not FileAccess.file_exists(EXTRACT_FILE_PATH):
 		var data := FileAccess.get_file_as_bytes("res://extern/extract_text/extract_text.exe")
@@ -104,6 +111,9 @@ func save_book(book : BookResource) -> Error:
 		saved_book.emit(book)
 	return status
 
+func get_tags() -> TagsResource:
+	return _tags
+
 func can_add_tag(new_tag : TagResource) -> bool:
 	for tag in _tags.tags:
 		if tag.name == new_tag.name:
@@ -115,6 +125,8 @@ func add_tag(tag : TagResource) -> Error:
 	var status := ResourceSaver.save(_tags, TAGS_PATH)
 	if status != OK:
 		_tags.tags.erase(tag)
+	else:
+		added_tag.emit(tag)
 	return status
 
 func remove_tag(tag : TagResource) -> Error:
@@ -122,6 +134,8 @@ func remove_tag(tag : TagResource) -> Error:
 	var status := ResourceSaver.save(_tags, TAGS_PATH)
 	if status != OK:
 		_tags.tags.append(tag)
+	else:
+		removed_tag.emit(tag)
 	return status
 
 func open_extracted_texts_folder() -> void:
