@@ -17,7 +17,7 @@ func set_select_type(type : TagResource.SelectType) -> void:
 	if is_inside_tree():
 		match _tag_container.get_tag().select_type:
 			TagResource.SelectType.UNSELECTED:
-				_icon_rect.texture = UNSELECTED_ICON
+				#_icon_rect.texture = UNSELECTED_ICON
 				_icon_rect.visible = false
 			TagResource.SelectType.SELECTED_INCLUDE:
 				_icon_rect.texture = SELECTED_INCLUDE_ICON

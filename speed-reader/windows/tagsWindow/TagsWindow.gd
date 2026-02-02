@@ -1,6 +1,7 @@
 extends Window
 
 @onready var _new_tag_window : Window = $NewTagWindow
+@onready var _erase_tag_window : Window = $EraseTagWindow
 
 @onready var _tags_flow_container : FlowContainer = $MarginContainer/VBoxContainer/TagsContainer/MarginContainer/ScrollContainer/TagsFlowContainer
 
@@ -31,3 +32,6 @@ func _on_new_button_pressed() -> void:
 
 func _on_close_requested() -> void:
 	visible = false
+
+func _on_erase_button_pressed() -> void:
+	_erase_tag_window.popup_centered()

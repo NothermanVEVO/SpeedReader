@@ -36,6 +36,7 @@ func _on_create_button_pressed() -> void:
 			_name_line_edit.text = ""
 			_background_color_picker_button.color = Color(0.5, 0.5, 0.5, 1.0)
 			_foreground_color_picker_button.color = Color()
+			_create_button.disabled = true
 		else:
 			_accept_dialog.dialog_text = "Erro: Desconhecido!"
 	_accept_dialog.popup_centered()

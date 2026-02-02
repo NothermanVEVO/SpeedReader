@@ -1,17 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://cww7m0lkfi13d"]
+[gd_scene load_steps=4 format=3 uid="uid://cww7m0lkfi13d"]
 
 [ext_resource type="Script" uid="uid://ckaire08425tx" path="res://windows/tagsWindow/TagsWindow.gd" id="1_then1"]
 [ext_resource type="PackedScene" uid="uid://b1wrixd3lkb7o" path="res://windows/newTagWindow/NewTagWindow.tscn" id="2_i2uhl"]
+[ext_resource type="PackedScene" uid="uid://3bswykf35jb2" path="res://windows/eraseTagWindow/EraseTagWindow.tscn" id="3_fhaj4"]
 
 [node name="TagsWindow" type="Window"]
 oversampling_override = 1.0
 title = "Tags"
 initial_position = 2
 size = Vector2i(1152, 648)
+visible = false
 exclusive = true
+force_native = true
 script = ExtResource("1_then1")
 
 [node name="NewTagWindow" parent="." instance=ExtResource("2_i2uhl")]
+
+[node name="EraseTagWindow" parent="." instance=ExtResource("3_fhaj4")]
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
@@ -39,11 +44,19 @@ autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="NewButton" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
+
+[node name="NewButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "Nova tag"
+
+[node name="EraseButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Apagar tag"
 
 [node name="SearchContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -153,4 +166,5 @@ size_flags_horizontal = 10
 text = "Confimar"
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/NewButton" to="." method="_on_new_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/NewButton" to="." method="_on_new_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/EraseButton" to="." method="_on_erase_button_pressed"]
