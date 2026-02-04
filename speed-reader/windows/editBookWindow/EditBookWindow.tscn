@@ -1,7 +1,122 @@
-[gd_scene format=3 uid="uid://cg1gutrnxy8oo"]
+[gd_scene load_steps=2 format=3 uid="uid://cg1gutrnxy8oo"]
+
+[ext_resource type="Script" uid="uid://bnomnaicrqy3" path="res://windows/editBookWindow/EditBookWindow.gd" id="1_i5ya0"]
 
 [node name="EditBookWindow" type="Window"]
 oversampling_override = 1.0
 title = "Editar livro"
 initial_position = 2
 size = Vector2i(800, 600)
+visible = false
+exclusive = true
+force_native = true
+script = ExtResource("1_i5ya0")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TitleContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TitleContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 26
+text = "Editar livro"
+fit_content = true
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BookContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="CoverContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/BookContainer"]
+layout_mode = 2
+
+[node name="Cover" type="TextureRect" parent="MarginContainer/VBoxContainer/BookContainer/CoverContainer"]
+custom_minimum_size = Vector2(200, 256)
+layout_mode = 2
+expand_mode = 1
+
+[node name="CoverButton" type="Button" parent="MarginContainer/VBoxContainer/BookContainer/CoverContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/BookContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/BookContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="NameLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Nome do livro..."
+keep_editing_on_text_submit = true
+clear_button_enabled = true
+
+[node name="SaveNameButton" type="Button" parent="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+disabled = true
+text = "Salvar"
+
+[node name="TagsContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/BookContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/TagsContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/TagsContainer/MarginContainer"]
+layout_mode = 2
+follow_focus = true
+
+[node name="TagsFlowContainer" type="FlowContainer" parent="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/TagsContainer/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/TagsContainer/MarginContainer/ScrollContainer/TagsFlowContainer"]
+layout_mode = 2
+text = "Tags:"
+fit_content = true
+autowrap_mode = 0
+
+[node name="EditTagButton" type="Button" parent="MarginContainer/VBoxContainer/BookContainer/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Editar tags"
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+alignment = 2
+
+[node name="DeleteButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer"]
+layout_mode = 2
+text = "Excluir"
+
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/HBoxContainer/NameLineEdit" to="." method="_on_name_line_edit_text_changed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/HBoxContainer/SaveNameButton" to="." method="_on_save_name_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/EditTagButton" to="." method="_on_edit_tag_button_pressed"]

@@ -35,12 +35,7 @@ func load_book(book : BookResource) -> void:
 	
 	_title_text.text = book.name
 	
-	if FileAccess.file_exists(book.current_dir_path + "/cover.png"):
-		var image := Image.load_from_file(book.current_dir_path + "/cover.png")
-		if image:
-			_cover_image.texture = ImageTexture.create_from_image(image)
-	if not _cover_image.texture:
-		_cover_image.texture = Books.FILE_ICON
+	_cover_image.texture = Files.load_cover_image_from_book(_book)
 	
 	_just_loaded_book = true
 	

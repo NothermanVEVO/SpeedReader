@@ -84,6 +84,7 @@ size_flags_vertical = 8
 
 [node name="Edit" type="Button" parent="LongBook/Buttons"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "Editar"
 
 [node name="Remove" type="Button" parent="LongBook/Buttons"]
@@ -93,3 +94,4 @@ text = "Excluir"
 [connection signal="toggled" from="." to="." method="_on_toggled"]
 [connection signal="item_selected" from="LongBook/Info/Reading" to="." method="_on_reading_item_selected"]
 [connection signal="value_changed" from="LongBook/Info/Stars" to="." method="_on_stars_value_changed"]
+[connection signal="pressed" from="LongBook/Buttons/Edit" to="." method="_on_edit_pressed"]

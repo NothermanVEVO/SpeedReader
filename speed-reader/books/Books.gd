@@ -279,7 +279,7 @@ func _input_dialog_text_confirmed(text : String) -> void:
 	_accept_dialog.get_ok_button().disabled = false
 	
 	if status == OK:
-		var book := BookResource.new(text, 0, 0, "", [])
+		var book := BookResource.new(text, 0, 0, "", TagsResource.new())
 		book.current_dir_path = import_file_path.get_base_dir()
 		book.creation_time = Time.get_unix_time_from_system()
 		var book_status := Files.save_book(book)

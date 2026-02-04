@@ -12,6 +12,8 @@ var _book : BookResource
 @onready var _stars : SpinBox = $LongBook/Info/Stars
 #@onready var _tags : FlowContainer
 
+const _EDIT_BOOK_WINDOW_SCENE : PackedScene = preload("res://windows/editBookWindow/EditBookWindow.tscn")
+
 var _just_loaded_book : bool = false
 
 signal has_toggled(long_book : LongBook, toggled_on : bool)
@@ -41,12 +43,7 @@ func load_book(book : BookResource) -> void:
 	
 	_title_text.text = book.name
 	
-	if FileAccess.file_exists(book.current_dir_path + "/cover.png"):
-		var image := Image.load_from_file(book.current_dir_path + "/cover.png")
-		if image:
-			_cover_image.texture = ImageTexture.create_from_image(image)
-	if not _cover_image.texture:
-		_cover_image.texture = Books.FILE_ICON
+	_cover_image.texture = Files.load_cover_image_from_book(_book)
 	
 	_just_loaded_book = true
 	
@@ -70,3 +67,10 @@ func _on_stars_value_changed(value: float) -> void:
 
 func _on_toggled(toggled_on: bool) -> void:
 	has_toggled.emit(self, toggled_on)
+
+func _on_edit_pressed() -> void:
+	if _book:
+		var edit_book_window : EditBookWindow = _EDIT_BOOK_WINDOW_SCENE.instantiate()
+		add_child(edit_book_window)
+		edit_book_window.set_book(_book)
+		edit_book_window.popup_centered()

@@ -106,10 +106,30 @@ func save_file(file_path : String, data : String, overrides : bool = false) -> E
 		return FAILED
 
 func save_book(book : BookResource) -> Error:
+	var old_name : String = book.current_dir_path.get_file()
+	if old_name != book.name:
+		DirAccess.rename_absolute(book.current_dir_path, EXTRACTED_TEXTS_PATH + "/" + book.name)
+		book.current_dir_path = EXTRACTED_TEXTS_PATH + "/" + book.name
+		DirAccess.rename_absolute(book.current_dir_path + "/" + old_name + ".tres", book.current_dir_path + "/" + book.name + ".tres")
+		DirAccess.rename_absolute(book.current_dir_path + "/" + old_name + ".txt", book.current_dir_path + "/" + book.name + ".txt")
+	
 	var status := ResourceSaver.save(book, book.current_dir_path + "/" + book.name + ".tres")
 	if status == OK:
 		saved_book.emit(book)
 	return status
+
+func load_cover_image_from_book(book : BookResource) -> Texture2D:
+	var _cover_image_texture : Texture2D
+	
+	if FileAccess.file_exists(book.current_dir_path + "/cover.png"):
+		var image := Image.load_from_file(book.current_dir_path + "/cover.png")
+		if image:
+			_cover_image_texture = ImageTexture.create_from_image(image)
+	
+	if not _cover_image_texture:
+		_cover_image_texture = Books.FILE_ICON
+	
+	return _cover_image_texture
 
 func get_tags() -> TagsResource:
 	return _tags
@@ -137,6 +157,12 @@ func remove_tag(tag : TagResource) -> Error:
 	else:
 		removed_tag.emit(tag)
 	return status
+
+func get_books_tags_uids(book : BookResource) -> Array[String]:
+	var uids : Array[String] = []
+	for tag in book.tags.tags:
+		uids.append(tag.resource_scene_unique_id)
+	return uids
 
 func open_extracted_texts_folder() -> void:
 	var abs_path := ProjectSettings.globalize_path(Files.EXTRACTED_TEXTS_PATH)
