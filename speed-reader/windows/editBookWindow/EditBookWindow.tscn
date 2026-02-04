@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://cg1gutrnxy8oo"]
+
+[node name="EditBookWindow" type="Window"]
+oversampling_override = 1.0
+title = "Editar livro"
+initial_position = 2
+size = Vector2i(800, 600)

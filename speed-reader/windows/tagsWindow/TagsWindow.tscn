@@ -64,14 +64,11 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/SearchContainer"]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/SearchContainer/HBoxContainer"]
-layout_mode = 2
-text = "Pesquisar"
-
-[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/SearchContainer/HBoxContainer"]
+[node name="SearchLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/SearchContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Pesquisar"
+keep_editing_on_text_submit = true
 clear_button_enabled = true
 
 [node name="TagsContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
@@ -168,3 +165,4 @@ text = "Confimar"
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/NewButton" to="." method="_on_new_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/EraseButton" to="." method="_on_erase_button_pressed"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/SearchContainer/HBoxContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
