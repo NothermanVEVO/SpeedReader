@@ -39,6 +39,16 @@ func _ready() -> void:
 	var books := load_all_extracted_resources()
 	for book in books:
 		add_book(book)
+	
+	Files.removed_tag.connect(_removed_tag)
+
+func _removed_tag(tag : TagResource) -> void:
+	for book in _books:
+		for book_tag in book.tags.tags:
+			if book_tag.resource_scene_unique_id == tag.resource_scene_unique_id:
+				book.tags.tags.erase(book_tag)
+				Files.save_book(book)
+				break
 
 func _set_current_show_type(show_type : ShowType) -> void:
 	var _last_pressed_book : BookResource

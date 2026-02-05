@@ -4,38 +4,57 @@ class_name BlockBook
 
 var _book : BookResource
 
-@onready var _button : Button = $ScrollContainer/Button
-@onready var _vbox_container : VBoxContainer = $ScrollContainer/Button/VBoxContainer
+const _TAG_CONTAINER_SCENE : PackedScene = preload("res://books/tag/TagContainer.tscn")
+const _EDIT_BOOK_WINDOW_SCENE : PackedScene = preload("res://windows/editBookWindow/EditBookWindow.tscn")
 
-@onready var _cover_image : TextureRect = $ScrollContainer/Button/VBoxContainer/Cover
-@onready var _title_text : RichTextLabel = $ScrollContainer/Button/VBoxContainer/Info/Title
-@onready var _reading_type : OptionButton = $ScrollContainer/Button/VBoxContainer/Info/Reading
-@onready var _stars : SpinBox = $ScrollContainer/Button/VBoxContainer/Info/Stars
-#@onready var _tags : FlowContainer
+@onready var _button : Button = $ScrollContainer/Button
+@onready var _margin_container : MarginContainer = $ScrollContainer/Button/MarginContainer
+
+@onready var _cover_image : TextureRect = $ScrollContainer/Button/MarginContainer/VBoxContainer/Cover
+@onready var _title_text : RichTextLabel = $ScrollContainer/Button/MarginContainer/VBoxContainer/Info/Title
+@onready var _reading_type : OptionButton = $ScrollContainer/Button/MarginContainer/VBoxContainer/Info/Reading
+@onready var _stars : SpinBox = $ScrollContainer/Button/MarginContainer/VBoxContainer/Info/Stars
+@onready var _tags_flow_container : FlowContainer = $ScrollContainer/Button/MarginContainer/VBoxContainer/Info/Tags/FlowContainer
 
 var _just_loaded_book : bool = false
 
 signal has_toggled(long_book : LongBook, toggled_on : bool)
 
 func _ready() -> void:
-	_button.custom_minimum_size = _vbox_container.size
-	_vbox_container.resized.connect(_vbox_resized)
+	_button.custom_minimum_size = _margin_container.size
+	_margin_container.resized.connect(_vbox_resized)
 	
 	Files.saved_book.connect(_files_saved_book)
 
-func _files_saved_book(book : BookResource) -> void:
+func _files_saved_book(book : BookResource, changed_cover : bool) -> void:
 	if _book and _book == book:
-		load_book(_book)
+		load_book(_book, changed_cover)
 
 func _vbox_resized() -> void:
-	_button.custom_minimum_size = _vbox_container.size
+	_button.custom_minimum_size = _margin_container.size
 
-func load_book(book : BookResource) -> void:
+func load_book(book : BookResource, load_cover_image : bool = true) -> void:
 	_book = book
 	
 	_title_text.text = book.name
 	
-	_cover_image.texture = Files.load_cover_image_from_book(_book)
+	if load_cover_image:
+		_cover_image.texture = Files.load_cover_image_from_book(_book)
+	
+	var tags_container_child_count : int = _tags_flow_container.get_child_count()
+	var idx : int = 0
+	for i in tags_container_child_count:
+		var child := _tags_flow_container.get_child(idx)
+		if child is TagContainer:
+			_tags_flow_container.remove_child(child)
+			child.queue_free()
+		else:
+			idx += 1
+	
+	for tag in _book.tags.tags:
+		var tag_container : TagContainer = _TAG_CONTAINER_SCENE.instantiate()
+		_tags_flow_container.add_child(tag_container)
+		tag_container.set_tag(tag)
 	
 	_just_loaded_book = true
 	
@@ -65,3 +84,10 @@ func _on_stars_value_changed(value: float) -> void:
 
 func _on_button_toggled(toggled_on: bool) -> void:
 	has_toggled.emit(self, toggled_on)
+
+func _on_edit_button_pressed() -> void:
+	if _book:
+		var edit_book_window : EditBookWindow = _EDIT_BOOK_WINDOW_SCENE.instantiate()
+		add_child(edit_book_window)
+		edit_book_window.set_book(_book)
+		edit_book_window.popup_centered()

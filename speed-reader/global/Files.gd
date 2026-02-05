@@ -6,10 +6,11 @@ const EXTRACT_FILE_PATH : String = TOOLS_PATH + "/extract_text.exe"
 const TAGS_PATH : String = "user://tags.tres"
 
 const VALID_EXTENSION_IN_EXTRACTION : Array[String] = ["txt", "pdf", "doc", "docx", "epub"]
+const VALID_IMAGE_EXTENSION : Array[String] = ["jpg", "jpeg", "png", "svg", "webp", "tga", "bmp", "dds", "ktx", "exr", "hdr"]
 
 var _tags : TagsResource
 
-signal saved_book(book : BookResource)
+signal saved_book(book : BookResource, changed_cover : bool)
 
 signal added_tag(tag : TagResource)
 signal removed_tag(tag : TagResource)
@@ -115,7 +116,7 @@ func save_book(book : BookResource) -> Error:
 	
 	var status := ResourceSaver.save(book, book.current_dir_path + "/" + book.name + ".tres")
 	if status == OK:
-		saved_book.emit(book)
+		saved_book.emit(book, false)
 	return status
 
 func load_cover_image_from_book(book : BookResource) -> Texture2D:
@@ -167,3 +168,19 @@ func get_books_tags_uids(book : BookResource) -> Array[String]:
 func open_extracted_texts_folder() -> void:
 	var abs_path := ProjectSettings.globalize_path(Files.EXTRACTED_TEXTS_PATH)
 	OS.shell_open(abs_path)
+
+func can_load_image(path : String) -> bool:
+	return path.get_extension() in VALID_IMAGE_EXTENSION
+
+func load_image(path : String) -> Texture2D:
+	if not FileAccess.file_exists(path):
+		return null
+	var image := Image.load_from_file(path)
+	
+	return ImageTexture.create_from_image(image)
+
+func save_book_cover(book : BookResource, image_texture : Texture2D) -> Error:
+	var status := image_texture.get_image().save_png(book.current_dir_path + "/cover.png")
+	if status == OK:
+		saved_book.emit(book, true)
+	return status

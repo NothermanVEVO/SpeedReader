@@ -8,28 +8,35 @@ offset_bottom = 40.0
 toggle_mode = true
 script = ExtResource("1_7m312")
 
-[node name="LongBook" type="HBoxContainer" parent="."]
-custom_minimum_size = Vector2(0, 170)
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
-offset_right = 354.0
-offset_bottom = 170.0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="LongBook" type="HBoxContainer" parent="MarginContainer"]
+custom_minimum_size = Vector2(0, 170)
+layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Cover" type="TextureRect" parent="LongBook"]
+[node name="Cover" type="TextureRect" parent="MarginContainer/LongBook"]
 custom_minimum_size = Vector2(110, 170)
 layout_mode = 2
 expand_mode = 1
 
-[node name="Info" type="VBoxContainer" parent="LongBook"]
+[node name="Info" type="VBoxContainer" parent="MarginContainer/LongBook"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Title" type="RichTextLabel" parent="LongBook/Info"]
+[node name="Title" type="RichTextLabel" parent="MarginContainer/LongBook/Info"]
 layout_mode = 2
 size_flags_vertical = 3
 vertical_alignment = 1
 
-[node name="Reading" type="OptionButton" parent="LongBook/Info"]
+[node name="Reading" type="OptionButton" parent="MarginContainer/LongBook/Info"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -46,7 +53,7 @@ popup/item_3/id = 3
 popup/item_4/text = "Larguei"
 popup/item_4/id = 4
 
-[node name="Stars" type="SpinBox" parent="LongBook/Info"]
+[node name="Stars" type="SpinBox" parent="MarginContainer/LongBook/Info"]
 custom_minimum_size = Vector2(128, 0)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -54,11 +61,21 @@ size_flags_vertical = 0
 max_value = 10.0
 suffix = "Estrelas"
 
-[node name="TagsContainer" type="HBoxContainer" parent="LongBook/Info"]
+[node name="TagsContainer" type="HBoxContainer" parent="MarginContainer/LongBook/Info"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="TagsText" type="RichTextLabel" parent="LongBook/Info/TagsContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/LongBook/Info/TagsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_scroll_mode = 0
+
+[node name="Tags" type="FlowContainer" parent="MarginContainer/LongBook/Info/TagsContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+
+[node name="TagsText" type="RichTextLabel" parent="MarginContainer/LongBook/Info/TagsContainer/ScrollContainer/Tags"]
 layout_mode = 2
 text = "Tags: "
 fit_content = true
@@ -67,31 +84,21 @@ autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="LongBook/Info/TagsContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-horizontal_scroll_mode = 0
-
-[node name="Tags" type="FlowContainer" parent="LongBook/Info/TagsContainer/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 6
-
-[node name="Buttons" type="FlowContainer" parent="LongBook"]
+[node name="Buttons" type="FlowContainer" parent="MarginContainer/LongBook"]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 
-[node name="Edit" type="Button" parent="LongBook/Buttons"]
+[node name="Edit" type="Button" parent="MarginContainer/LongBook/Buttons"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "Editar"
 
-[node name="Remove" type="Button" parent="LongBook/Buttons"]
+[node name="Remove" type="Button" parent="MarginContainer/LongBook/Buttons"]
 layout_mode = 2
 text = "Excluir"
 
 [connection signal="toggled" from="." to="." method="_on_toggled"]
-[connection signal="item_selected" from="LongBook/Info/Reading" to="." method="_on_reading_item_selected"]
-[connection signal="value_changed" from="LongBook/Info/Stars" to="." method="_on_stars_value_changed"]
-[connection signal="pressed" from="LongBook/Buttons/Edit" to="." method="_on_edit_pressed"]
+[connection signal="item_selected" from="MarginContainer/LongBook/Info/Reading" to="." method="_on_reading_item_selected"]
+[connection signal="value_changed" from="MarginContainer/LongBook/Info/Stars" to="." method="_on_stars_value_changed"]
+[connection signal="pressed" from="MarginContainer/LongBook/Buttons/Edit" to="." method="_on_edit_pressed"]

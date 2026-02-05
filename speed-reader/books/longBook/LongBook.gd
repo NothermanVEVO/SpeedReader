@@ -4,14 +4,16 @@ class_name LongBook
 
 var _book : BookResource
 
-@onready var _hbox_container : HBoxContainer = $LongBook
+#@onready var _hbox_container : HBoxContainer = $MarginContainer/LongBook
+@onready var _margin_container : MarginContainer = $MarginContainer
 
-@onready var _cover_image : TextureRect = $LongBook/Cover
-@onready var _title_text : RichTextLabel = $LongBook/Info/Title
-@onready var _reading_type : OptionButton = $LongBook/Info/Reading
-@onready var _stars : SpinBox = $LongBook/Info/Stars
-#@onready var _tags : FlowContainer
+@onready var _cover_image : TextureRect = $MarginContainer/LongBook/Cover
+@onready var _title_text : RichTextLabel = $MarginContainer/LongBook/Info/Title
+@onready var _reading_type : OptionButton = $MarginContainer/LongBook/Info/Reading
+@onready var _stars : SpinBox = $MarginContainer/LongBook/Info/Stars
+@onready var _tags_flow_container : FlowContainer = $MarginContainer/LongBook/Info/TagsContainer/ScrollContainer/Tags
 
+const _TAG_CONTAINER_SCENE : PackedScene = preload("res://books/tag/TagContainer.tscn")
 const _EDIT_BOOK_WINDOW_SCENE : PackedScene = preload("res://windows/editBookWindow/EditBookWindow.tscn")
 
 var _just_loaded_book : bool = false
@@ -19,31 +21,47 @@ var _just_loaded_book : bool = false
 signal has_toggled(long_book : LongBook, toggled_on : bool)
 
 func _ready() -> void:
-	_hbox_container.custom_minimum_size.x = size.x
-	custom_minimum_size.y = _hbox_container.custom_minimum_size.y
+	_margin_container.size.x = size.x
+	custom_minimum_size.y = _margin_container.size.y
 	resized.connect(_resized)
-	_hbox_container.resized.connect(_hbox_resized)
+	_margin_container.resized.connect(_hbox_resized)
 	
 	Files.saved_book.connect(_files_saved_book)
 
-func _files_saved_book(book : BookResource) -> void:
+func _files_saved_book(book : BookResource, changed_cover : bool) -> void:
 	if _book and _book == book:
-		load_book(_book)
+		load_book(_book, changed_cover)
 
 func _resized() -> void:
-	_hbox_container.custom_minimum_size.x = size.x
-	custom_minimum_size.y = _hbox_container.custom_minimum_size.y
+	_margin_container.size.x = size.x
+	size.y = _margin_container.size.y
 
 func _hbox_resized() -> void:
-	_hbox_container.custom_minimum_size.x = size.x
-	custom_minimum_size.y = _hbox_container.custom_minimum_size.y
+	_margin_container.size.x = size.x
+	size.y = _margin_container.size.y
 
-func load_book(book : BookResource) -> void:
+func load_book(book : BookResource, load_cover_image : bool = true) -> void:
 	_book = book
 	
 	_title_text.text = book.name
 	
-	_cover_image.texture = Files.load_cover_image_from_book(_book)
+	if load_cover_image:
+		_cover_image.texture = Files.load_cover_image_from_book(_book)
+	
+	var tags_container_child_count : int = _tags_flow_container.get_child_count()
+	var idx : int = 0
+	for i in tags_container_child_count:
+		var child := _tags_flow_container.get_child(idx)
+		if child is TagContainer:
+			_tags_flow_container.remove_child(child)
+			child.queue_free()
+		else:
+			idx += 1
+	
+	for tag in _book.tags.tags:
+		var tag_container : TagContainer = _TAG_CONTAINER_SCENE.instantiate()
+		_tags_flow_container.add_child(tag_container)
+		tag_container.set_tag(tag)
 	
 	_just_loaded_book = true
 	

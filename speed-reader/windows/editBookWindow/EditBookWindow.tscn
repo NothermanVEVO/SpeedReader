@@ -12,6 +12,21 @@ exclusive = true
 force_native = true
 script = ExtResource("1_i5ya0")
 
+[node name="FileDialog" type="FileDialog" parent="."]
+oversampling_override = 1.0
+title = "Abrir imagem"
+force_native = true
+ok_button_text = "Abrir"
+cancel_button_text = "Cancelar"
+file_mode = 0
+access = 2
+use_native_dialog = true
+
+[node name="AcceptDialog" type="AcceptDialog" parent="."]
+oversampling_override = 1.0
+title = "Aviso!"
+force_native = true
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
@@ -117,6 +132,9 @@ layout_mode = 2
 text = "Excluir"
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="files_dropped" from="." to="." method="_on_files_dropped"]
+[connection signal="file_selected" from="FileDialog" to="." method="_on_file_dialog_file_selected"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/BookContainer/CoverContainer/CoverButton" to="." method="_on_cover_button_pressed"]
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/HBoxContainer/NameLineEdit" to="." method="_on_name_line_edit_text_changed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/HBoxContainer/SaveNameButton" to="." method="_on_save_name_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/EditTagButton" to="." method="_on_edit_tag_button_pressed"]
