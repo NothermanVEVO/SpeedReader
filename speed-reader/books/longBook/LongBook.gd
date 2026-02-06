@@ -27,10 +27,15 @@ func _ready() -> void:
 	_margin_container.resized.connect(_hbox_resized)
 	
 	Files.saved_book.connect(_files_saved_book)
+	Files.erase_book.connect(_files_erase_book)
 
 func _files_saved_book(book : BookResource, changed_cover : bool) -> void:
 	if _book and _book == book:
 		load_book(_book, changed_cover)
+
+func _files_erase_book(book : BookResource) -> void:
+	if _book and _book == book:
+		queue_free()
 
 func _resized() -> void:
 	_margin_container.size.x = size.x
@@ -92,3 +97,6 @@ func _on_edit_pressed() -> void:
 		add_child(edit_book_window)
 		edit_book_window.set_book(_book)
 		edit_book_window.popup_centered()
+
+func _on_delete_button_pressed() -> void:
+	Files.request_to_erase_book(_book)

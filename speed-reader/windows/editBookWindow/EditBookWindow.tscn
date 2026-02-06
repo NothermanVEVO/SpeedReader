@@ -14,7 +14,7 @@ script = ExtResource("1_i5ya0")
 
 [node name="FileDialog" type="FileDialog" parent="."]
 oversampling_override = 1.0
-title = "Abrir imagem"
+title = "Open a File"
 force_native = true
 ok_button_text = "Abrir"
 cancel_button_text = "Cancelar"
@@ -130,6 +130,7 @@ size_flags_vertical = 10
 [node name="DeleteButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer"]
 modulate = Color(1, 0.4117647, 0.4117647, 1)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "Excluir"
 
 [node name="ReturnButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer"]
@@ -145,4 +146,5 @@ text = "Voltar"
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/HBoxContainer/NameLineEdit" to="." method="_on_name_line_edit_text_changed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/HBoxContainer/SaveNameButton" to="." method="_on_save_name_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/BookContainer/VBoxContainer/EditTagButton" to="." method="_on_edit_tag_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ButtonsContainer/DeleteButton" to="." method="_on_delete_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/ButtonsContainer/ReturnButton" to="." method="_on_return_button_pressed"]

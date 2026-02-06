@@ -40,12 +40,16 @@ func _ready() -> void:
 	_input_dialog.define_placeholder_text(tr("Type the name of the folder") + ":")
 	_input_dialog.text_confirmed.connect(_input_dialog_text_confirmed)
 	
-	var books := load_all_extracted_resources()
-	for book in books:
-		add_book(book)
+	_books = load_all_extracted_resources()
+	
+	_set_current_sort_type(SortType.LATEST)
 	
 	Files.removed_tag.connect(_removed_tag)
+	Files.erase_book.connect(_files_erase_book)
 	_tags_window.confirmation_pressed.connect(_tags_window_confirmation_pressed)
+
+func _files_erase_book(book : BookResource) -> void:
+	_books.erase(book)
 
 func _tags_window_confirmation_pressed(include_tags : Array[TagResource], exclude_tags : Array[TagResource], include_mode : TagsWindow.OptionMode, exclude_mode : TagsWindow.OptionMode) -> void:
 	_filtered_books_visibility.clear()

@@ -8,6 +8,11 @@ const TAGS_PATH : String = "user://tags.tres"
 const VALID_EXTENSION_IN_EXTRACTION : Array[String] = ["txt", "pdf", "doc", "docx", "epub"]
 const VALID_IMAGE_EXTENSION : Array[String] = ["jpg", "jpeg", "png", "svg", "webp", "tga", "bmp", "dds", "ktx", "exr", "hdr"]
 
+const _ERASE_CONFIRMATION_DIALOG_SCENE : PackedScene = preload("res://dialog/EraseConfirmationDialog.tscn")
+@onready var _erase_confirmation_dialog : ConfirmationDialog = _ERASE_CONFIRMATION_DIALOG_SCENE.instantiate()
+
+var _last_requested_book_to_erase : BookResource
+
 var _tags : TagsResource
 
 signal saved_book(book : BookResource, changed_cover : bool)
@@ -15,7 +20,12 @@ signal saved_book(book : BookResource, changed_cover : bool)
 signal added_tag(tag : TagResource)
 signal removed_tag(tag : TagResource)
 
+signal erase_book(book : BookResource)
+
 func _ready() -> void:
+	add_child(_erase_confirmation_dialog)
+	_erase_confirmation_dialog.confirmed.connect(_confirmed_to_erase_book)
+	
 	if not DirAccess.dir_exists_absolute(EXTRACTED_TEXTS_PATH):
 		DirAccess.make_dir_absolute(EXTRACTED_TEXTS_PATH)
 
@@ -184,3 +194,51 @@ func save_book_cover(book : BookResource, image_texture : Texture2D) -> Error:
 	if status == OK:
 		saved_book.emit(book, true)
 	return status
+
+func request_to_erase_book(book : BookResource) -> void:
+	if not book:
+		return
+	_last_requested_book_to_erase = book
+	_erase_confirmation_dialog.dialog_text = "Você tem certeza que deseja apagar o livro:\n\"" + book.name + "\""
+	_erase_confirmation_dialog.popup_centered()
+
+func _confirmed_to_erase_book() -> void:
+	if _last_requested_book_to_erase:
+		erase_book.emit(_last_requested_book_to_erase)
+		remove_dir_recursive(_last_requested_book_to_erase.current_dir_path)
+		_last_requested_book_to_erase = null
+
+func remove_dir_recursive(path: String) -> Error:
+	if not DirAccess.dir_exists_absolute(path):
+		return ERR_DOES_NOT_EXIST
+
+	var dir := DirAccess.open(path)
+	if dir == null:
+		return ERR_CANT_OPEN
+
+	dir.list_dir_begin()
+	var file_name := dir.get_next()
+
+	while file_name != "":
+		if file_name == "." or file_name == "..":
+			file_name = dir.get_next()
+			continue
+
+		var full_path := path + "/" + file_name
+
+		if dir.current_is_dir():
+			var err := remove_dir_recursive(full_path)
+			if err != OK:
+				dir.list_dir_end()
+				return err
+		else:
+			var err := DirAccess.remove_absolute(full_path)
+			if err != OK:
+				dir.list_dir_end()
+				return err
+
+		file_name = dir.get_next()
+
+	dir.list_dir_end()
+
+	return DirAccess.remove_absolute(path)

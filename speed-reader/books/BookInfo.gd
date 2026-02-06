@@ -18,6 +18,12 @@ const _EDIT_BOOK_WINDOW_SCENE : PackedScene = preload("res://windows/editBookWin
 
 func _ready() -> void:
 	Files.saved_book.connect(_files_saved_book)
+	Files.erase_book.connect(_files_erase_book)
+
+func _files_erase_book(book : BookResource) -> void:
+	if _book and _book == book:
+		_book = null
+		visible = false
 
 func _files_saved_book(book : BookResource, changed_cover : bool) -> void:
 	if _book and _book == book:

@@ -18,6 +18,11 @@ var _book : BookResource
 
 func _ready() -> void:
 	Files.saved_book.connect(_files_saved_book)
+	Files.erase_book.connect(_files_erase_book)
+
+func _files_erase_book(book : BookResource) -> void:
+	if _book and _book == book:
+		queue_free()
 
 func _files_saved_book(book : BookResource, changed_cover : bool) -> void:
 	if _book and _book == book:
@@ -87,6 +92,8 @@ func _on_cover_button_pressed() -> void:
 func _on_file_dialog_file_selected(path: String) -> void:
 	_on_files_dropped(PackedStringArray([path]))
 
-
 func _on_return_button_pressed() -> void:
 	queue_free()
+
+func _on_delete_button_pressed() -> void:
+	Files.request_to_erase_book(_book)

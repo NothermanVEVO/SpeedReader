@@ -101,9 +101,11 @@ text = "Editar"
 [node name="DeleteButton" type="Button" parent="ScrollContainer/Button/MarginContainer/VBoxContainer/Buttons"]
 modulate = Color(1, 0.4117647, 0.4117647, 1)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "Excluir"
 
 [connection signal="toggled" from="ScrollContainer/Button" to="." method="_on_button_toggled"]
 [connection signal="item_selected" from="ScrollContainer/Button/MarginContainer/VBoxContainer/Info/Reading" to="." method="_on_reading_item_selected"]
 [connection signal="value_changed" from="ScrollContainer/Button/MarginContainer/VBoxContainer/Info/Stars" to="." method="_on_stars_value_changed"]
 [connection signal="pressed" from="ScrollContainer/Button/MarginContainer/VBoxContainer/Buttons/EditButton" to="." method="_on_edit_button_pressed"]
+[connection signal="pressed" from="ScrollContainer/Button/MarginContainer/VBoxContainer/Buttons/DeleteButton" to="." method="_on_delete_button_pressed"]

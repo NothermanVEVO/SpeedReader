@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://7uhtiiaf3s8f"]
+
+[node name="ConfirmationDialog" type="ConfirmationDialog"]
+oversampling_override = 1.0
+title = "Apagar livro"
+transient = false
+always_on_top = true
+force_native = true
+ok_button_text = "Sim"
+cancel_button_text = "Cancelar"
