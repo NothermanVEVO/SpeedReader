@@ -63,6 +63,7 @@ func _on_search_line_edit_text_changed(new_text: String) -> void:
 	new_text = new_text.to_lower()
 	for child in _tags_flow_container.get_children():
 		if child is SelectTagContainer:
+			## BUG IF TAG HAS BBCODE, THE SEARCH WILL COUNT
 			child.visible = true if new_text.is_empty() else new_text in child.get_tag().name.to_lower()
 
 func _on_confirm_button_pressed() -> void:
