@@ -5,6 +5,7 @@ class_name BookInfo
 var _book : BookResource
 
 const _TAG_CONTAINER_SCENE : PackedScene = preload("res://books/tag/TagContainer.tscn")
+const _EDIT_BOOK_WINDOW_SCENE : PackedScene = preload("res://windows/editBookWindow/EditBookWindow.tscn")
 
 @onready var _cover_image : TextureRect = $BookInfo/Top/Cover
 @onready var _title_text : RichTextLabel = $BookInfo/Top/Title
@@ -69,3 +70,10 @@ func _on_save_pressed() -> void:
 	_book.comment = _comment_text.text
 	Files.save_book(_book)
 	_save_button.disabled = true
+
+func _on_edit_button_pressed() -> void:
+	if _book:
+		var edit_book_window : EditBookWindow = _EDIT_BOOK_WINDOW_SCENE.instantiate()
+		add_child(edit_book_window)
+		edit_book_window.set_book(_book)
+		edit_book_window.popup_centered()

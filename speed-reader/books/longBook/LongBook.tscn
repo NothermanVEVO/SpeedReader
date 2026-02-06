@@ -40,6 +40,7 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+mouse_default_cursor_shape = 2
 selected = 0
 item_count = 5
 popup/item_0/text = "Planejo ler"
@@ -94,7 +95,8 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "Editar"
 
-[node name="Remove" type="Button" parent="MarginContainer/LongBook/Buttons"]
+[node name="DeleteButton" type="Button" parent="MarginContainer/LongBook/Buttons"]
+modulate = Color(1, 0.4117647, 0.4117647, 1)
 layout_mode = 2
 text = "Excluir"
 

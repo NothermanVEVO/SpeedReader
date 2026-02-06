@@ -17,6 +17,7 @@ script = ExtResource("1_xue48")
 size = Vector2i(800, 600)
 
 [node name="FileDialog" type="FileDialog" parent="."]
+filters = PackedStringArray("*.txt", "*.pdf", "*.doc", "*.docx", "*.epub")
 use_native_dialog = true
 
 [node name="AcceptDialog" type="AcceptDialog" parent="."]
@@ -178,15 +179,7 @@ text = "Novo arquivo"
 [node name="SearchBar" type="MarginContainer" parent="HBoxContainer/MiddleBar/VBoxContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/MiddleBar/VBoxContainer/SearchBar"]
-layout_mode = 2
-
-[node name="SearchButton" type="Button" parent="HBoxContainer/MiddleBar/VBoxContainer/SearchBar/HBoxContainer"]
-layout_mode = 2
-mouse_default_cursor_shape = 2
-text = "Pesquisar"
-
-[node name="SearchLineEdit" type="LineEdit" parent="HBoxContainer/MiddleBar/VBoxContainer/SearchBar/HBoxContainer"]
+[node name="SearchLineEdit" type="LineEdit" parent="HBoxContainer/MiddleBar/VBoxContainer/SearchBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Pesquisar"
@@ -265,6 +258,7 @@ vertical_alignment = 1
 [node name="Reading" type="OptionButton" parent="HBoxContainer/RightBar/BookInfo"]
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_default_cursor_shape = 2
 selected = 0
 fit_to_longest_item = false
 item_count = 5
@@ -297,8 +291,9 @@ caret_blink = true
 layout_mode = 2
 alignment = 2
 
-[node name="Edit" type="Button" parent="HBoxContainer/RightBar/BookInfo/HBoxContainer"]
+[node name="EditButton" type="Button" parent="HBoxContainer/RightBar/BookInfo/HBoxContainer"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "Editar"
 
 [node name="Save" type="Button" parent="HBoxContainer/RightBar/BookInfo/HBoxContainer"]
@@ -313,7 +308,9 @@ text = "Salvar"
 [connection signal="item_selected" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Sort/SortOption" to="." method="_on_sort_option_item_selected"]
 [connection signal="pressed" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Filter" to="." method="_on_filter_pressed"]
 [connection signal="pressed" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/New File" to="." method="_on_new_file_pressed"]
+[connection signal="text_changed" from="HBoxContainer/MiddleBar/VBoxContainer/SearchBar/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
 [connection signal="item_selected" from="HBoxContainer/RightBar/BookInfo/Reading" to="HBoxContainer/RightBar" method="_on_reading_item_selected"]
 [connection signal="value_changed" from="HBoxContainer/RightBar/BookInfo/Stars" to="HBoxContainer/RightBar" method="_on_stars_value_changed"]
 [connection signal="text_changed" from="HBoxContainer/RightBar/BookInfo/Comments" to="HBoxContainer/RightBar" method="_on_comments_text_changed"]
+[connection signal="pressed" from="HBoxContainer/RightBar/BookInfo/HBoxContainer/EditButton" to="HBoxContainer/RightBar" method="_on_edit_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/RightBar/BookInfo/HBoxContainer/Save" to="HBoxContainer/RightBar" method="_on_save_pressed"]

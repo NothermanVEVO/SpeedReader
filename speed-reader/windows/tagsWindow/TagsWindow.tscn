@@ -6,7 +6,7 @@
 
 [node name="TagsWindow" type="Window"]
 oversampling_override = 1.0
-title = "Tags"
+title = "Filtrar tags"
 initial_position = 2
 size = Vector2i(1152, 648)
 visible = false
@@ -38,7 +38,7 @@ layout_mode = 2
 [node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TitleContainer"]
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 26
-text = "Tags"
+text = "Filtrar tags"
 fit_content = true
 autowrap_mode = 0
 horizontal_alignment = 1
@@ -48,15 +48,17 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 8
 
-[node name="NewButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-mouse_default_cursor_shape = 2
-text = "Nova tag"
-
 [node name="EraseButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+modulate = Color(1, 0.4117647, 0.4117647, 1)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "Apagar tag"
+
+[node name="NewButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+modulate = Color(0.5575, 1, 0.41000003, 1)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Nova tag"
 
 [node name="SearchContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -125,7 +127,7 @@ fit_content = true
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="OptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/InclusionContainer/HBoxContainer"]
+[node name="IncludeOptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/InclusionContainer/HBoxContainer"]
 layout_mode = 2
 selected = 0
 item_count = 2
@@ -148,8 +150,9 @@ fit_content = true
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="OptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/ExclusionContainer/HBoxContainer"]
+[node name="ExcludeOptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/ExclusionContainer/HBoxContainer"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 selected = 1
 item_count = 2
 popup/item_0/text = "E"
@@ -157,12 +160,21 @@ popup/item_0/id = 0
 popup/item_1/text = "Ou"
 popup/item_1/id = 1
 
+[node name="ResetButton" type="Button" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+mouse_default_cursor_shape = 2
+text = "Resetar escolhas"
+
 [node name="ConfirmButton" type="Button" parent="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
+mouse_default_cursor_shape = 2
 text = "Confimar"
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/NewButton" to="." method="_on_new_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/EraseButton" to="." method="_on_erase_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/NewButton" to="." method="_on_new_button_pressed"]
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/SearchContainer/HBoxContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/ResetButton" to="." method="_on_reset_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/ConfirmButton" to="." method="_on_confirm_button_pressed"]

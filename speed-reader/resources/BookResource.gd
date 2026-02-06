@@ -21,5 +21,13 @@ func _init(name : String = "", reading_type : int = 0, stars : int = 0, comment 
 	self.comment = comment
 	self.tags = tags
 
+func get_tags_uids() -> PackedStringArray:
+	var uids := PackedStringArray()
+	
+	for tag in tags.tags:
+		uids.append(tag.resource_scene_unique_id)
+	
+	return uids
+
 func get_ID() -> String:
 	return _ID

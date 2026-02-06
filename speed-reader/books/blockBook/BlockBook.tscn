@@ -48,6 +48,7 @@ fit_content = true
 
 [node name="Reading" type="OptionButton" parent="ScrollContainer/Button/MarginContainer/VBoxContainer/Info"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 selected = 0
 fit_to_longest_item = false
 item_count = 5
@@ -97,7 +98,8 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "Editar"
 
-[node name="Remove" type="Button" parent="ScrollContainer/Button/MarginContainer/VBoxContainer/Buttons"]
+[node name="DeleteButton" type="Button" parent="ScrollContainer/Button/MarginContainer/VBoxContainer/Buttons"]
+modulate = Color(1, 0.4117647, 0.4117647, 1)
 layout_mode = 2
 text = "Excluir"
 

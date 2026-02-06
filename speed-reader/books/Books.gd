@@ -19,7 +19,9 @@ var _current_sort_type : SortType
 
 var _books : Array[BookResource] = []
 
-@onready var _tags_window : Window = $TagsWindow
+@onready var _search_line_edit : LineEdit = $HBoxContainer/MiddleBar/VBoxContainer/SearchBar/SearchLineEdit
+
+@onready var _tags_window : TagsWindow = $TagsWindow
 @onready var _file_dialog : FileDialog = $FileDialog
 @onready var _accept_dialog : AcceptDialog = $AcceptDialog
 @onready var _input_dialog : InputDialog = $InputDialog
@@ -31,6 +33,8 @@ var _last_toggled_block_book : BlockBook
 
 signal changed_books_order
 
+var _filtered_books_visibility : Array[bool] = []
+
 func _ready() -> void:
 	_input_dialog.title = tr("Name of the folder")
 	_input_dialog.define_placeholder_text(tr("Type the name of the folder") + ":")
@@ -41,6 +45,59 @@ func _ready() -> void:
 		add_book(book)
 	
 	Files.removed_tag.connect(_removed_tag)
+	_tags_window.confirmation_pressed.connect(_tags_window_confirmation_pressed)
+
+func _tags_window_confirmation_pressed(include_tags : Array[TagResource], exclude_tags : Array[TagResource], include_mode : TagsWindow.OptionMode, exclude_mode : TagsWindow.OptionMode) -> void:
+	_filtered_books_visibility.clear()
+	
+	if _current_show_type == ShowType.LONG:
+		for child in _long_books.get_children():
+			child.visible = true
+			_filtered_books_visibility.append(true)
+	else:
+		for child in _block_books.get_children():
+			child.visible = true
+			_filtered_books_visibility.append(true)
+	
+	set_invisible_books(include_tags, include_mode, true)
+	set_invisible_books(exclude_tags, exclude_mode, false)
+	
+	_on_search_line_edit_text_changed(_search_line_edit.text)
+
+func set_invisible_books(tags : Array[TagResource], option_mode : TagsWindow.OptionMode, is_include : bool) -> void:
+	if tags.is_empty():
+		return
+	
+	if option_mode == TagsWindow.OptionMode.AND:
+		for i in _books.size():
+			var tags_uids := _books[i].get_tags_uids()
+			var has_tag := true
+			for tag in tags:
+				has_tag = tag.resource_scene_unique_id in tags_uids
+				if not has_tag:
+					break
+			if (is_include and not has_tag) or (not is_include and has_tag):
+				if _current_show_type == ShowType.LONG:
+					_long_books.get_child(i).visible = false
+					_filtered_books_visibility[i] = false
+				else:
+					_block_books.get_child(i).visible = false
+					_filtered_books_visibility[i] = false
+	else: ## OR
+		for i in _books.size():
+			var tags_uids := _books[i].get_tags_uids()
+			var has_tag := false
+			for tag in tags:
+				has_tag = tag.resource_scene_unique_id in tags_uids
+				if has_tag:
+					break
+			if (is_include and not has_tag) or (not is_include and has_tag):
+				if _current_show_type == ShowType.LONG:
+					_long_books.get_child(i).visible = false
+					_filtered_books_visibility[i] = false
+				else:
+					_block_books.get_child(i).visible = false
+					_filtered_books_visibility[i] = false
 
 func _removed_tag(tag : TagResource) -> void:
 	for book in _books:
@@ -308,3 +365,18 @@ func _on_sort_option_item_selected(index: int) -> void:
 
 func _on_filter_pressed() -> void:
 	_tags_window.popup_centered()
+
+func _on_search_line_edit_text_changed(new_text: String) -> void:
+	new_text = new_text.to_lower()
+	if _current_show_type == ShowType.LONG:
+		var long_books : Array[Node] = _long_books.get_children()
+		for i in long_books.size():
+			if long_books[i] is LongBook:
+				var search_visible : bool = true if new_text.is_empty() else new_text in long_books[i].get_book().name.to_lower()
+				long_books[i].visible = search_visible and _filtered_books_visibility[i]
+	else:
+		var block_books : Array[Node] = _block_books.get_children()
+		for i in block_books.size():
+			if block_books[i] is LongBook:
+				var search_visible : bool = true if new_text.is_empty() else new_text in block_books[i].get_book().name.to_lower()
+				block_books[i].visible = search_visible and _filtered_books_visibility[i]

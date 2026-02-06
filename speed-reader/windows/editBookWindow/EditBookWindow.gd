@@ -86,3 +86,7 @@ func _on_cover_button_pressed() -> void:
 
 func _on_file_dialog_file_selected(path: String) -> void:
 	_on_files_dropped(PackedStringArray([path]))
+
+
+func _on_return_button_pressed() -> void:
+	queue_free()
