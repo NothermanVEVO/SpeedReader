@@ -7,7 +7,6 @@ oversampling_override = 1.0
 title = "Editar tags"
 initial_position = 2
 size = Vector2i(500, 300)
-visible = false
 exclusive = true
 force_native = true
 script = ExtResource("1_ag40l")
@@ -41,10 +40,7 @@ vertical_alignment = 1
 [node name="SearchContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/SearchContainer"]
-layout_mode = 2
-
-[node name="SearchLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/SearchContainer/HBoxContainer"]
+[node name="SearchLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/SearchContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Pesquisar"

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ceqosxarqpkk"]
 
-[ext_resource type="Texture2D" uid="uid://218443df5t08" path="res://assets/test/test.jpg" id="1_g3hiv"]
+[ext_resource type="Script" uid="uid://bun2fmyhoowya" path="res://books/list/manageListContainer/ManageListContainer.gd" id="1_1juh3"]
 
 [node name="ManageListContainer" type="MarginContainer"]
 anchors_preset = 10
@@ -12,13 +12,20 @@ theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
+script = ExtResource("1_1juh3")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="BackgroundColorRect" type="ColorRect" parent="."]
 layout_mode = 2
 color = Color(0.5, 0.5, 0.5, 1)
 
+[node name="ListButton" type="Button" parent="."]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+flat = true
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 3
 theme_override_constants/margin_top = 3
 theme_override_constants/margin_right = 3
@@ -26,20 +33,23 @@ theme_override_constants/margin_bottom = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="TopContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TopContainer"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="NameRichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TopContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 theme_override_font_sizes/normal_font_size = 24
 bbcode_enabled = true
-text = "Lista insana"
 vertical_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TopContainer/HBoxContainer"]
@@ -48,28 +58,34 @@ size_flags_vertical = 4
 
 [node name="EditButton" type="Button" parent="MarginContainer/VBoxContainer/TopContainer/HBoxContainer/HBoxContainer"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "Editar"
 
 [node name="EraseButton" type="Button" parent="MarginContainer/VBoxContainer/TopContainer/HBoxContainer/HBoxContainer"]
 modulate = Color(1, 0.4117647, 0.4117647, 1)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "Apagar"
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 30)
+[node name="TagsContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 10
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/MarginContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/TagsContainer"]
 layout_mode = 2
+mouse_filter = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TagsContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/HBoxContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TagsContainer/ScrollContainer/HBoxContainer"]
 layout_mode = 2
+mouse_filter = 2
 text = "Tags:"
 fit_content = true
 autowrap_mode = 0
@@ -77,6 +93,7 @@ vertical_alignment = 1
 
 [node name="BottomContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 3
@@ -84,14 +101,14 @@ theme_override_constants/margin_bottom = 3
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/BottomContainer"]
 custom_minimum_size = Vector2(0, 140)
 layout_mode = 2
+mouse_filter = 2
 
 [node name="BooksCovers" type="HBoxContainer" parent="MarginContainer/VBoxContainer/BottomContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/BottomContainer/ScrollContainer/BooksCovers"]
-custom_minimum_size = Vector2(100, 140)
-layout_mode = 2
-texture = ExtResource("1_g3hiv")
-expand_mode = 1
+[connection signal="pressed" from="ListButton" to="." method="_on_list_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/TopContainer/HBoxContainer/HBoxContainer/EditButton" to="." method="_on_edit_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/TopContainer/HBoxContainer/HBoxContainer/EraseButton" to="." method="_on_erase_button_pressed"]

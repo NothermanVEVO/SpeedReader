@@ -1,0 +1,103 @@
+[gd_scene load_steps=3 format=3 uid="uid://cq46hoo0ohby7"]
+
+[ext_resource type="Script" uid="uid://cmvrn82xsjbwf" path="res://books/list/manageListsContainer/ManageListsContainer.gd" id="1_7oclj"]
+[ext_resource type="PackedScene" uid="uid://cww7m0lkfi13d" path="res://windows/tagsWindow/TagsWindow.tscn" id="2_xx2ad"]
+
+[node name="MarginContainer" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("1_7oclj")
+
+[node name="TagsWindow" parent="." instance=ExtResource("2_xx2ad")]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/TitleContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 36
+text = "Gerenciar listas"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="Sort" type="FlowContainer" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+alignment = 1
+vertical = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/MarginContainer/HBoxContainer/Sort"]
+layout_mode = 2
+text = "Organizar:"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="SortOption" type="OptionButton" parent="VBoxContainer/MarginContainer/HBoxContainer/Sort"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text_overrun_behavior = 3
+selected = 0
+fit_to_longest_item = false
+item_count = 4
+popup/item_0/text = "Mais recente"
+popup/item_0/id = 0
+popup/item_1/text = "Mais antigo"
+popup/item_1/id = 3
+popup/item_2/text = "Alfabética (Crescente)"
+popup/item_2/id = 2
+popup/item_3/text = "Alfabética (Decrescente)"
+popup/item_3/id = 3
+
+[node name="FilterButton" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Filtrar"
+
+[node name="SearchContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="SearchLineEdit" type="LineEdit" parent="VBoxContainer/SearchContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Pesquisar"
+keep_editing_on_text_submit = true
+clear_button_enabled = true
+
+[node name="NewListButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "+ Nova Lista"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ListsVBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[connection signal="item_selected" from="VBoxContainer/MarginContainer/HBoxContainer/Sort/SortOption" to="." method="_on_sort_option_item_selected"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/HBoxContainer/FilterButton" to="." method="_on_filter_button_pressed"]
+[connection signal="text_changed" from="VBoxContainer/SearchContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
+[connection signal="pressed" from="VBoxContainer/NewListButton" to="." method="_on_new_list_button_pressed"]

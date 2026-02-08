@@ -24,12 +24,29 @@ const VALID_IMAGE_EXTENSION : Array[String] = ["jpg", "jpeg", "png", "svg", "web
 const _ERASE_CONFIRMATION_DIALOG_SCENE : PackedScene = preload("res://dialog/EraseConfirmationDialog.tscn")
 @onready var _erase_confirmation_dialog : ConfirmationDialog = _ERASE_CONFIRMATION_DIALOG_SCENE.instantiate()
 
+enum EraseType {NONE, BOOK, CUSTOM_LIST}
+
+var _last_requested_erase_type : EraseType = EraseType.NONE
+
 var _last_requested_book_to_erase : BookResource
+var _last_requested_custom_list_to_erase : ListResource
+
+var _books : Array[BookResource] = []
 
 var _tags : TagsResource
 
 var _prepared_lists : ListsResource
 var _custom_lists : ListsResource
+
+enum SortType {LATEST = 0, OLDEST = 1, ALPHABETICAL_ASCEDING = 2, ALPHABETICAL_DESCEDING = 3}
+
+var _current_book_sort_type : SortType = SortType.LATEST
+var _current_custom_list_sort_type : SortType = SortType.LATEST
+
+signal sorted_books(sort_type : SortType)
+signal sorted_custom_lists(sort_type : SortType)
+
+signal added_book(book : BookResource)
 
 signal saved_book(book : BookResource, changed_cover : bool)
 
@@ -37,6 +54,11 @@ signal added_tag(tag : TagResource)
 signal removed_tag(tag : TagResource)
 
 signal erase_book(book : BookResource)
+signal erase_custom_list(list : ListResource)
+
+signal added_custom_list(list : ListResource)
+
+signal saved_custom_list(list : ListResource)
 
 func _ready() -> void:
 	add_child(_erase_confirmation_dialog)
@@ -72,6 +94,56 @@ func _ready() -> void:
 		var f := FileAccess.open(EXTRACT_FILE_PATH, FileAccess.WRITE)
 		f.store_buffer(data)
 		f.close()
+	
+	_books = load_all_books_resources()
+	set_book_sort_type(_current_book_sort_type)
+	for book in _books:
+		load_cover_image_from_book(book)
+	
+	set_custom_list_sort_type(_current_custom_list_sort_type)
+
+func load_all_books_resources() -> Array[BookResource]:
+	var result : Array[BookResource] = []
+
+	var dir := DirAccess.open(Files.EXTRACTED_TEXTS_PATH)
+	if dir == null:
+		return result
+
+	dir.list_dir_begin()
+
+	while true:
+		var folder_name := dir.get_next()
+		if folder_name == "":
+			break
+
+		if folder_name.begins_with("."):
+			continue
+
+		var folder_path := EXTRACTED_TEXTS_PATH + "/" + folder_name
+
+		if not dir.current_is_dir():
+			continue
+
+		var tres_path := folder_path + "/" + folder_name + ".tres"
+
+		if not FileAccess.file_exists(tres_path):
+			continue
+
+		var res : BookResource = ResourceLoader.load(tres_path)
+
+		if res == null:
+			continue
+
+		res.current_dir_path = folder_path
+
+		result.append(res)
+
+	dir.list_dir_end()
+
+	return result
+
+func unload_books() -> void:
+	_books.clear()
 
 func _create_prepared_lists() -> void:
 	_prepared_lists = ListsResource.new()
@@ -157,6 +229,83 @@ func save_file(file_path : String, data : String, overrides : bool = false) -> E
 	else:
 		return FAILED
 
+func get_book_sort_type() -> SortType:
+	return _current_book_sort_type
+
+func set_book_sort_type(sort_type : SortType) -> void:
+	_current_book_sort_type = sort_type
+	
+	match _current_book_sort_type:
+		SortType.LATEST:
+			_sort_books_by_latest()
+		SortType.OLDEST:
+			_sort_books_by_oldest()
+		SortType.ALPHABETICAL_ASCEDING:
+			_sort_books_by_name_ascending()
+		SortType.ALPHABETICAL_DESCEDING:
+			_sort_books_by_name_descending()
+	
+	sorted_books.emit(_current_book_sort_type)
+
+func set_custom_list_sort_type(sort_type : SortType) -> void:
+	_current_custom_list_sort_type = sort_type
+	
+	match _current_custom_list_sort_type:
+		SortType.LATEST:
+			_sort_custom_lists_by_latest()
+		SortType.OLDEST:
+			_sort_custom_lists_by_oldest()
+		SortType.ALPHABETICAL_ASCEDING:
+			_sort_custom_lists_by_name_ascending()
+		SortType.ALPHABETICAL_DESCEDING:
+			_sort_custom_lists_by_name_descending()
+	
+	sorted_custom_lists.emit(_current_custom_list_sort_type)
+
+func _sort_books_by_latest() -> void:
+	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
+		return a.creation_time > b.creation_time
+	)
+
+func _sort_books_by_oldest() -> void:
+	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
+		return a.creation_time < b.creation_time
+	)
+
+func _sort_books_by_name_ascending() -> void:
+	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
+		return (a.name.strip_edges().to_lower()
+			< b.name.strip_edges().to_lower())
+	)
+
+func _sort_books_by_name_descending() -> void:
+	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
+		return (a.name.strip_edges().to_lower()
+			> b.name.strip_edges().to_lower())
+	)
+
+func _sort_custom_lists_by_latest() -> void:
+	_custom_lists.lists.sort_custom(func(a: ListResource, b: ListResource) -> bool:
+		return a.creation_time > b.creation_time
+	)
+
+func _sort_custom_lists_by_oldest() -> void:
+	_custom_lists.lists.sort_custom(func(a: ListResource, b: ListResource) -> bool:
+		return a.creation_time < b.creation_time
+	)
+
+func _sort_custom_lists_by_name_ascending() -> void:
+	_custom_lists.lists.sort_custom(func(a: ListResource, b: ListResource) -> bool:
+		return (a.name.strip_edges().to_lower()
+			< b.name.strip_edges().to_lower())
+	)
+
+func _sort_custom_lists_by_name_descending() -> void:
+	_custom_lists.lists.sort_custom(func(a: ListResource, b: ListResource) -> bool:
+		return (a.name.strip_edges().to_lower()
+			> b.name.strip_edges().to_lower())
+	)
+
 func save_book(book : BookResource) -> Error:
 	var old_name : String = book.current_dir_path.get_file()
 	if old_name != book.name:
@@ -170,18 +319,14 @@ func save_book(book : BookResource) -> Error:
 		saved_book.emit(book, false)
 	return status
 
-func load_cover_image_from_book(book : BookResource) -> Texture2D:
-	var _cover_image_texture : Texture2D
-	
+func load_cover_image_from_book(book : BookResource) -> void:
 	if FileAccess.file_exists(book.current_dir_path + "/cover.png"):
 		var image := Image.load_from_file(book.current_dir_path + "/cover.png")
 		if image:
-			_cover_image_texture = ImageTexture.create_from_image(image)
+			book.cover_texture = ImageTexture.create_from_image(image)
 	
-	if not _cover_image_texture:
-		_cover_image_texture = Books.FILE_ICON
-	
-	return _cover_image_texture
+	if not book.cover_texture:
+		book.cover_texture = Books.FILE_ICON
 
 func get_tags() -> TagsResource:
 	return _tags
@@ -207,6 +352,12 @@ func remove_tag(tag : TagResource) -> Error:
 	if status != OK:
 		_tags.tags.append(tag)
 	else:
+		for book in _books:
+			for book_tag in book.tags.tags:
+				if book_tag.resource_scene_unique_id == tag.resource_scene_unique_id:
+					book.tags.tags.erase(book_tag)
+					Files.save_book(book)
+					break
 		removed_tag.emit(tag)
 	return status
 
@@ -236,24 +387,51 @@ func load_image(path : String) -> Texture2D:
 	
 	return ImageTexture.create_from_image(image)
 
+func get_books() -> Array[BookResource]:
+	return _books
+
 func save_book_cover(book : BookResource, image_texture : Texture2D) -> Error:
 	var status := image_texture.get_image().save_png(book.current_dir_path + "/cover.png")
+	book.cover_texture = image_texture
 	if status == OK:
 		saved_book.emit(book, true)
 	return status
 
+func add_book(book : BookResource) -> Error:
+	if _books.has(book):
+		return FAILED
+	_books.append(book)
+	added_book.emit(book)
+	return OK
+
 func request_to_erase_book(book : BookResource) -> void:
 	if not book:
 		return
+	_last_requested_erase_type = EraseType.BOOK
 	_last_requested_book_to_erase = book
 	_erase_confirmation_dialog.dialog_text = "Você tem certeza que deseja apagar o livro:\n\"" + book.name + "\""
 	_erase_confirmation_dialog.popup_centered()
 
+func request_to_erase_custom_list(list : ListResource) -> void:
+	if not list:
+		return
+	_last_requested_erase_type = EraseType.CUSTOM_LIST
+	_last_requested_custom_list_to_erase = list
+	_erase_confirmation_dialog.dialog_text = "Você tem certeza que deseja apagar a lista:\n\"" + list.name + "\""
+	_erase_confirmation_dialog.popup_centered()
+
 func _confirmed_to_erase_book() -> void:
-	if _last_requested_book_to_erase:
-		erase_book.emit(_last_requested_book_to_erase)
-		remove_dir_recursive(_last_requested_book_to_erase.current_dir_path)
-		_last_requested_book_to_erase = null
+	match _last_requested_erase_type:
+		EraseType.BOOK:
+			if _last_requested_book_to_erase:
+				erase_book.emit(_last_requested_book_to_erase)
+				remove_dir_recursive(_last_requested_book_to_erase.current_dir_path)
+				_books.erase(_last_requested_book_to_erase)
+				_last_requested_book_to_erase = null
+		EraseType.CUSTOM_LIST:
+			if _last_requested_custom_list_to_erase:
+				_erase_custom_list(_last_requested_custom_list_to_erase)
+				_last_requested_custom_list_to_erase = null
 
 func remove_dir_recursive(path: String) -> Error:
 	if not DirAccess.dir_exists_absolute(path):
@@ -289,3 +467,33 @@ func remove_dir_recursive(path: String) -> Error:
 	dir.list_dir_end()
 
 	return DirAccess.remove_absolute(path)
+
+func get_custom_lists() -> ListsResource:
+	return _custom_lists
+
+func save_custom_list(list : ListResource) -> Error:
+	var status := ResourceSaver.save(_custom_lists, CUSTOM_LISTS_PATH)
+	if status == OK:
+		saved_custom_list.emit(list)
+	return status
+
+func _erase_custom_list(list : ListResource) -> Error:
+	erase_custom_list.emit(list)
+	_custom_lists.lists.erase(list)
+	var status := ResourceSaver.save(_custom_lists, CUSTOM_LISTS_PATH)
+	return status
+
+func add_custom_list(list : ListResource) -> Error:
+	_custom_lists.lists.append(list)
+	list.creation_time = Time.get_unix_time_from_system()
+	var status := ResourceSaver.save(_custom_lists, CUSTOM_LISTS_PATH)
+	if status == OK:
+		added_custom_list.emit(list)
+		set_custom_list_sort_type(_current_custom_list_sort_type)
+	return status
+
+func can_save_list(list_to_save : ListResource) -> bool:
+	for list in _custom_lists.lists:
+		if list.name == list_to_save.name and list != list_to_save:
+			return false
+	return true

@@ -11,11 +11,10 @@ const FILE_ICON : CompressedTexture2D = preload("res://assets/icons/file.png")
 const _LONG_BOOK_SCENE : PackedScene = preload("res://books/longBook/LongBook.tscn")
 const _BLOCK_BOOK_SCENE : PackedScene = preload("res://books/blockBook/BlockBook.tscn")
 
+var _manage_lists_container_scene : PackedScene = load("res://books/list/manageListsContainer/ManageListsContainer.tscn")
+
 enum ShowType {LONG = 0, BLOCK = 1}
 var _current_show_type : ShowType
-
-enum SortType {LATEST, OLDEST, ALPHABETICAL_ASCEDING, ALPHABETICAL_DESCEDING}
-var _current_sort_type : SortType
 
 var _books : Array[BookResource] = []
 
@@ -26,12 +25,12 @@ var _books : Array[BookResource] = []
 @onready var _accept_dialog : AcceptDialog = $AcceptDialog
 @onready var _input_dialog : InputDialog = $InputDialog
 
+var _current_sort_type : Files.SortType
+
 var _last_file_path : String = ""
 
 var _last_toggled_long_book : LongBook
 var _last_toggled_block_book : BlockBook
-
-signal changed_books_order
 
 var _filtered_books_visibility : Array[bool] = []
 
@@ -40,16 +39,29 @@ func _ready() -> void:
 	_input_dialog.define_placeholder_text(tr("Type the name of the folder") + ":")
 	_input_dialog.text_confirmed.connect(_input_dialog_text_confirmed)
 	
-	_books = load_all_extracted_resources()
+	_books = Files.get_books()
 	
-	_set_current_sort_type(SortType.LATEST)
+	for book in _books:
+		_add_book(book)
 	
-	Files.removed_tag.connect(_removed_tag)
-	Files.erase_book.connect(_files_erase_book)
+	Files.erase_book.connect(_remove_book)
+	Files.sorted_books.connect(_files_sorted_books)
 	_tags_window.confirmation_pressed.connect(_tags_window_confirmation_pressed)
 
-func _files_erase_book(book : BookResource) -> void:
-	_books.erase(book)
+func _files_sorted_books(sort_type : Files.SortType) -> void:
+	_current_sort_type = sort_type
+	
+	match _current_show_type:
+		ShowType.LONG:
+			for i in _books.size():
+				for child in _long_books.get_children():
+					if child is LongBook and child.get_book() == _books[i]:
+						_long_books.move_child.call_deferred(child, i)
+		ShowType.BLOCK:
+			for i in _books.size():
+				for child in _block_books.get_children():
+					if child is BlockBook and child.get_book() == _books[i]:
+						_block_books.move_child.call_deferred(child, i)
 
 func _tags_window_confirmation_pressed(include_tags : Array[TagResource], exclude_tags : Array[TagResource], include_mode : TagsWindow.OptionMode, exclude_mode : TagsWindow.OptionMode) -> void:
 	_filtered_books_visibility.clear()
@@ -77,7 +89,7 @@ func set_invisible_books(tags : Array[TagResource], option_mode : TagsWindow.Opt
 			var tags_uids := _books[i].get_tags_uids()
 			var has_tag := true
 			for tag in tags:
-				has_tag = tag.resource_scene_unique_id in tags_uids
+				has_tag = tag.name in tags_uids
 				if not has_tag:
 					break
 			if (is_include and not has_tag) or (not is_include and has_tag):
@@ -92,7 +104,7 @@ func set_invisible_books(tags : Array[TagResource], option_mode : TagsWindow.Opt
 			var tags_uids := _books[i].get_tags_uids()
 			var has_tag := false
 			for tag in tags:
-				has_tag = tag.resource_scene_unique_id in tags_uids
+				has_tag = tag.name in tags_uids
 				if has_tag:
 					break
 			if (is_include and not has_tag) or (not is_include and has_tag):
@@ -102,14 +114,6 @@ func set_invisible_books(tags : Array[TagResource], option_mode : TagsWindow.Opt
 				else:
 					_block_books.get_child(i).visible = false
 					_filtered_books_visibility[i] = false
-
-func _removed_tag(tag : TagResource) -> void:
-	for book in _books:
-		for book_tag in book.tags.tags:
-			if book_tag.resource_scene_unique_id == tag.resource_scene_unique_id:
-				book.tags.tags.erase(book_tag)
-				Files.save_book(book)
-				break
 
 func _set_current_show_type(show_type : ShowType) -> void:
 	var _last_pressed_book : BookResource
@@ -126,7 +130,7 @@ func _set_current_show_type(show_type : ShowType) -> void:
 	_current_show_type = show_type
 	
 	for book in _books:
-		add_book(book, false)
+		_add_book(book)
 	
 	match _current_show_type:
 		ShowType.LONG:
@@ -147,67 +151,14 @@ func _set_current_show_type(show_type : ShowType) -> void:
 func _clear_books_nodes() -> void:
 	var books_size : int = _books.size()
 	for i in books_size:
-		remove_book(_books[i], false)
+		_remove_book(_books[i])
 
-func _set_current_sort_type(sort_type : SortType) -> void:
+func _set_current_sort_type(sort_type : Files.SortType) -> void:
 	_current_sort_type = sort_type
 	
-	match _current_sort_type:
-		SortType.LATEST:
-			sort_books_by_latest()
-		SortType.OLDEST:
-			sort_books_by_oldest()
-		SortType.ALPHABETICAL_ASCEDING:
-			sort_books_by_name_ascending()
-		SortType.ALPHABETICAL_DESCEDING:
-			sort_books_by_name_descending()
-	
-	_set_current_show_type(_current_show_type)
+	Files.set_book_sort_type(_current_sort_type)
 
-func load_all_extracted_resources() -> Array[BookResource]:
-	var result : Array[BookResource] = []
-
-	var dir := DirAccess.open(Files.EXTRACTED_TEXTS_PATH)
-	if dir == null:
-		return result
-
-	dir.list_dir_begin()
-
-	while true:
-		var folder_name := dir.get_next()
-		if folder_name == "":
-			break
-
-		if folder_name.begins_with("."):
-			continue
-
-		var folder_path := Files.EXTRACTED_TEXTS_PATH + "/" + folder_name
-
-		if not dir.current_is_dir():
-			continue
-
-		var tres_path := folder_path + "/" + folder_name + ".tres"
-
-		if not FileAccess.file_exists(tres_path):
-			continue
-
-		var res : BookResource = ResourceLoader.load(tres_path)
-
-		if res == null:
-			continue
-
-		res.current_dir_path = folder_path
-
-		result.append(res)
-
-	dir.list_dir_end()
-
-	return result
-
-func add_book(book : BookResource, append_resource_book : bool = true) -> void:
-	if append_resource_book:
-		_books.append(book)
-	
+func _add_book(book : BookResource) -> void:
 	match _current_show_type:
 		ShowType.LONG:
 			var long_book : LongBook = _LONG_BOOK_SCENE.instantiate()
@@ -219,11 +170,8 @@ func add_book(book : BookResource, append_resource_book : bool = true) -> void:
 			_block_books.add_child(block_book)
 			block_book.load_book(book) # NEED TO BE AFTER BECAUSE OF THE _READY
 			block_book.has_toggled.connect(_has_toggled_block_book)
-	
-	if append_resource_book:
-		changed_books_order.emit()
 
-func remove_book(book : BookResource, erase_resource_book : bool = true) -> void:
+func _remove_book(book : BookResource) -> void:
 	match _current_show_type:
 		ShowType.LONG:
 			for child in _long_books.get_children():
@@ -239,32 +187,6 @@ func remove_book(book : BookResource, erase_resource_book : bool = true) -> void
 					_block_books.remove_child(child)
 					child.queue_free()
 					break
-	
-	if erase_resource_book:
-		_books.erase(book)
-		changed_books_order.emit()
-
-func sort_books_by_latest() -> void:
-	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
-		return a.creation_time > b.creation_time
-	)
-
-func sort_books_by_oldest() -> void:
-	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
-		return a.creation_time < b.creation_time
-	)
-
-func sort_books_by_name_ascending() -> void:
-	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
-		return (a.name.strip_edges().to_lower()
-			< b.name.strip_edges().to_lower())
-	)
-
-func sort_books_by_name_descending() -> void:
-	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
-		return (a.name.strip_edges().to_lower()
-			> b.name.strip_edges().to_lower())
-	)
 
 func _has_toggled_long_book(long_book : LongBook, toggled_on : bool) -> void:
 	if _last_toggled_long_book and not toggled_on and _last_toggled_long_book == long_book:
@@ -356,7 +278,7 @@ func _input_dialog_text_confirmed(text : String) -> void:
 		var book_status := Files.save_book(book)
 		_open_accept_dialog_on_import(book_status)
 		if book_status == OK:
-			add_book(book)
+			Files.add_book(book)
 			_set_current_sort_type(_current_sort_type)
 	else:
 		_open_accept_dialog_on_import(status)
@@ -365,7 +287,7 @@ func _on_show_type_option_item_selected(index: int) -> void:
 	_set_current_show_type(index as ShowType)
 
 func _on_sort_option_item_selected(index: int) -> void:
-	_set_current_sort_type(index as SortType)
+	_set_current_sort_type(index as Files.SortType)
 
 func _on_filter_pressed() -> void:
 	_tags_window.popup_centered()
@@ -384,3 +306,6 @@ func _on_search_line_edit_text_changed(new_text: String) -> void:
 			if block_books[i] is LongBook:
 				var search_visible : bool = true if new_text.is_empty() else new_text in block_books[i].get_book().name.to_lower()
 				block_books[i].visible = search_visible and _filtered_books_visibility[i]
+
+func _on_manage_list_button_pressed() -> void:
+	get_tree().change_scene_to_packed(_manage_lists_container_scene)

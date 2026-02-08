@@ -11,6 +11,7 @@ class_name BookResource
 @export var creation_time : float
 
 var current_dir_path : String = ""
+var cover_texture : Texture2D
 
 @warning_ignore("shadowed_variable")
 func _init(name : String = "", reading_type : int = 0, stars : int = 0, comment : String = "", tags : TagsResource = TagsResource.new()) -> void:
@@ -25,7 +26,7 @@ func get_tags_uids() -> PackedStringArray:
 	var uids := PackedStringArray()
 	
 	for tag in tags.tags:
-		uids.append(tag.resource_scene_unique_id)
+		uids.append(tag.name)
 	
 	return uids
 

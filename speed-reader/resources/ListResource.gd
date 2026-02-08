@@ -6,6 +6,7 @@ class_name ListResource
 @export var name : String ## UNIQUE
 @export var background_color : Color
 @export var foreground_color : Color
+@export var creation_time : float
 
 @export var tags : TagsResource
 
@@ -16,3 +17,11 @@ func _init(books_ids : PackedStringArray = PackedStringArray(), name : String = 
 	self.background_color = background_color
 	self.foreground_color = foreground_color
 	self.tags = tags
+
+func get_tags_uids() -> PackedStringArray:
+	var uids := PackedStringArray()
+	
+	for tag in tags.tags:
+		uids.append(tag.name)
+	
+	return uids

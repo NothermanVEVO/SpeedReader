@@ -44,7 +44,7 @@ func load_book(book : BookResource, load_cover_image : bool = true) -> void:
 	_title_text.text = book.name
 	
 	if load_cover_image:
-		_cover_image.texture = Files.load_cover_image_from_book(_book)
+		_cover_image.texture = _book.cover_texture
 	
 	var tags_container_child_count : int = _tags_flow_container.get_child_count()
 	var idx : int = 0

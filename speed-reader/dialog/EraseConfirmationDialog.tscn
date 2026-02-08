@@ -2,7 +2,7 @@
 
 [node name="ConfirmationDialog" type="ConfirmationDialog"]
 oversampling_override = 1.0
-title = "Apagar livro"
+title = "Apagar?"
 transient = false
 always_on_top = true
 force_native = true
