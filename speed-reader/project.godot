@@ -22,6 +22,7 @@ Global="*res://global/Global.gd"
 Files="*res://global/Files.gd"
 ReaderThread="*res://global/ReaderThread.gd"
 Settings="*res://global/Settings.gd"
+GlobalSignals="*res://global/GlobalSignals.gd"
 
 [display]
 

@@ -93,6 +93,11 @@ item_8/text = "+ Nova lista"
 item_9/selectable = false
 item_9/disabled = true
 
+[node name="ManageListButton" type="Button" parent="HBoxContainer/LeftBar/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Gerenciar listas"
+
 [node name="MiddleBar" type="MarginContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -175,6 +180,17 @@ text = "Filtrar"
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "Novo arquivo"
+
+[node name="ListTitle" type="MarginContainer" parent="HBoxContainer/MiddleBar/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/MiddleBar/VBoxContainer/ListTitle"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 36
+text = "Todos"
+vertical_alignment = 1
 
 [node name="SearchBar" type="MarginContainer" parent="HBoxContainer/MiddleBar/VBoxContainer"]
 layout_mode = 2

@@ -9,7 +9,7 @@ var _book : BookResource
 
 @onready var _cover_image : TextureRect = $MarginContainer/LongBook/Cover
 @onready var _title_text : RichTextLabel = $MarginContainer/LongBook/Info/Title
-@onready var _reading_type : OptionButton = $MarginContainer/LongBook/Info/Reading
+@onready var _reading_type : OptionButton = $MarginContainer/LongBook/Info/HBoxContainer/Reading
 @onready var _stars : SpinBox = $MarginContainer/LongBook/Info/Stars
 @onready var _tags_flow_container : FlowContainer = $MarginContainer/LongBook/Info/TagsContainer/ScrollContainer/Tags
 

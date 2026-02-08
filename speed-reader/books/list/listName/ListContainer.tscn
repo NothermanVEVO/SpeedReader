@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://8cebfdd0uukc"]
+
+[ext_resource type="Script" uid="uid://4ad2rmle12qa" path="res://books/list/listName/ListContainer.gd" id="1_27ufv"]
+
+[node name="ListContainer" type="MarginContainer"]
+script = ExtResource("1_27ufv")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0.5, 0.5, 0.5, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="NameScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/HBoxContainer/NameScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "as das das asddas  asd das asd asd"
+fit_content = true
+autowrap_mode = 0
+
+[node name="CheckButton" type="CheckButton" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0

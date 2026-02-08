@@ -1,9 +1,22 @@
 extends Node
 
 const EXTRACTED_TEXTS_PATH : String = "user://books"
+
 const TOOLS_PATH : String = "user://tools"
 const EXTRACT_FILE_PATH : String = TOOLS_PATH + "/extract_text.exe"
+
 const TAGS_PATH : String = "user://tags.tres"
+
+const LISTS_PATH : String = "user://lists"
+const PREPARED_LISTS_PATH : String = LISTS_PATH + "/prepared_lists.tres"
+const CUSTOM_LISTS_PATH : String = LISTS_PATH + "/custom_lists.tres"
+
+const PREPARED_LIST_READING : String = "Reading"
+const PREPARED_LIST_PLAN_TO_READ : String = "Plan to Read"
+const PREPARED_LIST_COMPLETED : String = "Completed"
+const PREPARED_LIST_ON_HOLD : String = "On Hold"
+const PREPARED_LIST_RE_READING : String = "Re-reading"
+const PREPARED_LIST_DROPPED : String = "Dropped"
 
 const VALID_EXTENSION_IN_EXTRACTION : Array[String] = ["txt", "pdf", "doc", "docx", "epub"]
 const VALID_IMAGE_EXTENSION : Array[String] = ["jpg", "jpeg", "png", "svg", "webp", "tga", "bmp", "dds", "ktx", "exr", "hdr"]
@@ -14,6 +27,9 @@ const _ERASE_CONFIRMATION_DIALOG_SCENE : PackedScene = preload("res://dialog/Era
 var _last_requested_book_to_erase : BookResource
 
 var _tags : TagsResource
+
+var _prepared_lists : ListsResource
+var _custom_lists : ListsResource
 
 signal saved_book(book : BookResource, changed_cover : bool)
 
@@ -37,16 +53,41 @@ func _ready() -> void:
 		ResourceSaver.save(_tags, TAGS_PATH)
 	else:
 		_tags = ResourceLoader.load(TAGS_PATH)
-	
-	#for tag in _tags.tags:
-		#print(tag.name)
-		#print(tag.background_color)
+
+	if not DirAccess.dir_exists_absolute(LISTS_PATH):
+		DirAccess.make_dir_absolute(LISTS_PATH)
+
+	if not FileAccess.file_exists(PREPARED_LISTS_PATH):
+		_create_prepared_lists()
+	else:
+		_prepared_lists = ResourceLoader.load(PREPARED_LISTS_PATH)
+
+	if not FileAccess.file_exists(CUSTOM_LISTS_PATH):
+		_create_custom_lists()
+	else:
+		_custom_lists = ResourceLoader.load(CUSTOM_LISTS_PATH)
 
 	if not FileAccess.file_exists(EXTRACT_FILE_PATH):
 		var data := FileAccess.get_file_as_bytes("res://extern/extract_text/extract_text.exe")
 		var f := FileAccess.open(EXTRACT_FILE_PATH, FileAccess.WRITE)
 		f.store_buffer(data)
 		f.close()
+
+func _create_prepared_lists() -> void:
+	_prepared_lists = ListsResource.new()
+	
+	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_READING))
+	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_PLAN_TO_READ))
+	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_COMPLETED))
+	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_ON_HOLD))
+	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_RE_READING))
+	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_DROPPED))
+	
+	ResourceSaver.save(_prepared_lists, PREPARED_LISTS_PATH)
+
+func _create_custom_lists() -> void:
+	_custom_lists = ListsResource.new()
+	ResourceSaver.save(_custom_lists, CUSTOM_LISTS_PATH)
 
 func import(from_path : String, to_path : String) -> Error:
 	var dir_path : String = to_path.get_base_dir()
@@ -169,9 +210,15 @@ func remove_tag(tag : TagResource) -> Error:
 		removed_tag.emit(tag)
 	return status
 
-func get_books_tags_uids(book : BookResource) -> Array[String]:
+func get_book_tags_uids(book : BookResource) -> Array[String]:
 	var uids : Array[String] = []
 	for tag in book.tags.tags:
+		uids.append(tag.resource_scene_unique_id)
+	return uids
+
+func get_list_tags_uids(list : ListResource) -> Array[String]:
+	var uids : Array[String] = []
+	for tag in list.tags.tags:
 		uids.append(tag.resource_scene_unique_id)
 	return uids
 
