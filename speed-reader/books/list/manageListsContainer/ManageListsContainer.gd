@@ -3,6 +3,8 @@ extends MarginContainer
 const _NEW_LIST_WINDOW_SCENE : PackedScene = preload("res://windows/newListWindow/NewListWindow.tscn")
 const _MANAGE_LIST_CONTAINER_SCENE : PackedScene = preload("res://books/list/manageListContainer/ManageListContainer.tscn")
 
+var _books_scene : PackedScene = load("res://books/Books.tscn")
+
 @onready var _search_line_edit : LineEdit = $VBoxContainer/SearchContainer/SearchLineEdit
 @onready var _lists_vbox_container : VBoxContainer = $VBoxContainer/ScrollContainer/ListsVBoxContainer
 
@@ -120,3 +122,6 @@ func _on_new_list_button_pressed() -> void:
 	add_child(new_list_window)
 	new_list_window.set_type(NewListWindow.Type.NEW_LIST)
 	new_list_window.popup_centered()
+
+func _on_return_button_pressed() -> void:
+	get_tree().change_scene_to_packed(_books_scene)

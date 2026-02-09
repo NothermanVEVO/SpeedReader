@@ -23,14 +23,23 @@ theme_override_constants/separation = 10
 
 [node name="TitleContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/TitleContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 36
 text = "Gerenciar listas"
+autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="ReturnButton" type="Button" parent="VBoxContainer/TitleContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 26
+text = "Voltar"
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -97,6 +106,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[connection signal="pressed" from="VBoxContainer/TitleContainer/ReturnButton" to="." method="_on_return_button_pressed"]
 [connection signal="item_selected" from="VBoxContainer/MarginContainer/HBoxContainer/Sort/SortOption" to="." method="_on_sort_option_item_selected"]
 [connection signal="pressed" from="VBoxContainer/MarginContainer/HBoxContainer/FilterButton" to="." method="_on_filter_button_pressed"]
 [connection signal="text_changed" from="VBoxContainer/SearchContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]

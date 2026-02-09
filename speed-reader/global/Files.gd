@@ -497,3 +497,9 @@ func can_save_list(list_to_save : ListResource) -> bool:
 		if list.name == list_to_save.name and list != list_to_save:
 			return false
 	return true
+
+func get_book(book_uid : String) -> BookResource:
+	for book in _books:
+		if book.get_ID() == book_uid:
+			return book
+	return null

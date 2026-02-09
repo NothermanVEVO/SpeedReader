@@ -34,6 +34,11 @@ var _last_toggled_block_book : BlockBook
 
 var _filtered_books_visibility : Array[bool] = []
 
+var _last_include_tags : Array[TagResource] = []
+var _last_exclude_tags : Array[TagResource] = []
+var _last_include_mode : TagsWindow.OptionMode
+var _last_exclude_mode : TagsWindow.OptionMode
+
 func _ready() -> void:
 	_input_dialog.title = tr("Name of the folder")
 	_input_dialog.define_placeholder_text(tr("Type the name of the folder") + ":")
@@ -64,6 +69,11 @@ func _files_sorted_books(sort_type : Files.SortType) -> void:
 						_block_books.move_child.call_deferred(child, i)
 
 func _tags_window_confirmation_pressed(include_tags : Array[TagResource], exclude_tags : Array[TagResource], include_mode : TagsWindow.OptionMode, exclude_mode : TagsWindow.OptionMode) -> void:
+	_last_include_tags = include_tags
+	_last_exclude_tags = exclude_tags
+	_last_include_mode = include_mode
+	_last_exclude_mode = exclude_mode
+	
 	_filtered_books_visibility.clear()
 	
 	if _current_show_type == ShowType.LONG:
@@ -147,6 +157,8 @@ func _set_current_show_type(show_type : ShowType) -> void:
 						child.set_pressed()
 			_long_books.visible = false
 			_block_books.visible = true
+	
+	_tags_window_confirmation_pressed.call_deferred(_last_include_tags, _last_exclude_tags, _last_include_mode, _last_exclude_mode)
 
 func _clear_books_nodes() -> void:
 	var books_size : int = _books.size()
@@ -159,6 +171,7 @@ func _set_current_sort_type(sort_type : Files.SortType) -> void:
 	Files.set_book_sort_type(_current_sort_type)
 
 func _add_book(book : BookResource) -> void:
+	_filtered_books_visibility.append(true)
 	match _current_show_type:
 		ShowType.LONG:
 			var long_book : LongBook = _LONG_BOOK_SCENE.instantiate()
@@ -176,6 +189,7 @@ func _remove_book(book : BookResource) -> void:
 		ShowType.LONG:
 			for child in _long_books.get_children():
 				if child is LongBook and child.get_book() == book:
+					_filtered_books_visibility.remove_at(child.get_index())
 					child.has_toggled.disconnect(_has_toggled_long_book)
 					_long_books.remove_child(child)
 					child.queue_free()
@@ -183,6 +197,7 @@ func _remove_book(book : BookResource) -> void:
 		ShowType.BLOCK:
 			for child in _block_books.get_children():
 				if child is BlockBook and child.get_book() == book:
+					_filtered_books_visibility.remove_at(child.get_index())
 					child.has_toggled.disconnect(_has_toggled_block_book)
 					_block_books.remove_child(child)
 					child.queue_free()
@@ -303,7 +318,7 @@ func _on_search_line_edit_text_changed(new_text: String) -> void:
 	else:
 		var block_books : Array[Node] = _block_books.get_children()
 		for i in block_books.size():
-			if block_books[i] is LongBook:
+			if block_books[i] is BlockBook:
 				var search_visible : bool = true if new_text.is_empty() else new_text in block_books[i].get_book().name.to_lower()
 				block_books[i].visible = search_visible and _filtered_books_visibility[i]
 
