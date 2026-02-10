@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://cg0rffr8lf5rf"]
+
+[ext_resource type="Script" uid="uid://b88ru6mj8fo65" path="res://books/list/selectListsContainer/SelectListsContainer.gd" id="1_fecll"]
+
+[node name="SelectListsContainer" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fecll")
+
+[node name="ListsVBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2

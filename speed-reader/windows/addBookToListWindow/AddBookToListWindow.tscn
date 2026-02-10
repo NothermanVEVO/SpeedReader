@@ -1,0 +1,61 @@
+[gd_scene load_steps=3 format=3 uid="uid://ql8lbhnjskoa"]
+
+[ext_resource type="PackedScene" uid="uid://cg0rffr8lf5rf" path="res://books/list/selectListsContainer/SelectListsContainer.tscn" id="1_744hk"]
+[ext_resource type="Script" uid="uid://cbah48tnjfn4s" path="res://windows/addBookToListWindow/AddBookToListWindow.gd" id="1_ijpok"]
+
+[node name="AddBookToListWindow" type="Window"]
+oversampling_override = 1.0
+initial_position = 1
+size = Vector2i(400, 600)
+visible = false
+exclusive = true
+force_native = true
+script = ExtResource("1_ijpok")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 24
+text = "Listas"
+fit_content = true
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NewListButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "+ Nova lista"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SelectListsContainer" parent="MarginContainer/VBoxContainer/ScrollContainer" instance=ExtResource("1_744hk")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+_enable_multi_select = true
+
+[node name="ReadyButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+mouse_default_cursor_shape = 2
+text = "Pronto"
+
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/NewListButton" to="." method="_on_new_list_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ReadyButton" to="." method="_on_ready_button_pressed"]

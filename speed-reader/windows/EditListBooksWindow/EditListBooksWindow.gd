@@ -1,5 +1,7 @@
 extends Window
 
+class_name EditListBooksWindow
+
 const _TOGGLE_BOOK_CONTAINER_SCENE : PackedScene = preload("res://books/toggleBook/ToggleBookContainer.tscn")
 
 @onready var _background_color_rect : ColorRect = $MarginContainer/VBoxContainer/ListTitleContainer/BackgroundColorRect

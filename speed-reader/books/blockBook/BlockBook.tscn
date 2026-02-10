@@ -63,6 +63,11 @@ popup/item_3/id = 3
 popup/item_4/text = "Larguei"
 popup/item_4/id = 4
 
+[node name="AddListButton" type="Button" parent="ScrollContainer/Button/MarginContainer/VBoxContainer/Info"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "+ Adicionar a lista"
+
 [node name="Stars" type="SpinBox" parent="ScrollContainer/Button/MarginContainer/VBoxContainer/Info"]
 custom_minimum_size = Vector2(128, 0)
 layout_mode = 2
@@ -106,6 +111,7 @@ text = "Excluir"
 
 [connection signal="toggled" from="ScrollContainer/Button" to="." method="_on_button_toggled"]
 [connection signal="item_selected" from="ScrollContainer/Button/MarginContainer/VBoxContainer/Info/Reading" to="." method="_on_reading_item_selected"]
+[connection signal="pressed" from="ScrollContainer/Button/MarginContainer/VBoxContainer/Info/AddListButton" to="." method="_on_add_list_button_pressed"]
 [connection signal="value_changed" from="ScrollContainer/Button/MarginContainer/VBoxContainer/Info/Stars" to="." method="_on_stars_value_changed"]
 [connection signal="pressed" from="ScrollContainer/Button/MarginContainer/VBoxContainer/Buttons/EditButton" to="." method="_on_edit_button_pressed"]
 [connection signal="pressed" from="ScrollContainer/Button/MarginContainer/VBoxContainer/Buttons/DeleteButton" to="." method="_on_delete_button_pressed"]

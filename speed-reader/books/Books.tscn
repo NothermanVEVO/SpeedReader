@@ -296,6 +296,11 @@ size_flags_horizontal = 0
 max_value = 10.0
 suffix = "Estrelas"
 
+[node name="AddListButton" type="Button" parent="HBoxContainer/RightBar/BookInfo"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "+ Adicionar a lista"
+
 [node name="Comments" type="TextEdit" parent="HBoxContainer/RightBar/BookInfo"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -328,6 +333,7 @@ text = "Salvar"
 [connection signal="text_changed" from="HBoxContainer/MiddleBar/VBoxContainer/SearchBar/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
 [connection signal="item_selected" from="HBoxContainer/RightBar/BookInfo/Reading" to="HBoxContainer/RightBar" method="_on_reading_item_selected"]
 [connection signal="value_changed" from="HBoxContainer/RightBar/BookInfo/Stars" to="HBoxContainer/RightBar" method="_on_stars_value_changed"]
+[connection signal="pressed" from="HBoxContainer/RightBar/BookInfo/AddListButton" to="HBoxContainer/RightBar" method="_on_add_list_button_pressed"]
 [connection signal="text_changed" from="HBoxContainer/RightBar/BookInfo/Comments" to="HBoxContainer/RightBar" method="_on_comments_text_changed"]
 [connection signal="pressed" from="HBoxContainer/RightBar/BookInfo/HBoxContainer/EditButton" to="HBoxContainer/RightBar" method="_on_edit_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/RightBar/BookInfo/HBoxContainer/Save" to="HBoxContainer/RightBar" method="_on_save_pressed"]

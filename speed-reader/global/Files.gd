@@ -503,3 +503,12 @@ func get_book(book_uid : String) -> BookResource:
 		if book.get_ID() == book_uid:
 			return book
 	return null
+
+func get_custom_lists_from_book(book : BookResource) -> Array[ListResource]:
+	var lists : Array[ListResource] = []
+	
+	for list in _custom_lists.lists:
+		if book.get_ID() in list.books_ids:
+			lists.append(list)
+	
+	return lists

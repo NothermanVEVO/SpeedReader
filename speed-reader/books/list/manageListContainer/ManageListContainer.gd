@@ -12,8 +12,10 @@ var _list : ListResource
 const _TAG_CONTAINER_SCENE : PackedScene = preload("res://books/tag/TagContainer.tscn")
 const _NEW_LIST_WINDOW_SCENE : PackedScene = preload("res://windows/newListWindow/NewListWindow.tscn")
 
-const _texture_rect_min_size : Vector2 = Vector2(100, 140)
-const _texture_rect_expande_mode : TextureRect.ExpandMode = TextureRect.ExpandMode.EXPAND_IGNORE_SIZE
+const _EDIT_LIST_BOOKS_WINDOW_SCENE : PackedScene = preload("res://windows/editListBooksWindow/EditListBooksWindow.tscn")
+
+const _TEXTURE_RECT_MIN_SIZE : Vector2 = Vector2(100, 140)
+const _TEXTURE_RECT_EXPANDE_MODE : TextureRect.ExpandMode = TextureRect.ExpandMode.EXPAND_IGNORE_SIZE
 
 func _ready() -> void:
 	Files.saved_custom_list.connect(_files_saved_custom_list)
@@ -55,8 +57,11 @@ func set_list(list : ListResource) -> void:
 		else:
 			idx += 1
 	
-	for tag in _list.tags.tags:
+	for book_id in _list.books_ids:
 		var book_texture_rect := TextureRect.new()
+		book_texture_rect.custom_minimum_size = _TEXTURE_RECT_MIN_SIZE
+		book_texture_rect.expand_mode = _TEXTURE_RECT_EXPANDE_MODE
+		book_texture_rect.texture = Files.get_book(book_id).cover_texture
 		_books_cover_hbox_container.add_child(book_texture_rect)
 
 func get_list() -> ListResource:
@@ -78,3 +83,11 @@ func _on_erase_button_pressed() -> void:
 	if not _list:
 		return
 	Files.request_to_erase_custom_list(_list)
+
+func _on_add_book_button_pressed() -> void:
+	if not _list:
+		return
+	var edit_list_books_window : EditListBooksWindow = _EDIT_LIST_BOOKS_WINDOW_SCENE.instantiate()
+	add_child(edit_list_books_window)
+	edit_list_books_window.set_list(_list)
+	edit_list_books_window.popup_centered()

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c8vakdwkgqvxi"]
 
-[ext_resource type="Script" uid="uid://dwnwgok17gp1u" path="res://windows/EditListBooksWindow/EditListBooksWindow.gd" id="1_ifi7u"]
+[ext_resource type="Script" uid="uid://dwnwgok17gp1u" path="res://windows/editListBooksWindow/EditListBooksWindow.gd" id="1_ifi7u"]
 [ext_resource type="PackedScene" uid="uid://cww7m0lkfi13d" path="res://windows/tagsWindow/TagsWindow.tscn" id="2_lcowc"]
 
 [node name="EditListBooksWindow" type="Window"]
@@ -8,6 +8,7 @@ oversampling_override = 1.0
 title = "Livros da lista"
 initial_position = 2
 size = Vector2i(800, 600)
+visible = false
 exclusive = true
 force_native = true
 script = ExtResource("1_ifi7u")

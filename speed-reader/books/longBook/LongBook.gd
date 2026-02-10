@@ -15,6 +15,7 @@ var _book : BookResource
 
 const _TAG_CONTAINER_SCENE : PackedScene = preload("res://books/tag/TagContainer.tscn")
 const _EDIT_BOOK_WINDOW_SCENE : PackedScene = preload("res://windows/editBookWindow/EditBookWindow.tscn")
+const _ADD_BOOK_TO_LIST_SCENE : PackedScene = preload("res://windows/addBookToListWindow/AddBookToListWindow.tscn")
 
 var _just_loaded_book : bool = false
 
@@ -100,3 +101,12 @@ func _on_edit_pressed() -> void:
 
 func _on_delete_button_pressed() -> void:
 	Files.request_to_erase_book(_book)
+
+func _on_add_list_button_pressed() -> void:
+	if not _book:
+		return
+	
+	var add_book_to_list_window : AddBookToListWindow = _ADD_BOOK_TO_LIST_SCENE.instantiate()
+	add_child(add_book_to_list_window)
+	add_book_to_list_window.set_book(_book)
+	add_book_to_list_window.popup_centered()

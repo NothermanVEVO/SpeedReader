@@ -109,11 +109,20 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="AddBookButton" type="Button" parent="MarginContainer/VBoxContainer/BottomContainer/ScrollContainer/BooksCovers"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/BottomContainer/ScrollContainer/BooksCovers"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="AddBookButton" type="Button" parent="MarginContainer/VBoxContainer/BottomContainer/ScrollContainer/BooksCovers/MarginContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "+"
 
 [connection signal="pressed" from="ListButton" to="." method="_on_list_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/TopContainer/HBoxContainer/HBoxContainer/EditButton" to="." method="_on_edit_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/TopContainer/HBoxContainer/HBoxContainer/EraseButton" to="." method="_on_erase_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/BottomContainer/ScrollContainer/BooksCovers/MarginContainer/AddBookButton" to="." method="_on_add_book_button_pressed"]
