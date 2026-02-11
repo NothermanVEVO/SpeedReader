@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=3 uid="uid://dpwkarvfhcc7v"]
+
+[ext_resource type="PackedScene" uid="uid://8cebfdd0uukc" path="res://books/list/toggleList/ToggleListContainer.tscn" id="1_aqa3f"]
+[ext_resource type="Script" uid="uid://c3t56sm6xhgdn" path="res://books/list/allListSelectContainer/AllListsSelectContainer.gd" id="1_h6ahd"]
+[ext_resource type="PackedScene" uid="uid://cg0rffr8lf5rf" path="res://books/list/selectListsContainer/SelectListsContainer.tscn" id="2_h6ahd"]
+
+[node name="AllListsSelectContainer" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_h6ahd")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="AllList" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_aqa3f")]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SelectPreparedListsContainer" parent="ScrollContainer/VBoxContainer" instance=ExtResource("2_h6ahd")]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SelectCustomListsContainer" parent="ScrollContainer/VBoxContainer" instance=ExtResource("2_h6ahd")]
+layout_mode = 2
+
+[connection signal="toggled" from="ScrollContainer/VBoxContainer/AllList" to="." method="_on_all_list_toggled"]
+[connection signal="list_selected" from="ScrollContainer/VBoxContainer/SelectPreparedListsContainer" to="." method="_on_select_prepared_lists_container_list_selected"]
+[connection signal="list_selected" from="ScrollContainer/VBoxContainer/SelectCustomListsContainer" to="." method="_on_select_custom_lists_container_list_selected"]

@@ -10,6 +10,7 @@ var _book : BookResource
 
 func _ready() -> void:
 	_select_lists_container.list_selected.connect(_list_selected)
+	_select_lists_container.set_list_type(SelectListsContainer.ListType.CUSTOM)
 
 func set_book(book : BookResource) -> void:
 	_book = book
@@ -45,3 +46,6 @@ func _on_new_list_button_pressed() -> void:
 
 func _on_ready_button_pressed() -> void:
 	queue_free()
+
+func _on_search_line_edit_text_changed(new_text: String) -> void:
+	_select_lists_container.set_lists_visible_by_name(new_text)

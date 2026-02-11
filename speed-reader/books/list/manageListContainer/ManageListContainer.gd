@@ -12,6 +12,8 @@ var _list : ListResource
 const _TAG_CONTAINER_SCENE : PackedScene = preload("res://books/tag/TagContainer.tscn")
 const _NEW_LIST_WINDOW_SCENE : PackedScene = preload("res://windows/newListWindow/NewListWindow.tscn")
 
+const _BOOKS_CONTAINER_SCENE : PackedScene = preload("res://books/Books.tscn")
+
 const _EDIT_LIST_BOOKS_WINDOW_SCENE : PackedScene = preload("res://windows/editListBooksWindow/EditListBooksWindow.tscn")
 
 const _TEXTURE_RECT_MIN_SIZE : Vector2 = Vector2(100, 140)
@@ -68,7 +70,9 @@ func get_list() -> ListResource:
 	return _list
 
 func _on_list_button_pressed() -> void:
-	pass # Replace with function body.
+	if _list:
+		Books.set_selected_list_value(_list)
+		get_tree().change_scene_to_packed(_BOOKS_CONTAINER_SCENE)
 
 func _on_edit_button_pressed() -> void:
 	if not _list:

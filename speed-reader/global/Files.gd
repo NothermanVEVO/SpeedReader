@@ -11,6 +11,8 @@ const LISTS_PATH : String = "user://lists"
 const PREPARED_LISTS_PATH : String = LISTS_PATH + "/prepared_lists.tres"
 const CUSTOM_LISTS_PATH : String = LISTS_PATH + "/custom_lists.tres"
 
+enum ReadingTypes {NONE, READING, PLAN_TO_READ, COMPLETED, OH_HOLD, RE_READING, DROPPED}
+
 const PREPARED_LIST_READING : String = "Reading"
 const PREPARED_LIST_PLAN_TO_READ : String = "Plan to Read"
 const PREPARED_LIST_COMPLETED : String = "Completed"
@@ -35,6 +37,7 @@ var _books : Array[BookResource] = []
 
 var _tags : TagsResource
 
+var _all_list : ListResource = ListResource.new(PackedStringArray(), "Todos", Color(0.5, 0.5, 0.5, 1.0))
 var _prepared_lists : ListsResource
 var _custom_lists : ListsResource
 
@@ -58,6 +61,7 @@ signal erase_custom_list(list : ListResource)
 
 signal added_custom_list(list : ListResource)
 
+signal saved_prepared_list(list : ListResource)
 signal saved_custom_list(list : ListResource)
 
 func _ready() -> void:
@@ -148,12 +152,12 @@ func unload_books() -> void:
 func _create_prepared_lists() -> void:
 	_prepared_lists = ListsResource.new()
 	
-	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_READING))
-	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_PLAN_TO_READ))
-	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_COMPLETED))
-	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_ON_HOLD))
-	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_RE_READING))
-	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_DROPPED))
+	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_READING, Color(0.5, 0.5, 0.5, 1.0)))
+	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_PLAN_TO_READ, Color(0.5, 0.5, 0.5, 1.0)))
+	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_COMPLETED, Color(0.5, 0.5, 0.5, 1.0)))
+	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_ON_HOLD, Color(0.5, 0.5, 0.5, 1.0)))
+	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_RE_READING, Color(0.5, 0.5, 0.5, 1.0)))
+	_prepared_lists.lists.append(ListResource.new(PackedStringArray(), PREPARED_LIST_DROPPED, Color(0.5, 0.5, 0.5, 1.0)))
 	
 	ResourceSaver.save(_prepared_lists, PREPARED_LISTS_PATH)
 
@@ -468,8 +472,82 @@ func remove_dir_recursive(path: String) -> Error:
 
 	return DirAccess.remove_absolute(path)
 
+func get_all_list() -> ListResource:
+	return _all_list
+
 func get_custom_lists() -> ListsResource:
 	return _custom_lists
+
+func get_prepared_lists() -> ListsResource:
+	return _prepared_lists
+
+func save_prepared_lists(list : ListResource) -> Error:
+	var status := ResourceSaver.save(_prepared_lists, PREPARED_LISTS_PATH)
+	if status == OK:
+		saved_prepared_list.emit(list)
+	return status
+
+func get_prepared_list(reading_type : ReadingTypes) -> ListResource:
+	match reading_type:
+		ReadingTypes.READING:
+			for list in _prepared_lists.lists:
+				if list.name == PREPARED_LIST_READING:
+					return list
+		ReadingTypes.PLAN_TO_READ:
+			for list in _prepared_lists.lists:
+				if list.name == PREPARED_LIST_PLAN_TO_READ:
+					return list
+		ReadingTypes.COMPLETED:
+			for list in _prepared_lists.lists:
+				if list.name == PREPARED_LIST_COMPLETED:
+					return list
+		ReadingTypes.OH_HOLD:
+			for list in _prepared_lists.lists:
+				if list.name == PREPARED_LIST_ON_HOLD:
+					return list
+		ReadingTypes.RE_READING:
+			for list in _prepared_lists.lists:
+				if list.name == PREPARED_LIST_RE_READING:
+					return list
+		ReadingTypes.DROPPED:
+			for list in _prepared_lists.lists:
+				if list.name == PREPARED_LIST_DROPPED:
+					return list
+	return null
+
+func remove_book_from_prepared_list(book : BookResource, reading_type : ReadingTypes) -> Error:
+	var list := get_prepared_list(reading_type)
+	if list:
+		if book.get_ID() in list.books_ids:
+			list.books_ids.erase(book.get_ID())
+			return save_prepared_lists(list)
+		else:
+			return FAILED
+	else:
+		return FAILED
+
+func add_book_to_prepared_list(book : BookResource, reading_type : ReadingTypes) -> Error:
+	var list := get_prepared_list(reading_type)
+	if list:
+		if not book.get_ID() in list.books_ids:
+			list.books_ids.append(book.get_ID())
+			return save_prepared_lists(list)
+		else:
+			return FAILED
+	else:
+		return FAILED
+
+func custom_lists_has_list(list : ListResource) -> bool:
+	for custom_list in _custom_lists.lists:
+		if custom_list.name == list.name:
+			return true
+	return false
+
+func prepared_lists_has_list(list : ListResource) -> bool:
+	for prepared_list in _prepared_lists.lists:
+		if prepared_list.name == list.name:
+			return true
+	return false
 
 func save_custom_list(list : ListResource) -> Error:
 	var status := ResourceSaver.save(_custom_lists, CUSTOM_LISTS_PATH)

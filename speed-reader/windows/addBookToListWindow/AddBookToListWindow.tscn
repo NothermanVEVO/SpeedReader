@@ -35,6 +35,15 @@ fit_content = true
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="SearchBar" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SearchLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/SearchBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Pesquisar"
+clear_button_enabled = true
+
 [node name="NewListButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
@@ -57,5 +66,6 @@ mouse_default_cursor_shape = 2
 text = "Pronto"
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/SearchBar/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/NewListButton" to="." method="_on_new_list_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/ReadyButton" to="." method="_on_ready_button_pressed"]

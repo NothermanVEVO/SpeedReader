@@ -19,6 +19,8 @@ const _ADD_BOOK_TO_LIST_SCENE : PackedScene = preload("res://windows/addBookToLi
 
 var _just_loaded_book : bool = false
 
+var _previous_reading_index : int = 0
+
 signal has_toggled(long_book : LongBook, toggled_on : bool)
 
 func _ready() -> void:
@@ -82,6 +84,9 @@ func _on_reading_item_selected(index: int) -> void:
 	_book.reading_type = index
 	if not _just_loaded_book:
 		Files.save_book(_book)
+		Files.remove_book_from_prepared_list(_book, _previous_reading_index as Files.ReadingTypes)
+		Files.add_book_to_prepared_list(_book, index as Files.ReadingTypes)
+	_previous_reading_index = index
 
 func _on_stars_value_changed(value: float) -> void:
 	_book.stars = int(value)

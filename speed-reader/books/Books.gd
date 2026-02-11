@@ -25,6 +25,11 @@ var _books : Array[BookResource] = []
 @onready var _accept_dialog : AcceptDialog = $AcceptDialog
 @onready var _input_dialog : InputDialog = $InputDialog
 
+@onready var _list_background_color_rect : ColorRect = $HBoxContainer/MiddleBar/VBoxContainer/ListTitle/ListBackgroundColorRect
+@onready var _list_name_rich_text_label : RichTextLabel = $HBoxContainer/MiddleBar/VBoxContainer/ListTitle/MarginContainer/ListNameRichTextLabel
+
+@onready var _all_lists_select_container : AllListsSelectContainer = $HBoxContainer/LeftBar/VBoxContainer/Lists/AllListsSelectContainer
+
 var _current_sort_type : Files.SortType
 
 var _last_file_path : String = ""
@@ -39,6 +44,9 @@ var _last_exclude_tags : Array[TagResource] = []
 var _last_include_mode : TagsWindow.OptionMode
 var _last_exclude_mode : TagsWindow.OptionMode
 
+static var _selected_list : ListResource
+static var _is_all_list : bool
+
 func _ready() -> void:
 	_input_dialog.title = tr("Name of the folder")
 	_input_dialog.define_placeholder_text(tr("Type the name of the folder") + ":")
@@ -52,6 +60,10 @@ func _ready() -> void:
 	Files.erase_book.connect(_remove_book)
 	Files.sorted_books.connect(_files_sorted_books)
 	_tags_window.confirmation_pressed.connect(_tags_window_confirmation_pressed)
+	
+	if not _selected_list:
+		_selected_list = Files.get_all_list()
+	_all_lists_select_container.set_selected_list(_selected_list)
 
 func _files_sorted_books(sort_type : Files.SortType) -> void:
 	_current_sort_type = sort_type
@@ -314,13 +326,29 @@ func _on_search_line_edit_text_changed(new_text: String) -> void:
 		for i in long_books.size():
 			if long_books[i] is LongBook:
 				var search_visible : bool = true if new_text.is_empty() else new_text in long_books[i].get_book().name.to_lower()
-				long_books[i].visible = search_visible and _filtered_books_visibility[i]
+				var can_show : bool = _is_all_list or (long_books[i].get_book().get_ID() in _selected_list.books_ids)
+				long_books[i].visible = search_visible and _filtered_books_visibility[i] and can_show
 	else:
 		var block_books : Array[Node] = _block_books.get_children()
 		for i in block_books.size():
 			if block_books[i] is BlockBook:
 				var search_visible : bool = true if new_text.is_empty() else new_text in block_books[i].get_book().name.to_lower()
-				block_books[i].visible = search_visible and _filtered_books_visibility[i]
+				var can_show : bool = _is_all_list or (block_books[i].get_book().get_ID() in _selected_list.books_ids)
+				block_books[i].visible = search_visible and _filtered_books_visibility[i] and can_show
 
 func _on_manage_list_button_pressed() -> void:
 	get_tree().change_scene_to_packed(_manage_lists_container_scene)
+
+func _on_all_lists_select_container_list_selected(list: ListResource) -> void:
+	_selected_list = list
+	
+	_is_all_list = _selected_list == Files.get_all_list()
+	
+	_list_background_color_rect.color = _selected_list.background_color
+	_list_name_rich_text_label.text = _selected_list.name
+	_list_name_rich_text_label.add_theme_color_override("default_color", _selected_list.foreground_color)
+	
+	_on_search_line_edit_text_changed(_search_line_edit.text)
+
+static func set_selected_list_value(list : ListResource) -> void:
+	_selected_list = list

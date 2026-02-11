@@ -2,7 +2,7 @@ extends MarginContainer
 
 class_name ToggleListContainer
 
-static var _max_size_x : float = 200.0
+var _max_size_x : float = 200.0
 
 @onready var _background_color_rect : ColorRect = $BackgroundColorRect
 @onready var _name_rich_text_label : RichTextLabel = $MarginContainer/HBoxContainer/NameScrollContainer/NameRichTextLabel
@@ -18,7 +18,7 @@ var _list : ListResource
 signal toggled(toggle_list_container : ToggleListContainer, toggled_on : bool)
 
 func _ready() -> void:
-	GlobalSignals.changed_list_max_size_x.connect(_resize_text)
+	pass
 
 func set_list(list : ListResource) -> void:
 	_list = list
@@ -37,7 +37,6 @@ func get_list() -> ListResource:
 
 func _resize_text() -> void:
 	_name_scroll_container.custom_minimum_size.x = _name_rich_text_label.size.x if _name_rich_text_label.size.x <= _max_size_x else _max_size_x
-	_name_scroll_container.custom_minimum_size.y = _name_rich_text_label.size.y + 5
 	
 	if _name_scroll_container.custom_minimum_size.x < _name_rich_text_label.size.x:
 		_name_scroll_container.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -50,11 +49,11 @@ func set_pressed(pressed : bool) -> void:
 func set_size_flag_horizontal(size_flag : SizeFlags) -> void:
 	_margin_container.size_flags_horizontal = size_flag
 
-static func set_max_size_x(max_size_x : float) -> void:
+func set_max_size_x(max_size_x : float) -> void:
 	_max_size_x = max_size_x
-	GlobalSignals.changed_list_max_size_x.emit()
+	_resize_text()
 
-static func get_max_size_x() -> float:
+func get_max_size_x() -> float:
 	return _max_size_x
 
 func _on_button_toggled(toggled_on: bool) -> void:

@@ -3,6 +3,9 @@
 [ext_resource type="Script" uid="uid://4ad2rmle12qa" path="res://books/list/toggleList/ToggleListContainer.gd" id="1_27ufv"]
 
 [node name="ToggleListContainer" type="MarginContainer"]
+custom_minimum_size = Vector2(0, 40)
+offset_right = 38.0
+offset_bottom = 34.0
 script = ExtResource("1_27ufv")
 
 [node name="Button" type="Button" parent="."]

@@ -17,6 +17,8 @@ const _ADD_BOOK_TO_LIST_SCENE : PackedScene = preload("res://windows/addBookToLi
 
 @onready var _save_button : Button = $BookInfo/HBoxContainer/Save
 
+var _previous_reading_index : int = 0
+
 func _ready() -> void:
 	Files.saved_book.connect(_files_saved_book)
 	Files.erase_book.connect(_files_erase_book)
@@ -65,6 +67,9 @@ func get_book() -> BookResource:
 func _on_reading_item_selected(index: int) -> void:
 	_book.reading_type = index
 	Files.save_book(_book)
+	Files.remove_book_from_prepared_list(_book, _previous_reading_index as Files.ReadingTypes)
+	Files.add_book_to_prepared_list(_book, index as Files.ReadingTypes)
+	_previous_reading_index = index
 
 func _on_stars_value_changed(value: float) -> void:
 	_book.stars = int(value)
