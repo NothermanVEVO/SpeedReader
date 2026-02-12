@@ -27,7 +27,7 @@ func set_selected_list(list : ListResource) -> void:
 		_select_custom_lists_container.set_list_pressed(list, true)
 
 func _resized() -> void:
-	size.x = custom_minimum_size.x
+	#size.x = custom_minimum_size.x
 	_select_prepared_lists_container.set_max_size_x(custom_minimum_size.x)
 	_select_custom_lists_container.set_max_size_x(custom_minimum_size.x)
 

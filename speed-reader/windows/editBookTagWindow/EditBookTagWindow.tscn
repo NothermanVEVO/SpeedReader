@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://ctgbfwicb1rpk"]
+[gd_scene load_steps=4 format=3 uid="uid://ctgbfwicb1rpk"]
 
 [ext_resource type="Script" uid="uid://b85yfwtye4h24" path="res://windows/editBookTagWindow/EditBookTagWindow.gd" id="1_sjnkr"]
+[ext_resource type="PackedScene" uid="uid://b1wrixd3lkb7o" path="res://windows/newTagWindow/NewTagWindow.tscn" id="2_hjn14"]
+[ext_resource type="PackedScene" uid="uid://3bswykf35jb2" path="res://windows/eraseTagWindow/EraseTagWindow.tscn" id="3_0gej7"]
 
 [node name="EditBookTagWindow" type="Window"]
 oversampling_override = 1.0
@@ -11,6 +13,10 @@ visible = false
 exclusive = true
 force_native = true
 script = ExtResource("1_sjnkr")
+
+[node name="NewTagWindow" parent="." instance=ExtResource("2_hjn14")]
+
+[node name="EraseTagWindow" parent="." instance=ExtResource("3_0gej7")]
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
@@ -37,6 +43,22 @@ fit_content = true
 autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="TagButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="EraseButton" type="Button" parent="MarginContainer/VBoxContainer/TagButtons"]
+modulate = Color(1, 0.4117647, 0.4117647, 1)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Apagar tag"
+
+[node name="NewButton" type="Button" parent="MarginContainer/VBoxContainer/TagButtons"]
+modulate = Color(0.5568628, 1, 0.4117647, 1)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Nova tag"
 
 [node name="SearchContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -81,5 +103,7 @@ mouse_default_cursor_shape = 2
 text = "Voltar"
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/TagButtons/EraseButton" to="." method="_on_erase_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/TagButtons/NewButton" to="." method="_on_new_button_pressed"]
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/SearchContainer/HBoxContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]

@@ -61,9 +61,16 @@ func _ready() -> void:
 	Files.sorted_books.connect(_files_sorted_books)
 	_tags_window.confirmation_pressed.connect(_tags_window_confirmation_pressed)
 	
-	if not _selected_list:
+	Files.erase_custom_list.connect(_files_erase_custom_list)
+	
+	if not _selected_list or (not _selected_list in Files.get_prepared_lists().lists and not _selected_list in Files.get_custom_lists().lists):
 		_selected_list = Files.get_all_list()
 	_all_lists_select_container.set_selected_list(_selected_list)
+
+func _files_erase_custom_list(list : ListResource) -> void:
+	if _selected_list.name == list.name:
+		_selected_list = Files.get_all_list()
+		_all_lists_select_container.set_selected_list(_selected_list)
 
 func _files_sorted_books(sort_type : Files.SortType) -> void:
 	_current_sort_type = sort_type

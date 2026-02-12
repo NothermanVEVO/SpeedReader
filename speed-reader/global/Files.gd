@@ -358,9 +358,15 @@ func remove_tag(tag : TagResource) -> Error:
 	else:
 		for book in _books:
 			for book_tag in book.tags.tags:
-				if book_tag.resource_scene_unique_id == tag.resource_scene_unique_id:
+				if book_tag.name == tag.name:
 					book.tags.tags.erase(book_tag)
-					Files.save_book(book)
+					save_book(book)
+					break
+		for list in _custom_lists.lists:
+			for list_tag in list.tags.tags:
+				if list_tag.name == tag.name:
+					list.tags.tags.erase(list_tag)
+					save_custom_list(list)
 					break
 		removed_tag.emit(tag)
 	return status
@@ -368,13 +374,13 @@ func remove_tag(tag : TagResource) -> Error:
 func get_book_tags_uids(book : BookResource) -> Array[String]:
 	var uids : Array[String] = []
 	for tag in book.tags.tags:
-		uids.append(tag.resource_scene_unique_id)
+		uids.append(tag.name)
 	return uids
 
 func get_list_tags_uids(list : ListResource) -> Array[String]:
 	var uids : Array[String] = []
 	for tag in list.tags.tags:
-		uids.append(tag.resource_scene_unique_id)
+		uids.append(tag.name)
 	return uids
 
 func open_extracted_texts_folder() -> void:
@@ -431,6 +437,17 @@ func _confirmed_to_erase_book() -> void:
 				erase_book.emit(_last_requested_book_to_erase)
 				remove_dir_recursive(_last_requested_book_to_erase.current_dir_path)
 				_books.erase(_last_requested_book_to_erase)
+				
+				for list in _custom_lists.lists:
+					if _last_requested_book_to_erase.get_ID() in list.books_ids:
+						list.books_ids.erase(_last_requested_book_to_erase.get_ID())
+						save_custom_list(list)
+				
+				for list in _prepared_lists.lists:
+					if _last_requested_book_to_erase.get_ID() in list.books_ids:
+						list.books_ids.erase(_last_requested_book_to_erase.get_ID())
+						save_prepared_lists(list)
+				
 				_last_requested_book_to_erase = null
 		EraseType.CUSTOM_LIST:
 			if _last_requested_custom_list_to_erase:

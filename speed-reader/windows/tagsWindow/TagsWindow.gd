@@ -19,9 +19,15 @@ enum OptionMode{AND = 0, OR = 1}
 
 signal confirmation_pressed(include_tags : Array[TagResource], exclude_tags : Array[TagResource], include_mode : OptionMode, exclude_mode : OptionMode)
 
+static var _last_include_mode : OptionMode = OptionMode.AND
+static var _last_exclude_mode : OptionMode = OptionMode.OR
+
 func _ready() -> void:
 	for tag in Files.get_tags().tags:
 		_added_tag(tag)
+	
+	_include_option_button.select(_last_include_mode)
+	_exclude_option_button.select(_last_exclude_mode)
 	
 	Files.added_tag.connect(_added_tag)
 	Files.removed_tag.connect(_removed_tag)
@@ -41,6 +47,7 @@ func _added_tag(tag : TagResource) -> void:
 	var select_tag_container : SelectTagContainer = _SELECT_TAG_SCENE.instantiate()
 	_tags_flow_container.add_child(select_tag_container)
 	select_tag_container.set_tag(tag)
+	_select_tag_changed_select_type(select_tag_container)
 	select_tag_container.changed_select_type.connect(_select_tag_changed_select_type)
 
 func _removed_tag(tag : TagResource) -> void:
@@ -67,12 +74,16 @@ func _on_search_line_edit_text_changed(new_text: String) -> void:
 			child.visible = true if new_text.is_empty() else new_text in child.get_tag().name.to_lower()
 
 func _on_confirm_button_pressed() -> void:
-	confirmation_pressed.emit(_include_tags, _exclude_tags, _include_option_button.selected as OptionMode, _exclude_option_button.selected as OptionMode)
+	_last_include_mode = _include_option_button.selected as OptionMode
+	_last_exclude_mode = _exclude_option_button.selected as OptionMode
+	confirmation_pressed.emit(_include_tags, _exclude_tags, _last_include_mode, _last_exclude_mode)
 	visible = false
 
 func _on_reset_button_pressed() -> void:
 	for select_tag_container in _tags_flow_container.get_children():
 		if select_tag_container is SelectTagContainer:
 			select_tag_container.set_select_type(TagResource.SelectType.UNSELECTED)
+	_include_option_button.select(OptionMode.AND)
+	_exclude_option_button.select(OptionMode.OR)
 	_include_tags.clear()
 	_exclude_tags.clear()

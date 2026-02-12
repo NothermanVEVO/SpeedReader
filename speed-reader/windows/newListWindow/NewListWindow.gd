@@ -32,6 +32,15 @@ func _ready() -> void:
 	set_type(_type)
 	
 	Files.erase_custom_list.connect(_erase_list)
+	
+	Files.removed_tag.connect(_remove_tag)
+
+func _remove_tag(tag : TagResource) -> void:
+	for child in _tags_flow_container.get_children():
+		if child is TagContainer and child.get_tag().name == tag.name:
+			_tags_flow_container.remove_child(child)
+			child.queue_free()
+			return
 
 func set_list(list : ListResource) -> void:
 	_list = list
@@ -142,7 +151,7 @@ func _added_tag(tag : TagResource) -> void:
 
 func _removed_tag(tag_to_remove : TagResource) -> void:
 	for child in _tags_flow_container.get_children():
-		if child is TagContainer and child.get_tag().resource_scene_unique_id == tag_to_remove.resource_scene_unique_id:
+		if child is TagContainer and child.get_tag().name == tag_to_remove.name:
 			child.queue_free()
 
 func _on_erase_button_pressed() -> void:

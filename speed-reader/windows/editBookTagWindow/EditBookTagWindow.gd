@@ -4,16 +4,32 @@ class_name EditBookTagWindow
 
 @onready var _tags_flow_container : FlowContainer = $MarginContainer/VBoxContainer/TagsContainer/MarginContainer/ScrollContainer/TagsFlowContainer
 
+@onready var _new_tag_window : Window = $NewTagWindow
+@onready var _erase_tag_window : Window = $EraseTagWindow
+
 const _PRESS_TAG_SCENE : PackedScene = preload("res://books/tag/pressTag/PressTagContainer.tscn")
 
 var _book : BookResource
 
 func _ready() -> void:
+	Files.added_tag.connect(_add_tag)
+	Files.removed_tag.connect(_remove_tag)
+	
 	for tag in Files.get_tags().tags:
-		var press_tag_container : PressTagContainer = _PRESS_TAG_SCENE.instantiate()
-		_tags_flow_container.add_child(press_tag_container)
-		press_tag_container.set_tag(tag)
-		press_tag_container.button_toggled.connect(_press_tag_button_toggled)
+		_add_tag(tag)
+
+func _add_tag(tag : TagResource) -> void:
+	var press_tag_container : PressTagContainer = _PRESS_TAG_SCENE.instantiate()
+	_tags_flow_container.add_child(press_tag_container)
+	press_tag_container.set_tag(tag)
+	press_tag_container.button_toggled.connect(_press_tag_button_toggled)
+
+func _remove_tag(tag : TagResource) -> void:
+	for child in _tags_flow_container.get_children():
+		if child is PressTagContainer and child.get_tag().name == tag.name:
+			_tags_flow_container.remove_child(child)
+			child.queue_free()
+			return
 
 func set_book(book : BookResource) -> void:
 	_book = book
@@ -23,7 +39,7 @@ func set_book(book : BookResource) -> void:
 			continue
 		var found_tag : bool = false
 		for tag in _book.tags.tags:
-			if child.get_tag().resource_scene_unique_id == tag.resource_scene_unique_id:
+			if child.get_tag().name == tag.name:
 				found_tag = true
 				break
 		child.set_pressed(found_tag)
@@ -36,14 +52,14 @@ func _press_tag_button_toggled(press_tag_container : PressTagContainer, toggled_
 		return
 	var books_tags_uids : Array[String] = Files.get_book_tags_uids(_book)
 	
-	if (toggled_on and press_tag_container.get_tag().resource_scene_unique_id in books_tags_uids) or (not toggled_on and not press_tag_container.get_tag().resource_scene_unique_id in books_tags_uids):
+	if (toggled_on and press_tag_container.get_tag().name in books_tags_uids) or (not toggled_on and not press_tag_container.get_tag().name in books_tags_uids):
 		return
 	
 	if toggled_on:
 		_book.tags.tags.append(press_tag_container.get_tag())
 	else:
 		for tag in _book.tags.tags:
-			if press_tag_container.get_tag().resource_scene_unique_id == tag.resource_scene_unique_id:
+			if press_tag_container.get_tag().name == tag.name:
 				_book.tags.tags.erase(tag)
 				break
 	Files.save_book(_book)
@@ -59,3 +75,9 @@ func _on_return_button_pressed() -> void:
 
 func _on_close_requested() -> void:
 	queue_free()
+
+func _on_erase_button_pressed() -> void:
+	_erase_tag_window.popup_centered()
+
+func _on_new_button_pressed() -> void:
+	_new_tag_window.popup_centered()
