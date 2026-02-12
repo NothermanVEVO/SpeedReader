@@ -28,7 +28,7 @@ var _books : Array[BookResource] = []
 @onready var _list_background_color_rect : ColorRect = $HBoxContainer/MiddleBar/VBoxContainer/ListTitle/ListBackgroundColorRect
 @onready var _list_name_rich_text_label : RichTextLabel = $HBoxContainer/MiddleBar/VBoxContainer/ListTitle/MarginContainer/ListNameRichTextLabel
 
-@onready var _all_lists_select_container : AllListsSelectContainer = $HBoxContainer/LeftBar/VBoxContainer/Lists/AllListsSelectContainer
+@onready var _all_lists_select_container : AllListsSelectContainer = $HBoxContainer/LeftBar/MarginContainer/VBoxContainer/Lists/AllListsSelectContainer
 
 var _current_sort_type : Files.SortType
 

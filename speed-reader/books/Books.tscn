@@ -34,50 +34,64 @@ layout_mode = 2
 
 [node name="LeftBar" type="MarginContainer" parent="HBoxContainer"]
 layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/LeftBar"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/LeftBar"]
+layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 5
+theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LeftBar"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LeftBar/MarginContainer"]
 layout_mode = 2
 
-[node name="SpeedReader" type="FlowContainer" parent="HBoxContainer/LeftBar/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/LeftBar/MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 0
-alignment = 1
-vertical = true
 
-[node name="Button" type="Button" parent="HBoxContainer/LeftBar/VBoxContainer/SpeedReader"]
+[node name="Button" type="Button" parent="HBoxContainer/LeftBar/MarginContainer/VBoxContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
-text = "="
+text = "|||"
 
-[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/LeftBar/VBoxContainer/SpeedReader"]
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/LeftBar/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 24
 text = "SpeedReader"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="Lists" type="FlowContainer" parent="HBoxContainer/LeftBar/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/LeftBar/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Lists" type="FlowContainer" parent="HBoxContainer/LeftBar/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 3
 vertical = true
 
-[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/LeftBar/VBoxContainer/Lists"]
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/LeftBar/MarginContainer/VBoxContainer/Lists"]
 layout_mode = 2
+theme_override_font_sizes/normal_font_size = 20
 text = "Listas"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="AllListsSelectContainer" parent="HBoxContainer/LeftBar/VBoxContainer/Lists" instance=ExtResource("4_lx3rd")]
+[node name="AllListsSelectContainer" parent="HBoxContainer/LeftBar/MarginContainer/VBoxContainer/Lists" instance=ExtResource("4_lx3rd")]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="ManageListButton" type="Button" parent="HBoxContainer/LeftBar/VBoxContainer"]
+[node name="ManageListButton" type="Button" parent="HBoxContainer/LeftBar/MarginContainer/VBoxContainer"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "Gerenciar listas"
@@ -320,8 +334,8 @@ disabled = true
 text = "Salvar"
 
 [connection signal="file_selected" from="FileDialog" to="." method="_on_file_dialog_file_selected"]
-[connection signal="list_selected" from="HBoxContainer/LeftBar/VBoxContainer/Lists/AllListsSelectContainer" to="." method="_on_all_lists_select_container_list_selected"]
-[connection signal="pressed" from="HBoxContainer/LeftBar/VBoxContainer/ManageListButton" to="." method="_on_manage_list_button_pressed"]
+[connection signal="list_selected" from="HBoxContainer/LeftBar/MarginContainer/VBoxContainer/Lists/AllListsSelectContainer" to="." method="_on_all_lists_select_container_list_selected"]
+[connection signal="pressed" from="HBoxContainer/LeftBar/MarginContainer/VBoxContainer/ManageListButton" to="." method="_on_manage_list_button_pressed"]
 [connection signal="item_selected" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Type/ShowTypeOption" to="." method="_on_show_type_option_item_selected"]
 [connection signal="item_selected" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Sort/SortOption" to="." method="_on_sort_option_item_selected"]
 [connection signal="pressed" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Filter" to="." method="_on_filter_pressed"]
