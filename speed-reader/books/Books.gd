@@ -313,7 +313,10 @@ func _input_dialog_text_confirmed(text : String) -> void:
 		_open_accept_dialog_on_import(book_status)
 		if book_status == OK:
 			Files.add_book(book)
+			Files.load_cover_image_from_book(book)
+			_add_book(book)
 			_set_current_sort_type(_current_sort_type)
+			_tags_window_confirmation_pressed.call_deferred(_last_include_tags, _last_exclude_tags, _last_include_mode, _last_exclude_mode)
 	else:
 		_open_accept_dialog_on_import(status)
 

@@ -101,7 +101,15 @@ vertical_alignment = 1
 [node name="Buttons" type="FlowContainer" parent="MarginContainer/LongBook"]
 layout_mode = 2
 size_flags_horizontal = 8
-size_flags_vertical = 8
+alignment = 2
+vertical = true
+
+[node name="NewButton" type="Button" parent="MarginContainer/LongBook/Buttons"]
+modulate = Color(0.5568628, 1, 0.4117647, 1)
+layout_mode = 2
+size_flags_vertical = 2
+mouse_default_cursor_shape = 2
+text = "Abrir"
 
 [node name="Edit" type="Button" parent="MarginContainer/LongBook/Buttons"]
 layout_mode = 2

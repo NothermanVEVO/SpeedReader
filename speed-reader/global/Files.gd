@@ -3,7 +3,7 @@ extends Node
 const EXTRACTED_TEXTS_PATH : String = "user://books"
 
 const TOOLS_PATH : String = "user://tools"
-const EXTRACT_FILE_PATH : String = TOOLS_PATH + "/extract_text.exe"
+const EXTRACT_FILE_PATH : String = TOOLS_PATH + "/extract_text_n_image.exe"
 
 const TAGS_PATH : String = "user://tags.tres"
 
@@ -94,7 +94,7 @@ func _ready() -> void:
 		_custom_lists = ResourceLoader.load(CUSTOM_LISTS_PATH)
 
 	if not FileAccess.file_exists(EXTRACT_FILE_PATH):
-		var data := FileAccess.get_file_as_bytes("res://extern/extract_text/extract_text.exe")
+		var data := FileAccess.get_file_as_bytes("res://extern/extract_text/extract_text_n_image.exe")
 		var f := FileAccess.open(EXTRACT_FILE_PATH, FileAccess.WRITE)
 		f.store_buffer(data)
 		f.close()
@@ -324,13 +324,21 @@ func save_book(book : BookResource) -> Error:
 	return status
 
 func load_cover_image_from_book(book : BookResource) -> void:
-	if FileAccess.file_exists(book.current_dir_path + "/cover.png"):
-		var image := Image.load_from_file(book.current_dir_path + "/cover.png")
+	var image_path = get_image_path_from_book(book)
+	if FileAccess.file_exists(image_path):
+		var image := Image.load_from_file(image_path)
 		if image:
 			book.cover_texture = ImageTexture.create_from_image(image)
 	
 	if not book.cover_texture:
 		book.cover_texture = Books.FILE_ICON
+
+func get_image_path_from_book(book : BookResource) -> String:
+	var dir := DirAccess.open(book.current_dir_path)
+	for file in dir.get_files():
+		if file.begins_with("cover"):
+			return book.current_dir_path + "/" + file
+	return ""
 
 func get_tags() -> TagsResource:
 	return _tags

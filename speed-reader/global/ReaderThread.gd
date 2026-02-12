@@ -1,4 +1,4 @@
-extends Node ## 10083
+extends Node
 
 var _thread := Thread.new()
 
@@ -40,46 +40,9 @@ func _ended() -> void:
 		_force_to_end = false
 		ended_by_force.emit()
 
-#func _max_tokens_that_fit(paragraph: TextParagraph, tokens: Array[String], start_index: int) -> int:
-	#var max_available := tokens.size() - start_index
-	#if max_available <= 0:
-		#return 0
-#
-	## 1) crescimento exponencial
-	#var step := 32
-	#var count := step
-#
-	#while count <= max_available:
-		#var text := "".join(tokens.slice(start_index, start_index + count))
-		#if _fits_in_page(paragraph, text):
-			#step *= 2
-			#count += step
-		#else:
-			#break
-#
-	## agora temos um range:
-	## (count - step) cabe, count não cabe (ou passou do limite)
-	#var high : int = min(count, max_available)
-	#var low : int = max(1, high - step)
-	#var best := low
-#
-	## 2) busca binária no range pequeno
-	#while low <= high:
-		#@warning_ignore("integer_division")
-		#var mid := (low + high) / 2
-#
-		#var text := "".join(tokens.slice(start_index, start_index + mid))
-		#if _fits_in_page(paragraph, text):
-			#best = mid
-			#low = mid + 1
-		#else:
-			#high = mid - 1
-#
-	#return best
-
 #func _calculate_pages_test() -> void:
 func _calculate_pages() -> void:
-	var start_ms := Time.get_ticks_msec()
+	#var start_ms := Time.get_ticks_msec()
 	
 	if not FileAccess.file_exists(_file_path):
 		return
@@ -141,27 +104,27 @@ func _calculate_pages() -> void:
 	
 	file.close()
 	
-	var end_ms := Time.get_ticks_msec()
-	var elapsed_ms := end_ms - start_ms
-	var elapsed_s := float(elapsed_ms) / 1000.0
+	#var end_ms := Time.get_ticks_msec()
+	#var elapsed_ms := end_ms - start_ms
+	#var elapsed_s := float(elapsed_ms) / 1000.0
+#
+	#var pages : float = max(_current_pages_calculated - 1, 1)
+	#var pages_per_sec : float = float(pages) / max(elapsed_s, 0.001)
 
-	var pages : float = max(_current_pages_calculated - 1, 1)
-	var pages_per_sec : float = float(pages) / max(elapsed_s, 0.001)
-
-	print("=== CALC PAGES DONE ===")
-	print("Páginas:", pages)
-	print("Tempo:", elapsed_ms, "ms (", elapsed_s, "s )")
-	print("Páginas/s:", pages_per_sec)
+	#print("=== CALC PAGES DONE ===")
+	#print("Páginas:", pages)
+	#print("Tempo:", elapsed_ms, "ms (", elapsed_s, "s )")
+	#print("Páginas/s:", pages_per_sec)
+	#
+	### DEBUG ## TO CHECK IF A PAGE HAS MORE LINES THAN IT SHOULD
+	#for i in _pages_position_in_file.size():
+		#var text := get_page_text(i)
+		#paragraph.clear()
+		#paragraph.add_string(text, _font, _font_size)
+		#if paragraph.get_line_count() > _max_lines:
+			#print(i)
 	
-	## DEBUG ## TO CHECK IF A PAGE HAS MORE LINES THAN IT SHOULD
-	for i in _pages_position_in_file.size():
-		var text := get_page_text(i)
-		paragraph.clear()
-		paragraph.add_string(text, _font, _font_size)
-		if paragraph.get_line_count() > _max_lines:
-			print(i)
-	
-	print("acabou")
+	#print("acabou")
 	
 	_ended.call_deferred()
 

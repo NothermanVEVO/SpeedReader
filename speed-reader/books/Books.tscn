@@ -321,6 +321,13 @@ caret_blink = true
 layout_mode = 2
 alignment = 2
 
+[node name="NewButton" type="Button" parent="HBoxContainer/RightBar/BookInfo/HBoxContainer"]
+modulate = Color(0.5568628, 1, 0.4117647, 1)
+layout_mode = 2
+size_flags_horizontal = 2
+mouse_default_cursor_shape = 2
+text = "Abrir"
+
 [node name="EditButton" type="Button" parent="HBoxContainer/RightBar/BookInfo/HBoxContainer"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
