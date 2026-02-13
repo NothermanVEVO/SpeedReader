@@ -8,6 +8,8 @@ const _TAG_CONTAINER_SCENE : PackedScene = preload("res://books/tag/TagContainer
 const _EDIT_BOOK_WINDOW_SCENE : PackedScene = preload("res://windows/editBookWindow/EditBookWindow.tscn")
 const _ADD_BOOK_TO_LIST_SCENE : PackedScene = preload("res://windows/addBookToListWindow/AddBookToListWindow.tscn")
 
+const _SPEED_READER_SCENE : PackedScene = preload("res://speedReader/SpeedReader.tscn")
+
 @onready var _cover_image : TextureRect = $BookInfo/Top/Cover
 @onready var _title_text : RichTextLabel = $BookInfo/Top/Title
 @onready var _reading_options : OptionButton = $BookInfo/Reading
@@ -98,3 +100,8 @@ func _on_add_list_button_pressed() -> void:
 	add_child(add_book_to_list_window)
 	add_book_to_list_window.set_book(_book)
 	add_book_to_list_window.popup_centered()
+
+func _on_open_button_pressed() -> void:
+	if _book:
+		Files.current_selected_book = _book
+		get_tree().change_scene_to_packed(_SPEED_READER_SCENE)

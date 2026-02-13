@@ -17,6 +17,8 @@ const _ADD_BOOK_TO_LIST_SCENE : PackedScene = preload("res://windows/addBookToLi
 @onready var _stars : SpinBox = $ScrollContainer/Button/MarginContainer/VBoxContainer/Info/Stars
 @onready var _tags_flow_container : FlowContainer = $ScrollContainer/Button/MarginContainer/VBoxContainer/Info/Tags/FlowContainer
 
+const _SPEED_READER_SCENE : PackedScene = preload("res://speedReader/SpeedReader.tscn")
+
 var _just_loaded_book : bool = false
 
 var _previous_reading_index : int = 0
@@ -114,3 +116,9 @@ func _on_add_list_button_pressed() -> void:
 	add_child(add_book_to_list_window)
 	add_book_to_list_window.set_book(_book)
 	add_book_to_list_window.popup_centered()
+
+
+func _on_open_button_pressed() -> void:
+	if _book:
+		Files.current_selected_book = _book
+		get_tree().change_scene_to_packed(_SPEED_READER_SCENE)

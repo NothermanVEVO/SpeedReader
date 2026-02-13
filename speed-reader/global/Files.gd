@@ -46,6 +46,8 @@ enum SortType {LATEST = 0, OLDEST = 1, ALPHABETICAL_ASCEDING = 2, ALPHABETICAL_D
 var _current_book_sort_type : SortType = SortType.LATEST
 var _current_custom_list_sort_type : SortType = SortType.LATEST
 
+var current_selected_book : BookResource
+
 signal sorted_books(sort_type : SortType)
 signal sorted_custom_lists(sort_type : SortType)
 
@@ -221,6 +223,12 @@ func get_text_from_imported_file(file_path : String) -> void:
 		ReaderThread.force_to_end()
 		await ReaderThread.ended_by_force
 	ReaderThread.calculate_pages(file_path, FullText.get_font(), FullText.get_font_size(), FullText.get_paragraph_width(), FullText.get_max_lines(), FullText.get_max_words())
+
+func get_text_from_imported_book(book : BookResource) -> void:
+	if ReaderThread.is_calculating_pages():
+		ReaderThread.force_to_end()
+		await ReaderThread.ended_by_force
+	ReaderThread.load_book(book, FullText.get_font(), FullText.get_font_size(), FullText.get_paragraph_width(), FullText.get_max_lines(), FullText.get_max_words())
 
 func save_file(file_path : String, data : String, overrides : bool = false) -> Error:
 	if not overrides and FileAccess.file_exists(file_path):

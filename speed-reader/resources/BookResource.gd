@@ -27,6 +27,12 @@ func _init(name : String = "", reading_type : int = 0, stars : int = 0, comment 
 	self.sizes_by_pages = sizes_by_pages
 	self.last_word_byte_pos = last_word_byte_pos
 
+func has_size(size : Vector2i) -> bool:
+	for size_by_page in sizes_by_pages:
+		if size == size_by_page.size:
+			return true
+	return false
+
 func get_tags_uids() -> PackedStringArray:
 	var uids := PackedStringArray()
 	

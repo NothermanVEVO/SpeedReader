@@ -151,7 +151,7 @@ static func get_words_per_minute() -> float:
 	return _words_per_minute
 
 func _player_go_backward() -> void:
-	if _currently_word_idx - 1 < 0 and _full_text.get_page_index() - 1 >= 0:
+	if _currently_word_idx < 0 and _full_text.get_page_index() - 1 >= 0:
 		_full_text.set_page(_full_text.get_page_index() - 1)
 		_currently_word_idx = _words.size() - 2
 		_set_current_word(_currently_word_idx + 1)

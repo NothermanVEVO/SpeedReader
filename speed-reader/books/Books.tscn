@@ -321,7 +321,7 @@ caret_blink = true
 layout_mode = 2
 alignment = 2
 
-[node name="NewButton" type="Button" parent="HBoxContainer/RightBar/BookInfo/HBoxContainer"]
+[node name="OpenButton" type="Button" parent="HBoxContainer/RightBar/BookInfo/HBoxContainer"]
 modulate = Color(0.5568628, 1, 0.4117647, 1)
 layout_mode = 2
 size_flags_horizontal = 2
@@ -352,5 +352,6 @@ text = "Salvar"
 [connection signal="value_changed" from="HBoxContainer/RightBar/BookInfo/Stars" to="HBoxContainer/RightBar" method="_on_stars_value_changed"]
 [connection signal="pressed" from="HBoxContainer/RightBar/BookInfo/AddListButton" to="HBoxContainer/RightBar" method="_on_add_list_button_pressed"]
 [connection signal="text_changed" from="HBoxContainer/RightBar/BookInfo/Comments" to="HBoxContainer/RightBar" method="_on_comments_text_changed"]
+[connection signal="pressed" from="HBoxContainer/RightBar/BookInfo/HBoxContainer/OpenButton" to="HBoxContainer/RightBar" method="_on_open_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/RightBar/BookInfo/HBoxContainer/EditButton" to="HBoxContainer/RightBar" method="_on_edit_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/RightBar/BookInfo/HBoxContainer/Save" to="HBoxContainer/RightBar" method="_on_save_pressed"]

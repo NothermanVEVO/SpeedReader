@@ -2,6 +2,7 @@ extends Node
 
 var _thread := Thread.new()
 
+var _current_book : BookResource
 var _file_path : String
 var _font : Font
 var _font_size : int
@@ -12,7 +13,7 @@ var _width : float
 var _current_pages_calculated : int = 0
 var _calculated_all_pages : bool = false
 
-var _pages_position_in_file : PackedInt64Array = []
+var _pages_position_in_file : PackedInt64Array = PackedInt64Array()
 
 var _force_to_end : bool = false
 
@@ -21,9 +22,36 @@ signal calculated_pages(pages : int)
 signal calculated_all_pages(pages : int) ## BASICALLY YELLS THAT THE PROCESS ENDED
 signal ended_by_force
 
+func load_book(book : BookResource, font : Font, font_size : int, width : float, max_lines : int, max_words : int) -> void:
+	if _thread.is_started():
+		return
+	_current_book = book
+	_file_path = _current_book.current_dir_path + "/" + _current_book.name + ".txt"
+	_font = font
+	_font_size = font_size
+	_width = width
+	_max_lines = max_lines
+	_max_words = max_words
+	
+	var size := DisplayServer.window_get_size()
+	for size_by_page in _current_book.sizes_by_pages:
+		if size == size_by_page.size:
+			will_calculate_pages.emit()
+			_pages_position_in_file = size_by_page.start_pages_byte_pos
+			_current_pages_calculated = size_by_page.start_pages_byte_pos.size()
+			calculated_pages.emit.call_deferred(_current_pages_calculated) ## CRAZY, BUT WORKS
+			calculated_pages.emit.call_deferred(_current_pages_calculated) ## CRAZY, BUT WORKS
+			calculated_all_pages.emit.call_deferred(_current_pages_calculated)
+			return
+	
+	will_calculate_pages.emit()
+	_calculated_all_pages = false
+	_thread.start(_calculate_pages)
+
 func calculate_pages(file_path : String, font : Font, font_size : int, width : float, max_lines : int, max_words : int) -> void:
 	if _thread.is_started():
 		return
+	_current_book = null
 	_file_path = file_path
 	_font = font
 	_font_size = font_size
@@ -52,7 +80,7 @@ func _calculate_pages() -> void:
 
 	var file := FileAccess.open(_file_path, FileAccess.READ)
 
-	_pages_position_in_file.clear()
+	_pages_position_in_file = PackedInt64Array()
 	_pages_position_in_file.append(0)
 	_current_pages_calculated = 1
 
@@ -103,6 +131,12 @@ func _calculate_pages() -> void:
 	_calculated_all_pages = true
 	
 	file.close()
+	
+	if _current_book and not _current_book.has_size(DisplayServer.window_get_size()):
+		var size_pages := SizePagesResource.new(DisplayServer.window_get_size(), _pages_position_in_file)
+		_current_book.sizes_by_pages.append(size_pages)
+		Files.save_book.call_deferred(_current_book)
+		print("Não existia mas agora eu carreguei: " + str(size_pages.size) + " | " + str(size_pages.start_pages_byte_pos.size()))
 	
 	#var end_ms := Time.get_ticks_msec()
 	#var elapsed_ms := end_ms - start_ms

@@ -61,11 +61,7 @@ func _ready() -> void:
 	
 	Global.changed_theme.connect(_changed_theme)
 	
-	_text_container.will_open_diferent_file.connect(_will_open_diferent_file)
-
-func _will_open_diferent_file() -> void:
-	_last_word_byte_pos_in_focus = -1
-	_found_word_byte_pos = true
+	await get_tree().process_frame
 
 func _changed_theme(_theme : Global.Themes) -> void:
 	_word_button.modulate = _get_word_button_color()
@@ -81,6 +77,8 @@ func _resized() -> void:
 		_maximum_words = _calculate_maximum_words()
 		if _text_container.can_reopen_file():
 			if _word_in_focus:
+				Files.current_selected_book.last_word_byte_pos = get_page_n_word_idx()
+				Files.save_book(Files.current_selected_book)
 				var page_words : Array[Dictionary] = ReaderThread.get_page_words_with_positions(_currently_page_idx)
 				_found_word_byte_pos = not page_words.is_empty()
 				if page_words:
@@ -129,6 +127,8 @@ func _reset() -> void:
 	_pages_text.text = "/1"
 	_page_spin_box.value = 1
 	_page_spin_box.max_value = 1
+	if Files.current_selected_book:
+		set_last_word_byte_pos_in_focus(Files.current_selected_book.last_word_byte_pos)
 
 static func get_font() -> Font:
 	return _font
@@ -146,6 +146,7 @@ static func get_max_words() -> int:
 	return _maximum_words
 
 func _calculated_all_pages(_pages : int) -> void:
+	_quant_of_pages = _pages
 	if _currently_page_idx < 0:
 		set_page(0)
 
@@ -192,11 +193,13 @@ func _calculated_pages(pages : int) -> void:
 			_last_word_byte_pos_in_focus = -1
 			_page_idx_of_last_word = -1
 	
-	if _currently_page_idx < 0 and _quant_of_pages > 2: ## WARNING IS IT RIGHT?
+	if _last_word_byte_pos_in_focus < 0 and _currently_page_idx < 0 and _quant_of_pages > 2: ## WARNING IS IT RIGHT?
 		set_page(0)
 	
 	_page_spin_box.value = _currently_page_idx + 1
-	_pages_text.text = "/" + str(_quant_of_pages)
+	#_pages_text.text = "/" + str(_quant_of_pages)
+	_pages_text.clear()
+	_pages_text.append_text("/" + str(_quant_of_pages))
 	if _currently_page_idx == 0:
 		_left_page_button.disabled = true
 	else:
@@ -263,7 +266,9 @@ func set_page(page_idx : int) -> void:
 	_currently_page_idx = page_idx
 	
 	_page_spin_box.value = _currently_page_idx + 1
-	_pages_text.text = "/" + str(_quant_of_pages)
+	_pages_text.clear()
+	_pages_text.append_text("/" + str(_quant_of_pages))
+	#_pages_text.text = "/" + str(_quant_of_pages)
 	
 	set_full_text(_full_text)
 	changed_page.emit(_full_text)
