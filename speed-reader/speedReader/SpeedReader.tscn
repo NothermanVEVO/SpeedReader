@@ -180,6 +180,7 @@ layout_mode = 2
 alignment = 2
 
 [node name="File" type="MenuButton" parent="HBoxContainer/TextContainer/VBoxContainer/Top/FlowContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 0
@@ -192,6 +193,11 @@ popup/item_1/text = "Importar"
 popup/item_1/id = 1
 popup/item_2/text = "Abrir local do arquivo"
 popup/item_2/id = 2
+
+[node name="ReturnButton" type="Button" parent="HBoxContainer/TextContainer/VBoxContainer/Top/FlowContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Voltar"
 
 [node name="Settings" type="Button" parent="HBoxContainer/TextContainer/VBoxContainer/Top/FlowContainer"]
 layout_mode = 2
@@ -309,6 +315,7 @@ text = ">"
 [connection signal="drag_ended" from="HBoxContainer/Player/FlowContainer/WordsPerMinute/WPMHSlider" to="HBoxContainer/Player" method="_on_wpm_hslider_drag_ended"]
 [connection signal="value_changed" from="HBoxContainer/Player/FlowContainer/WordsPerMinute/WPMHSlider" to="HBoxContainer/Player" method="_on_wpm_hslider_value_changed"]
 [connection signal="file_selected" from="HBoxContainer/TextContainer/FileDialog" to="HBoxContainer/TextContainer" method="_on_file_dialog_file_selected"]
+[connection signal="pressed" from="HBoxContainer/TextContainer/VBoxContainer/Top/FlowContainer/ReturnButton" to="HBoxContainer/TextContainer" method="_on_return_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/TextContainer/VBoxContainer/Top/FlowContainer/Settings" to="HBoxContainer/TextContainer" method="_on_settings_pressed"]
 [connection signal="toggled" from="HBoxContainer/TextContainer/VBoxContainer/Top/FlowContainer/KeepDisplaying" to="HBoxContainer/TextContainer" method="_on_keep_displaying_toggled"]
 [connection signal="pressed" from="HBoxContainer/TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText/WordButton" to="HBoxContainer/TextContainer/VBoxContainer/MarginContainer/VBoxContainer/FullText" method="_on_word_button_pressed"]

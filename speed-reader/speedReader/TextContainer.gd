@@ -22,6 +22,8 @@ const _DARK_THEME : Theme = preload("res://themes/dark/base_text_container_theme
 
 #var _last_import_path : String = ""
 
+const _BOOKS_SCENE : PackedScene = preload("res://books/Books.tscn")
+
 static var _keep_displaying : bool = false
 
 var _fade_tween : Tween
@@ -38,8 +40,9 @@ func _ready() -> void:
 	#_input_dialog.define_placeholder_text(tr("Type the name of the folder") + ":")
 	#_input_dialog.text_confirmed.connect(_input_dialog_text_confirmed)
 	
-	Files.current_selected_book = Files.get_books()[0]
-	#_open_book.call_deferred()
+	#Files.current_selected_book = Files.get_books()[0]
+	if Files.current_selected_book:
+		_open_book.call_deferred()
 	
 	_player.play.connect(_is_playing)
 	
@@ -282,3 +285,7 @@ func save_last_word_in_book_position() -> void:
 #func _on_close_requested() -> void:
 	#if not _current_open_file_path.is_empty():
 		#Settings.save_data(ReaderThread.get_file_sha256_stream(_current_open_file_path), _full_text.get_page_n_word_idx())
+
+func _on_return_button_pressed() -> void:
+	save_last_word_in_book_position()
+	get_tree().change_scene_to_packed(_BOOKS_SCENE)

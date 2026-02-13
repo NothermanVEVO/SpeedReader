@@ -25,6 +25,8 @@ var _paragraph = TextParagraph.new()
 
 var _words : PackedStringArray
 var _currently_word_idx : int = 0
+var _currently_compound_word_idx : int = 0
+var _compound_words_positions : PackedInt64Array = PackedInt64Array()
 static var _words_per_minute : float = 250
 static var _currently_words_per_minute : float = 250
 var _current_word : String = ""
@@ -79,6 +81,8 @@ func _reset() -> void:
 	_current_page = ""
 	_current_word = ""
 	_currently_word_idx = 0
+	_currently_compound_word_idx = 0
+	_compound_words_positions = PackedInt64Array()
 	_quant_of_same_word_repetitions = 1
 	queue_redraw()
 
@@ -201,16 +205,20 @@ func play() -> void:
 			_player.set_paused(true)
 			return
 		
-		_currently_word_idx += 1
-		_set_current_word(_currently_word_idx)
-		
-		if _is_last_word_equal_to_current_word(_last_word, _current_word):
-			_quant_of_same_word_repetitions += 1
+		if not _compound_words_positions.is_empty() and _currently_compound_word_idx < _compound_words_positions.size():
+			_currently_compound_word_idx += 1
+			queue_redraw()
 		else:
-			_quant_of_same_word_repetitions = 1
-		_last_word = _current_word
+			_currently_word_idx += 1
+			_set_current_word(_currently_word_idx)
 		
-		if _words[_currently_word_idx][-1] in PUNCTUATIONS:
+			if _is_last_word_equal_to_current_word(_last_word, _current_word):
+				_quant_of_same_word_repetitions += 1
+			else:
+				_quant_of_same_word_repetitions = 1
+			_last_word = _current_word
+		
+		if _current_word[-1] in PUNCTUATIONS:
 			_currently_words_per_minute = _words_per_minute - _words_per_minute * PUNCTUATION_DELAY
 		else:
 			_currently_words_per_minute = _words_per_minute
@@ -239,6 +247,10 @@ func _set_current_word(idx : int) -> void:
 		_current_word = ""
 	else:
 		_current_word = _words[idx].strip_edges()
+		
+	_currently_compound_word_idx = 0
+	_compound_words_positions = Global.parse_compound_word(_current_word)
+	
 	queue_redraw()
 
 func _get_page(page : String) -> void:
@@ -318,7 +330,8 @@ func _draw() -> void:
 	# get all the glyphs that compose the line
 	var glyphs = text_server.shaped_text_get_glyphs(line_rid)
 
-	var middle_glyph_idx : int = _get_middle_word_idx(_current_word)
+	#var middle_glyph_idx : int = _get_middle_word_idx(_current_word)
+	var middle_glyph_idx : int = _get_middle_word_idx(_current_word) if _currently_compound_word_idx == 0 else _compound_words_positions[_currently_compound_word_idx - 1]
 	var center_letter_position_x : float
 
 	var _text_letters : Array[Letter] = []
@@ -341,7 +354,7 @@ func _draw() -> void:
 		#draw_rect(Rect2(Vector2(x + get_viewport_rect().size.x / 2, y), Vector2(advance, ascent + descent)), Color.RED, false)
 		_text_letters.append(Letter.new(Rect2(Vector2(x + size.x / 2, _font_size), Vector2(advance, ascent + descent)), _current_word[i - ghost_quant]))
 		
-		if i == middle_glyph_idx:
+		if i - ghost_quant == middle_glyph_idx:
 			center_letter_position_x = x + size.x / 2 + (advance / 2)
 		
 		# add the advance to x
@@ -372,7 +385,10 @@ func _draw() -> void:
 func _full_text_clicked_on_word(_word : String, idx : int) -> void:
 	_quant_of_same_word_repetitions = 1
 	_set_current_word(idx)
-	_currently_word_idx = idx - 1
+	if _compound_words_positions.is_empty():
+		_currently_word_idx = idx - 1
+	else:
+		_currently_word_idx = idx
 	stop()
 
 func _is_last_word_equal_to_current_word(last_word : String, current_word : String) -> bool:

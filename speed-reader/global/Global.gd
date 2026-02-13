@@ -64,3 +64,20 @@ func get_UUID() -> String:
 		end += values.substr(rng.randi_range(0, values.length() - 1), 1)
 	
 	return begin + "-" + middle + "-" + end
+
+func parse_compound_word(word : String) -> PackedInt64Array:
+	var positions : PackedInt64Array = PackedInt64Array()
+	
+	var found_separator : bool = false
+	
+	for i in word.length():
+		if not found_separator and character_is_separator(word[i]):
+			found_separator = true
+		elif found_separator and not character_is_separator(word[i]):
+			positions.append(i)
+			found_separator = false
+	
+	return positions
+
+func character_is_separator(character : String) -> bool:
+	return character == "-" or character == "—"
