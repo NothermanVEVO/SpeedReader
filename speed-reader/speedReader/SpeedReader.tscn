@@ -66,24 +66,33 @@ layout_mode = 2
 [node name="Player" type="MarginContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 8
 theme = ExtResource("2_3dwvd")
 theme_override_constants/margin_left = 40
 theme_override_constants/margin_right = 40
 theme_override_constants/margin_bottom = 40
 script = ExtResource("6_3dwvd")
 
-[node name="FlowContainer" type="FlowContainer" parent="HBoxContainer/Player"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Player"]
 layout_mode = 2
+
+[node name="BookNameRichTextLabel" type="RichTextLabel" parent="HBoxContainer/Player/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+
+[node name="FlowContainer" type="FlowContainer" parent="HBoxContainer/Player/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
 theme_override_constants/v_separation = 20
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Player/FlowContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Player/VBoxContainer/FlowContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 theme_override_constants/separation = 30
 
-[node name="Backwards" type="Button" parent="HBoxContainer/Player/FlowContainer/HBoxContainer"]
+[node name="Backwards" type="Button" parent="HBoxContainer/Player/VBoxContainer/FlowContainer/HBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 size_flags_vertical = 4
@@ -93,7 +102,7 @@ icon = ExtResource("6_jaaaw")
 icon_alignment = 1
 expand_icon = true
 
-[node name="Play" type="Button" parent="HBoxContainer/Player/FlowContainer/HBoxContainer"]
+[node name="Play" type="Button" parent="HBoxContainer/Player/VBoxContainer/FlowContainer/HBoxContainer"]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 focus_mode = 0
@@ -102,7 +111,7 @@ icon = ExtResource("8_dj55r")
 icon_alignment = 1
 expand_icon = true
 
-[node name="Forwards" type="Button" parent="HBoxContainer/Player/FlowContainer/HBoxContainer"]
+[node name="Forwards" type="Button" parent="HBoxContainer/Player/VBoxContainer/FlowContainer/HBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -113,17 +122,17 @@ icon = ExtResource("8_3dwvd")
 icon_alignment = 1
 expand_icon = true
 
-[node name="VSeparator" type="VSeparator" parent="HBoxContainer/Player/FlowContainer"]
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/Player/VBoxContainer/FlowContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="WordsPerMinute" type="VBoxContainer" parent="HBoxContainer/Player/FlowContainer"]
+[node name="WordsPerMinute" type="VBoxContainer" parent="HBoxContainer/Player/VBoxContainer/FlowContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="WPMText" type="RichTextLabel" parent="HBoxContainer/Player/FlowContainer/WordsPerMinute"]
+[node name="WPMText" type="RichTextLabel" parent="HBoxContainer/Player/VBoxContainer/FlowContainer/WordsPerMinute"]
 layout_mode = 2
 theme_override_fonts/normal_font = ExtResource("9_dj55r")
 theme_override_font_sizes/normal_font_size = 20
@@ -131,7 +140,7 @@ text = " Palavras Por Minuto (PPM): "
 fit_content = true
 scroll_active = false
 
-[node name="WPMSpinBox" type="SpinBox" parent="HBoxContainer/Player/FlowContainer/WordsPerMinute"]
+[node name="WPMSpinBox" type="SpinBox" parent="HBoxContainer/Player/VBoxContainer/FlowContainer/WordsPerMinute"]
 layout_mode = 2
 min_value = 1.0
 max_value = 10000.0
@@ -139,7 +148,7 @@ value = 1.0
 alignment = 1
 suffix = "PPM"
 
-[node name="WPMHSlider" type="HSlider" parent="HBoxContainer/Player/FlowContainer/WordsPerMinute"]
+[node name="WPMHSlider" type="HSlider" parent="HBoxContainer/Player/VBoxContainer/FlowContainer/WordsPerMinute"]
 layout_mode = 2
 focus_mode = 0
 tick_count = 5
@@ -308,12 +317,12 @@ mouse_default_cursor_shape = 2
 disabled = true
 text = ">"
 
-[connection signal="pressed" from="HBoxContainer/Player/FlowContainer/HBoxContainer/Backwards" to="HBoxContainer/Player" method="_on_backwards_pressed"]
-[connection signal="pressed" from="HBoxContainer/Player/FlowContainer/HBoxContainer/Play" to="HBoxContainer/Player" method="_on_play_pressed"]
-[connection signal="pressed" from="HBoxContainer/Player/FlowContainer/HBoxContainer/Forwards" to="HBoxContainer/Player" method="_on_forwards_pressed"]
-[connection signal="value_changed" from="HBoxContainer/Player/FlowContainer/WordsPerMinute/WPMSpinBox" to="HBoxContainer/Player" method="_on_wpm_spin_box_value_changed"]
-[connection signal="drag_ended" from="HBoxContainer/Player/FlowContainer/WordsPerMinute/WPMHSlider" to="HBoxContainer/Player" method="_on_wpm_hslider_drag_ended"]
-[connection signal="value_changed" from="HBoxContainer/Player/FlowContainer/WordsPerMinute/WPMHSlider" to="HBoxContainer/Player" method="_on_wpm_hslider_value_changed"]
+[connection signal="pressed" from="HBoxContainer/Player/VBoxContainer/FlowContainer/HBoxContainer/Backwards" to="HBoxContainer/Player" method="_on_backwards_pressed"]
+[connection signal="pressed" from="HBoxContainer/Player/VBoxContainer/FlowContainer/HBoxContainer/Play" to="HBoxContainer/Player" method="_on_play_pressed"]
+[connection signal="pressed" from="HBoxContainer/Player/VBoxContainer/FlowContainer/HBoxContainer/Forwards" to="HBoxContainer/Player" method="_on_forwards_pressed"]
+[connection signal="value_changed" from="HBoxContainer/Player/VBoxContainer/FlowContainer/WordsPerMinute/WPMSpinBox" to="HBoxContainer/Player" method="_on_wpm_spin_box_value_changed"]
+[connection signal="drag_ended" from="HBoxContainer/Player/VBoxContainer/FlowContainer/WordsPerMinute/WPMHSlider" to="HBoxContainer/Player" method="_on_wpm_hslider_drag_ended"]
+[connection signal="value_changed" from="HBoxContainer/Player/VBoxContainer/FlowContainer/WordsPerMinute/WPMHSlider" to="HBoxContainer/Player" method="_on_wpm_hslider_value_changed"]
 [connection signal="file_selected" from="HBoxContainer/TextContainer/FileDialog" to="HBoxContainer/TextContainer" method="_on_file_dialog_file_selected"]
 [connection signal="pressed" from="HBoxContainer/TextContainer/VBoxContainer/Top/FlowContainer/ReturnButton" to="HBoxContainer/TextContainer" method="_on_return_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/TextContainer/VBoxContainer/Top/FlowContainer/Settings" to="HBoxContainer/TextContainer" method="_on_settings_pressed"]

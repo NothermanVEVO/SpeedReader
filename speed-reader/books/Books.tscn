@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://dken4cvi5kx5f"]
+[gd_scene load_steps=7 format=3 uid="uid://dken4cvi5kx5f"]
 
 [ext_resource type="Script" uid="uid://peileisktac3" path="res://books/Books.gd" id="1_xue48"]
+[ext_resource type="PackedScene" uid="uid://demw6tal4o11a" path="res://windows/settingsWindow/SettingsWindow.tscn" id="2_c4vlw"]
 [ext_resource type="PackedScene" uid="uid://cww7m0lkfi13d" path="res://windows/tagsWindow/TagsWindow.tscn" id="2_gqpcp"]
 [ext_resource type="Script" uid="uid://ckutroofw2701" path="res://dialog/InputDialog.gd" id="2_mmmtf"]
 [ext_resource type="Script" uid="uid://ckliwujw5g2pu" path="res://books/BookInfo.gd" id="3_mmmtf"]
@@ -13,6 +14,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_xue48")
+
+[node name="SettingsWindow" parent="." instance=ExtResource("2_c4vlw")]
 
 [node name="TagsWindow" parent="." instance=ExtResource("2_gqpcp")]
 size = Vector2i(800, 600)
@@ -115,6 +118,14 @@ theme_override_constants/margin_bottom = 5
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 2
+
+[node name="Settings" type="Button" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+text = "Configurações"
 
 [node name="Type" type="FlowContainer" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer"]
 layout_mode = 2
@@ -343,6 +354,7 @@ text = "Salvar"
 [connection signal="file_selected" from="FileDialog" to="." method="_on_file_dialog_file_selected"]
 [connection signal="list_selected" from="HBoxContainer/LeftBar/MarginContainer/VBoxContainer/Lists/AllListsSelectContainer" to="." method="_on_all_lists_select_container_list_selected"]
 [connection signal="pressed" from="HBoxContainer/LeftBar/MarginContainer/VBoxContainer/ManageListButton" to="." method="_on_manage_list_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Settings" to="." method="_on_settings_pressed"]
 [connection signal="item_selected" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Type/ShowTypeOption" to="." method="_on_show_type_option_item_selected"]
 [connection signal="item_selected" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Sort/SortOption" to="." method="_on_sort_option_item_selected"]
 [connection signal="pressed" from="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Filter" to="." method="_on_filter_pressed"]

@@ -30,6 +30,8 @@ var _books : Array[BookResource] = []
 
 @onready var _all_lists_select_container : AllListsSelectContainer = $HBoxContainer/LeftBar/MarginContainer/VBoxContainer/Lists/AllListsSelectContainer
 
+@onready var _settings_window : SettingsWindow = $SettingsWindow
+
 var _current_sort_type : Files.SortType
 
 var _last_file_path : String = ""
@@ -362,3 +364,6 @@ func _on_all_lists_select_container_list_selected(list: ListResource) -> void:
 
 static func set_selected_list_value(list : ListResource) -> void:
 	_selected_list = list
+
+func _on_settings_pressed() -> void:
+	_settings_window.popup_centered()

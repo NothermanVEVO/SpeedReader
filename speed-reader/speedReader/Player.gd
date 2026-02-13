@@ -20,14 +20,16 @@ const _DARK_PLAY_ICON : CompressedTexture2D = preload("res://assets/white theme/
 var _current_pause_icon : CompressedTexture2D
 var _current_play_icon : CompressedTexture2D
 
-@onready var _go_backward_button : Button = $FlowContainer/HBoxContainer/Backwards
-@onready var _play_button : Button = $FlowContainer/HBoxContainer/Play
-@onready var _go_forward_button : Button = $FlowContainer/HBoxContainer/Forwards
+@onready var _book_name_rich_text_label : RichTextLabel = $VBoxContainer/BookNameRichTextLabel
 
-@onready var _wpm_spin_box : SpinBox = $FlowContainer/WordsPerMinute/WPMSpinBox
-@onready var _wpm_hslider : HSlider = $FlowContainer/WordsPerMinute/WPMHSlider
+@onready var _go_backward_button : Button = $VBoxContainer/FlowContainer/HBoxContainer/Backwards
+@onready var _play_button : Button = $VBoxContainer/FlowContainer/HBoxContainer/Play
+@onready var _go_forward_button : Button = $VBoxContainer/FlowContainer/HBoxContainer/Forwards
 
-@onready var _wpm_text : RichTextLabel = $FlowContainer/WordsPerMinute/WPMText
+@onready var _wpm_spin_box : SpinBox = $VBoxContainer/FlowContainer/WordsPerMinute/WPMSpinBox
+@onready var _wpm_hslider : HSlider = $VBoxContainer/FlowContainer/WordsPerMinute/WPMHSlider
+
+@onready var _wpm_text : RichTextLabel = $VBoxContainer/FlowContainer/WordsPerMinute/WPMText
 
 signal go_backward
 signal play(can_play : bool)
@@ -51,6 +53,9 @@ func _ready() -> void:
 	
 	Settings.changed_language.connect(_set_text_by_language)
 	_set_text_by_language(Settings.get_language())
+	
+	if Files.current_selected_book:
+		_book_name_rich_text_label.text = Files.current_selected_book.name
 
 func _set_text_by_language(_language : Settings.Languages) -> void:
 	_wpm_text.text = tr("Words Per Minute") + " (" + tr("WPM") + ")"
