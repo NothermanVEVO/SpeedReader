@@ -7,8 +7,17 @@ class_name TagsWindow
 
 @onready var _tags_flow_container : FlowContainer = $MarginContainer/VBoxContainer/TagsContainer/MarginContainer/ScrollContainer/TagsFlowContainer
 
+@onready var _title_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/TitleContainer/TitleRichTextLabel
+@onready var _erase_tag_button : Button = $MarginContainer/VBoxContainer/HBoxContainer/EraseButton
+@onready var _add_tag_button : Button = $MarginContainer/VBoxContainer/HBoxContainer/NewButton
+@onready var _search_line_edit : LineEdit = $MarginContainer/VBoxContainer/SearchContainer/HBoxContainer/SearchLineEdit
+@onready var _options_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/OptionsRichTextLabel
+@onready var _include_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/InclusionContainer/HBoxContainer/IncludeRichTextLabel
 @onready var _include_option_button : OptionButton = $MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/InclusionContainer/HBoxContainer/IncludeOptionButton
+@onready var _exclude_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/ExclusionContainer/HBoxContainer/ExcludeRichTextLabel
 @onready var _exclude_option_button : OptionButton = $MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/ExclusionContainer/HBoxContainer/ExcludeOptionButton
+@onready var _reset_choices_button : Button = $MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/ResetButton
+@onready var _confirm_button : Button = $MarginContainer/VBoxContainer/OptionsContainer/VBoxContainer/HBoxContainer/ConfirmButton
 
 const _SELECT_TAG_SCENE : PackedScene = preload("res://books/tag/selectTag/SelectTagContainer.tscn")
 
@@ -31,6 +40,24 @@ func _ready() -> void:
 	
 	Files.added_tag.connect(_added_tag)
 	Files.removed_tag.connect(_removed_tag)
+	Settings.changed_language.connect(_changed_language)
+	_changed_language(Settings.get_language())
+
+func _changed_language(_language : Settings.Languages) -> void:
+	title = tr("Filter tags")
+	_title_rich_text_label.text = tr("Filter tags")
+	_erase_tag_button.text = tr("Erase tag")
+	_add_tag_button.text = tr("Add tag")
+	_search_line_edit.placeholder_text = tr("Search")
+	_options_rich_text_label.text = tr("Options") + ":"
+	_include_rich_text_label.text = tr("Include Mode") + ":"
+	_include_option_button.set_item_text(0, tr("And"))
+	_include_option_button.set_item_text(1, tr("Or"))
+	_exclude_rich_text_label.text = tr("Exclude Mode") + ":"
+	_exclude_option_button.set_item_text(0, tr("And"))
+	_exclude_option_button.set_item_text(1, tr("Or"))
+	_reset_choices_button.text = tr("Reset choices")
+	_confirm_button.text = tr("Confirm")
 
 func _select_tag_changed_select_type(select_tag_container : SelectTagContainer) -> void:
 	var tag : TagResource = select_tag_container.get_tag()

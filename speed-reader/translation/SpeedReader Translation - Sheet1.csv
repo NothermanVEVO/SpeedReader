@@ -32,3 +32,56 @@ Unknown,Unknown,Desconhecido,Desconocido
 The file was imported,The file was imported,O arquivo foi importado,El archivo fue importado.
 It is only possible to open files in the following format,It is only possible to open files in the following format,Só é possivel abrir arquivos em formato,Sólo es posible abrir archivos en el siguiente formato
 "If you want to open a different file, try ""importing"" it first.","If you want to open a different file, try ""importing"" it first.","Se quiser abrir algum arquivo diferente, tente \""importar\"" primeiro.","Si desea abrir un archivo diferente, intente ""importarlo"" primero."
+Lists,Lists,Listas,Listas
+All,All,Todos,Todas
+None,None,Nenhum,Ninguna
+Reading,Reading,Lendo,Leyendo
+Plan to read,Plan to read,Planejo ler,Planeo leer
+Completed,Completed,Completei,Completado
+On hold,On hold,Dando um tempo,En pausa
+Re-reading,Re-reading,Re-lendo,Releyendo
+Dropped,Dropped,Larguei,Abandonado
+Manage lists,Manage lists,Gerenciar listas,Administrar listas
+Edit,Edit,Editar,Editar
+Erase,Erase,Apagar,Eliminar
+Add to list,Add to list,Adicionar a lista,Añadir a la lista
+Stars,Stars,Estrelas,Estrellas
+Type,Type,Tipo,Tipo
+Block,Block,Bloco,Bloque
+Long,Long,Longo,Largo
+Sort,Sort,Ordenar,Ordenar
+Used recently,Used recently,Usados recentemente,Usados recientemente
+Used oldest,Used oldest,Usados mais antigo,Usados más antiguos
+Added recently,Added recently,Adicionados recentemente,Añadidos recientemente
+Added oldest,Added oldest,Adicionados mais antigo,Añadidos más antiguos
+Alphabetical,Alphabetical,Alfabético,Alfabético
+Ascending,Ascending,Ascendente,Ascendente
+Descending,Descending,Descendente,Descendente
+Filter,Filter,Filtrar,Filtrar
+New file,New file,Novo arquivo,Nuevo archivo
+Search,Search,Procurar,Buscar
+Return,Return,Voltar,Volver
+Filter tags,Filter tags,Filtrar tags,Filtrar etiquetas
+Options,Options,Opções,Opciones
+Include Mode,Include Mode,Modo de Inclusão,Modo de inclusión
+Exclude Mode,Exclude Mode,Modo de Exclusão,Modo de exclusión
+And,And,E,Y
+Or,Or,Ou,O
+Reset choices,Reset choices,Resetar escolhas,Restablecer selecciones
+Confirm,Confirm,Confirmar,Confirmar
+Erase tag,Erase tag,Apagar tag,Eliminar etiqueta
+New tag,New tag,Nova tag,Nueva etiqueta
+Name,Name,Nome do arquivo,Nombre del archivo
+Tag's name,Tag's name,Nome da tag,Nombre de la etiqueta
+Background color,Background color,Cor do fundo,Color de fondo
+Foreground color,Foreground color,Cor da letra,Color del texto
+Result,Result,Resultado,Resultado
+Create,Create,Criar,Crear
+New list,New list,Nova lista,Nueva lista
+List's name,List's name,Nome da lista,Nombre de la lista
+Edit tags,Edit tags,Editar tags,Editar etiquetas
+Edit book,Edit book,Editar livro,Editar libro
+Write a comment here,Write a comment here,Escreva um comentário aqui,Escribe un comentario aquí
+Edit list,Edit list,Editar lista,Editar lista
+Edit tag,Edit tag,Editar tag,Editar etiqueta
+Tags,Tags,Tags,Etiquetas

@@ -16,6 +16,10 @@ const _SPEED_READER_SCENE : PackedScene = preload("res://speedReader/SpeedReader
 @onready var _stars : SpinBox = $BookInfo/Stars
 @onready var _comment_text : TextEdit = $BookInfo/Comments
 @onready var _tags_flow_container : FlowContainer = $BookInfo/TagsContainer/ScrollContainer/Tags
+@onready var _tags_rich_text_label : RichTextLabel = $BookInfo/TagsContainer/ScrollContainer/Tags/TagsText
+@onready var _add_to_list_button : Button = $BookInfo/AddListButton
+@onready var _edit_button : Button = $BookInfo/HBoxContainer/EditButton
+@onready var _open_button : Button = $BookInfo/HBoxContainer/OpenButton
 
 @onready var _save_button : Button = $BookInfo/HBoxContainer/Save
 
@@ -24,6 +28,24 @@ var _previous_reading_index : int = 0
 func _ready() -> void:
 	Files.saved_book.connect(_files_saved_book)
 	Files.erase_book.connect(_files_erase_book)
+	Settings.changed_language.connect(_changed_language)
+	_changed_language(Settings.get_language())
+
+func _changed_language(_language : Settings.Languages) -> void:
+	_reading_options.set_item_text(0, "None")
+	_reading_options.set_item_text(1, "Reading")
+	_reading_options.set_item_text(2, "Plan to read")
+	_reading_options.set_item_text(3, "Completed")
+	_reading_options.set_item_text(4, "On hold")
+	_reading_options.set_item_text(5, "Re-reading")
+	_reading_options.set_item_text(6, "Dropped")
+	_add_to_list_button.text = "+ " + tr("Add to list")
+	_stars.suffix = tr("Stars")
+	_tags_rich_text_label.text = tr("Tags") + ": "
+	_open_button.text = tr("Open")
+	_edit_button.text = tr("Edit")
+	_save_button.text = tr("Save")
+	_comment_text.placeholder_text = tr("Write a comment here") + "..."
 
 func _files_erase_book(book : BookResource) -> void:
 	if _book and _book == book:

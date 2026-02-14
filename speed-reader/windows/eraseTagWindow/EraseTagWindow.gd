@@ -3,6 +3,9 @@ extends Window
 @onready var _confirmation_dialog : ConfirmationDialog = $ConfirmationDialog
 
 @onready var _tags_flow_container : FlowContainer = $MarginContainer/VBoxContainer/TagsContainer/MarginContainer/ScrollContainer/TagsFlowContainer
+
+@onready var _title_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/TitleContainer/TitleRichTextLabel
+@onready var _search_line_edit : LineEdit = $MarginContainer/VBoxContainer/SearchContainer/HBoxContainer/SearchLineEdit
 @onready var _erase_button : Button = $MarginContainer/VBoxContainer/EraseButton
 
 const _PRESS_TAG_SCENE : PackedScene = preload("res://books/tag/pressTag/PressTagContainer.tscn")
@@ -15,6 +18,14 @@ func _ready() -> void:
 	
 	Files.added_tag.connect(_added_tag)
 	Files.removed_tag.connect(_removed_tag)
+	Settings.changed_language.connect(_changed_language)
+	_changed_language(Settings.get_language())
+
+func _changed_language(_language : Settings.Languages) -> void:
+	title = tr("Erase tag")
+	_title_rich_text_label.text = tr("Erase tag")
+	_search_line_edit.placeholder_text = tr("Search")
+	_erase_button.text = tr("Erase")
 
 func _added_tag(tag : TagResource) -> void:
 	var press_tag_container : PressTagContainer = _PRESS_TAG_SCENE.instantiate()

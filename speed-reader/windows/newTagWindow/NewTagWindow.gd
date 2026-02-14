@@ -2,16 +2,32 @@ extends Window
 
 @onready var _tag_container : TagContainer = $MarginContainer/VBoxContainer/Tag/TagContainer
 
+@onready var _title_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/TitleContainer/TitleRichTextLabel
+@onready var _name_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/NameContainer/HBoxContainer/NameRichTextLabel
 @onready var _name_line_edit : LineEdit = $MarginContainer/VBoxContainer/NameContainer/HBoxContainer/NameLineEdit
+@onready var _background_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/BackgroundColor/HBoxContainer/BackgroundRichTextLabel
 @onready var _background_color_picker_button : ColorPickerButton = $MarginContainer/VBoxContainer/BackgroundColor/HBoxContainer/BackgroundColorPickerButton
+@onready var _foreground_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/ForegroundColor/HBoxContainer/ForegroundRichTextLabel
 @onready var _foreground_color_picker_button : ColorPickerButton = $MarginContainer/VBoxContainer/ForegroundColor/HBoxContainer/ForegroundColorPickerButton
-
+@onready var _result_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/ResultContainer/ResultRichTextLabel
 @onready var _create_button : Button = $MarginContainer/VBoxContainer/CreateButton
 
 @onready var _accept_dialog : AcceptDialog = $AcceptDialog
 
 func _ready() -> void:
 	_background_color_picker_button.color = _tag_container.get_tag().background_color
+	Settings.changed_language.connect(_changed_language)
+	_changed_language(Settings.get_language())
+
+func _changed_language(_language : Settings.Languages) -> void:
+	title = tr("New tag")
+	_title_rich_text_label.text = tr("New tag")
+	_name_rich_text_label.text = tr("Name") + ":"
+	_name_line_edit.placeholder_text = tr("Tag's name")
+	_background_rich_text_label.text = tr("Background color") + ":"
+	_foreground_rich_text_label.text = tr("Foreground color") + ":"
+	_result_rich_text_label.text = tr("Result") + ":"
+	_create_button.text = tr("Create")
 
 func _on_name_line_edit_text_changed(new_text: String) -> void:
 	_create_button.disabled = new_text.is_empty()

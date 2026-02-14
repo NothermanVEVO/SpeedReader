@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dken4cvi5kx5f"]
+[gd_scene load_steps=9 format=3 uid="uid://dken4cvi5kx5f"]
 
 [ext_resource type="Theme" uid="uid://bq60ukjllggxq" path="res://themes/dark/books/books_theme_dark.tres" id="1_erviv"]
 [ext_resource type="Script" uid="uid://peileisktac3" path="res://books/Books.gd" id="1_xue48"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://ckutroofw2701" path="res://dialog/InputDialog.gd" id="2_mmmtf"]
 [ext_resource type="Script" uid="uid://ckliwujw5g2pu" path="res://books/BookInfo.gd" id="3_mmmtf"]
 [ext_resource type="PackedScene" uid="uid://dpwkarvfhcc7v" path="res://books/list/allListSelectContainer/AllListsSelectContainer.tscn" id="4_lx3rd"]
+[ext_resource type="Script" uid="uid://iv7ta42kqk34" path="res://books/BooksHBoxContainer.gd" id="6_kvyi4"]
 
 [node name="Books" type="MarginContainer"]
 anchors_preset = 15
@@ -36,6 +37,7 @@ metadata/_custom_type_script = "uid://ckutroofw2701"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
+script = ExtResource("6_kvyi4")
 
 [node name="LeftBar" type="MarginContainer" parent="HBoxContainer"]
 layout_mode = 2
@@ -81,7 +83,7 @@ size_flags_horizontal = 0
 size_flags_vertical = 3
 vertical = true
 
-[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/LeftBar/MarginContainer/VBoxContainer/Lists"]
+[node name="ListsRichTextLabel" type="RichTextLabel" parent="HBoxContainer/LeftBar/MarginContainer/VBoxContainer/Lists"]
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 20
 text = "Listas"
@@ -134,7 +136,7 @@ layout_mode = 2
 alignment = 1
 vertical = true
 
-[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Type"]
+[node name="TypeRichTextLabel" type="RichTextLabel" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Type"]
 layout_mode = 2
 text = "Tipo:"
 fit_content = true
@@ -158,7 +160,7 @@ layout_mode = 2
 alignment = 1
 vertical = true
 
-[node name="RichTextLabel2" type="RichTextLabel" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Sort"]
+[node name="SortRichTextLabel" type="RichTextLabel" parent="HBoxContainer/MiddleBar/VBoxContainer/TopBar/HBoxContainer/Sort"]
 layout_mode = 2
 text = "Organizar:"
 fit_content = true
@@ -294,6 +296,7 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 0
 mouse_default_cursor_shape = 2
+selected = 0
 fit_to_longest_item = false
 item_count = 7
 popup/item_0/text = "Nenhum"

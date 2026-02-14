@@ -34,6 +34,17 @@ func _ready() -> void:
 	Files.erase_custom_list.connect(_erase_list)
 	
 	Files.removed_tag.connect(_remove_tag)
+	Settings.changed_language.connect(_changed_language)
+	_changed_language(Settings.get_language())
+
+func _changed_language(_language : Settings.Languages) -> void:
+	pass
+
+#Settings.changed_language.connect(_changed_language)
+	#_changed_language(Settings.get_language())
+#
+#func _changed_language(_language : Settings.Languages) -> void:
+	#pass
 
 func _remove_tag(tag : TagResource) -> void:
 	for child in _tags_flow_container.get_children():

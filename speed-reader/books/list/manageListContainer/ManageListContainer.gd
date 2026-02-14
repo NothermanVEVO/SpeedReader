@@ -4,6 +4,10 @@ class_name ManageListContainer
 
 var _list : ListResource
 
+@onready var _edit_button : Button = $MarginContainer/VBoxContainer/TopContainer/HBoxContainer/HBoxContainer/EditButton
+@onready var _erase_button : Button = $MarginContainer/VBoxContainer/TopContainer/HBoxContainer/HBoxContainer/EraseButton
+@onready var _tags_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/TagsContainer/ScrollContainer/HBoxContainer/TagsRichTextLabel
+
 @onready var _name_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/TopContainer/HBoxContainer/NameRichTextLabel
 @onready var _background_color_rect : ColorRect = $BackgroundColorRect
 @onready var _tags_hbox_container : HBoxContainer = $MarginContainer/VBoxContainer/TagsContainer/ScrollContainer/HBoxContainer
@@ -21,6 +25,13 @@ const _TEXTURE_RECT_EXPANDE_MODE : TextureRect.ExpandMode = TextureRect.ExpandMo
 
 func _ready() -> void:
 	Files.saved_custom_list.connect(_files_saved_custom_list)
+	Settings.changed_language.connect(_changed_language)
+	_changed_language(Settings.get_language())
+
+func _changed_language(_language : Settings.Languages) -> void:
+	_edit_button.text = tr("Edit")
+	_erase_button.text = tr("Erase")
+	_tags_rich_text_label.text = tr("Tags") + ": "
 
 func _files_saved_custom_list(list : ListResource) -> void:
 	if _list and _list == list:

@@ -83,7 +83,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TagsContainer/ScrollContainer/HBoxContainer"]
+[node name="TagsRichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/TagsContainer/ScrollContainer/HBoxContainer"]
 layout_mode = 2
 mouse_filter = 2
 text = "Tags:"

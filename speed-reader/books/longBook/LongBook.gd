@@ -10,8 +10,13 @@ var _book : BookResource
 @onready var _cover_image : TextureRect = $MarginContainer/LongBook/Cover
 @onready var _title_text : RichTextLabel = $MarginContainer/LongBook/Info/Title
 @onready var _reading_type : OptionButton = $MarginContainer/LongBook/Info/HBoxContainer/Reading
+@onready var _add_to_list_button : Button = $MarginContainer/LongBook/Info/HBoxContainer/AddListButton
 @onready var _stars : SpinBox = $MarginContainer/LongBook/Info/Stars
 @onready var _tags_flow_container : FlowContainer = $MarginContainer/LongBook/Info/TagsContainer/ScrollContainer/Tags
+@onready var _tags_rich_text_label : RichTextLabel = $MarginContainer/LongBook/Info/TagsContainer/ScrollContainer/Tags/TagsText
+@onready var _open_button : Button = $MarginContainer/LongBook/Buttons/OpenButton
+@onready var _edit_button : Button = $MarginContainer/LongBook/Buttons/Edit
+@onready var _delete_button : Button = $MarginContainer/LongBook/Buttons/DeleteButton
 
 const _TAG_CONTAINER_SCENE : PackedScene = preload("res://books/tag/TagContainer.tscn")
 const _EDIT_BOOK_WINDOW_SCENE : PackedScene = preload("res://windows/editBookWindow/EditBookWindow.tscn")
@@ -33,6 +38,23 @@ func _ready() -> void:
 	
 	Files.saved_book.connect(_files_saved_book)
 	Files.erase_book.connect(_files_erase_book)
+	Settings.changed_language.connect(_changed_language)
+	_changed_language(Settings.get_language())
+
+func _changed_language(_language : Settings.Languages) -> void:
+	_reading_type.set_item_text(0, "None")
+	_reading_type.set_item_text(1, "Reading")
+	_reading_type.set_item_text(2, "Plan to read")
+	_reading_type.set_item_text(3, "Completed")
+	_reading_type.set_item_text(4, "On hold")
+	_reading_type.set_item_text(5, "Re-reading")
+	_reading_type.set_item_text(6, "Dropped")
+	_add_to_list_button.text = "+ " + tr("Add to list")
+	_stars.suffix = tr("Stars")
+	_tags_rich_text_label.text = tr("Tags") + ": "
+	_open_button.text = tr("Open")
+	_edit_button.text = tr("Edit")
+	_delete_button.text = tr("Erase")
 
 func _files_saved_book(book : BookResource, changed_cover : bool) -> void:
 	if _book and _book == book:

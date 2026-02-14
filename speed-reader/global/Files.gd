@@ -37,7 +37,7 @@ var _books : Array[BookResource] = []
 
 var _tags : TagsResource
 
-var _all_list : ListResource = ListResource.new(PackedStringArray(), "Todos", Color(0.5, 0.5, 0.5, 1.0))
+var _all_list : ListResource = ListResource.new(PackedStringArray(), "All", Color(0.5, 0.5, 0.5, 1.0))
 var _prepared_lists : ListsResource
 var _custom_lists : ListsResource
 

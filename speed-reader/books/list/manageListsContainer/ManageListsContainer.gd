@@ -8,7 +8,14 @@ const _MANAGE_LIST_CONTAINER_SCENE : PackedScene = preload("res://books/list/man
 
 var _books_scene : PackedScene = load("res://books/Books.tscn")
 
+@onready var _title_rich_text_label : RichTextLabel = $VBoxContainer/TitleContainer/TitleRichTextLabel
+@onready var _return_button : Button = $VBoxContainer/TitleContainer/ReturnButton
+@onready var _sort_rich_text_label : RichTextLabel = $VBoxContainer/MarginContainer/HBoxContainer/Sort/SortRichTextLabel
+@onready var _sort_option_button : OptionButton = $VBoxContainer/MarginContainer/HBoxContainer/Sort/SortOption
+@onready var _filter_button : Button = $VBoxContainer/MarginContainer/HBoxContainer/FilterButton
 @onready var _search_line_edit : LineEdit = $VBoxContainer/SearchContainer/SearchLineEdit
+@onready var _new_list_button : Button = $VBoxContainer/NewListButton
+
 @onready var _lists_vbox_container : VBoxContainer = $VBoxContainer/ScrollContainer/MarginContainer/ListsVBoxContainer
 
 @onready var _tags_window : TagsWindow = $TagsWindow
@@ -39,9 +46,19 @@ func _ready() -> void:
 	_changed_theme(Global.get_theme_type())
 	
 	Global.changed_theme.connect(_changed_theme)
+	Settings.changed_language.connect(_changed_language)
+	_changed_language(Settings.get_language())
+
+func _changed_language(_language : Settings.Languages) -> void:
+	_title_rich_text_label.text = tr("Manage lists")
+	_return_button.text = tr("Return")
+	_sort_rich_text_label.text = tr("Sort") + ":"
+	#_sort_option_button
+	_filter_button.text = tr("Filter")
+	_search_line_edit.placeholder_text = tr("Search")
+	_new_list_button.text = "+ " + tr("New list")
 
 func _changed_theme(_theme : Global.Themes) -> void:
-	
 	match _theme:
 		Global.Themes.DARK:
 			theme = _BOOKS_DARK_THEME

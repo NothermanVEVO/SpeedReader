@@ -25,7 +25,7 @@ theme_override_constants/separation = 10
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/TitleContainer"]
+[node name="TitleRichTextLabel" type="RichTextLabel" parent="VBoxContainer/TitleContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 36
@@ -53,7 +53,7 @@ layout_mode = 2
 alignment = 1
 vertical = true
 
-[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/MarginContainer/HBoxContainer/Sort"]
+[node name="SortRichTextLabel" type="RichTextLabel" parent="VBoxContainer/MarginContainer/HBoxContainer/Sort"]
 layout_mode = 2
 text = "Organizar:"
 fit_content = true
