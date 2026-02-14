@@ -2,8 +2,8 @@ extends Window
 
 class_name SettingsWindow
 
-const _WHITE_THEME : Theme = preload("res://themes/white/base_settings_theme_white.tres")
-const _DARK_THEME : Theme = preload("res://themes/dark/base_settings_theme_dark.tres")
+const _WHITE_THEME : Theme = preload("res://themes/white/speedReader/base_settings_theme_white.tres")
+const _DARK_THEME : Theme = preload("res://themes/dark/speedReader/base_settings_theme_dark.tres")
 
 @onready var _options_container : MarginContainer = $HBoxContainer/OptionsContainer
 

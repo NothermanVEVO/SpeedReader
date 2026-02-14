@@ -4,6 +4,9 @@ class_name Books
 
 const FILE_ICON : CompressedTexture2D = preload("res://assets/icons/file.png")
 
+const _BOOKS_DARK_THEME : Theme = preload("res://themes/dark/books/books_theme_dark.tres")
+const _BOOKS_WHITE_THEME : Theme = preload("res://themes/white/books/books_theme_white.tres")
+
 @onready var _long_books : VBoxContainer = $HBoxContainer/MiddleBar/VBoxContainer/Books/LongBooks
 @onready var _block_books : FlowContainer = $HBoxContainer/MiddleBar/VBoxContainer/Books/BlockBooks
 @onready var _book_info : BookInfo = $HBoxContainer/RightBar
@@ -68,6 +71,18 @@ func _ready() -> void:
 	if not _selected_list or (not _selected_list in Files.get_prepared_lists().lists and not _selected_list in Files.get_custom_lists().lists):
 		_selected_list = Files.get_all_list()
 	_all_lists_select_container.set_selected_list(_selected_list)
+	
+	_changed_theme(Global.get_theme_type())
+	
+	Global.changed_theme.connect(_changed_theme)
+
+func _changed_theme(_theme : Global.Themes) -> void:
+	
+	match _theme:
+		Global.Themes.DARK:
+			theme = _BOOKS_DARK_THEME
+		Global.Themes.WHITE:
+			theme = _BOOKS_WHITE_THEME
 
 func _files_erase_custom_list(list : ListResource) -> void:
 	if _selected_list.name == list.name:

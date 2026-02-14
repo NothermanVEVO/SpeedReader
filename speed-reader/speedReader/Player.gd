@@ -2,8 +2,8 @@ extends MarginContainer
 
 class_name Player
 
-const _WHITE_THEME : Theme = preload("res://themes/white/base_player_theme_white.tres")
-const _DARK_THEME : Theme = preload("res://themes/dark/base_player_theme_dark.tres")
+const _WHITE_THEME : Theme = preload("res://themes/white/speedReader/base_player_theme_white.tres")
+const _DARK_THEME : Theme = preload("res://themes/dark/speedReader/base_player_theme_dark.tres")
 
 const _WHITE_GO_BACKWARD_ICON : CompressedTexture2D = preload("res://assets/dark theme/white_skip_back_button.png")
 const _WHITE_GO_FORWARD_ICON : CompressedTexture2D = preload("res://assets/dark theme/white_skip_forward_button.png")

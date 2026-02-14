@@ -29,9 +29,13 @@ func is_only_whitespace(text : String) -> bool:
 	return text.strip_edges().is_empty()
 
 func set_theme(theme : Themes) -> void:
-	if theme != _theme:
-		_theme = theme
-		changed_theme.emit.call_deferred(_theme)
+	_theme = theme
+	match _theme:
+		Themes.DARK:
+			RenderingServer.set_default_clear_color(Color.BLACK)
+		Themes.WHITE:
+			RenderingServer.set_default_clear_color(Color.WHITE)
+	changed_theme.emit.call_deferred(_theme)
 
 func get_theme_type() -> Themes:
 	return _theme

@@ -4,8 +4,8 @@ class_name TextContainer
 
 #enum File {OPEN = 0, IMPORT = 1, OPEN_DIRECTORY = 2}
 
-const _WHITE_THEME : Theme = preload("res://themes/white/base_text_container_theme_white.tres")
-const _DARK_THEME : Theme = preload("res://themes/dark/base_text_container_theme_dark.tres")
+const _WHITE_THEME : Theme = preload("res://themes/white/speedReader/base_text_container_theme_white.tres")
+const _DARK_THEME : Theme = preload("res://themes/dark/speedReader/base_text_container_theme_dark.tres")
 
 #@onready var _file_menu_button : MenuButton = $VBoxContainer/Top/FlowContainer/File
 @onready var _settings_button : Button = $VBoxContainer/Top/FlowContainer/Settings
@@ -67,15 +67,13 @@ func _set_text_by_language(_language : Settings.Languages) -> void:
 	#_file_menu_button.get_popup().set_item_text(2, tr("Open file location"))
 
 func _changed_theme(_theme : Global.Themes) -> void:
-	var current_theme : Theme
-	
 	match _theme:
 		Global.Themes.DARK:
-			current_theme = _DARK_THEME
+			print("dark")
+			theme = _DARK_THEME
 		Global.Themes.WHITE:
-			current_theme = _WHITE_THEME
-	
-	theme = current_theme
+			print("white")
+			theme = _WHITE_THEME
 
 #func _file_menu_button_id_pressed(id : int) -> void:
 	#match id:

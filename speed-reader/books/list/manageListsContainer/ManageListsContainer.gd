@@ -1,12 +1,15 @@
 extends MarginContainer
 
+const _BOOKS_DARK_THEME : Theme = preload("res://themes/dark/books/books_theme_dark.tres")
+const _BOOKS_WHITE_THEME : Theme = preload("res://themes/white/books/books_theme_white.tres")
+
 const _NEW_LIST_WINDOW_SCENE : PackedScene = preload("res://windows/newListWindow/NewListWindow.tscn")
 const _MANAGE_LIST_CONTAINER_SCENE : PackedScene = preload("res://books/list/manageListContainer/ManageListContainer.tscn")
 
 var _books_scene : PackedScene = load("res://books/Books.tscn")
 
 @onready var _search_line_edit : LineEdit = $VBoxContainer/SearchContainer/SearchLineEdit
-@onready var _lists_vbox_container : VBoxContainer = $VBoxContainer/ScrollContainer/ListsVBoxContainer
+@onready var _lists_vbox_container : VBoxContainer = $VBoxContainer/ScrollContainer/MarginContainer/ListsVBoxContainer
 
 @onready var _tags_window : TagsWindow = $TagsWindow
 
@@ -32,6 +35,18 @@ func _ready() -> void:
 	
 	Files.sorted_custom_lists.connect(_files_sorted_custom_lists)
 	_tags_window.confirmation_pressed.connect(_tags_window_confirmation_pressed)
+	
+	_changed_theme(Global.get_theme_type())
+	
+	Global.changed_theme.connect(_changed_theme)
+
+func _changed_theme(_theme : Global.Themes) -> void:
+	
+	match _theme:
+		Global.Themes.DARK:
+			theme = _BOOKS_DARK_THEME
+		Global.Themes.WHITE:
+			theme = _BOOKS_WHITE_THEME
 
 func _tags_window_confirmation_pressed(include_tags : Array[TagResource], exclude_tags : Array[TagResource], include_mode : TagsWindow.OptionMode, exclude_mode : TagsWindow.OptionMode) -> void:
 	_last_include_tags = include_tags

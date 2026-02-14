@@ -1,0 +1,88 @@
+[gd_resource type="Theme" load_steps=13 format=3 uid="uid://gbaxr0lmmko3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tlghm"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.16409835, 0.16409835, 0.16409835, 0.22600001)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y1jgm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rmxxf"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.8047426, 0.80474263, 0.8047426, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y1jgm"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.63, 0.63, 0.63, 0.7647059)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hx5f2"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.30323282, 0.30323282, 0.30323282, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avs4l"]
+draw_center = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oyjwk"]
+draw_center = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7g746"]
+draw_center = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kv2b8"]
+draw_center = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_son2h"]
+draw_center = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2v6ql"]
+draw_center = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_djxu0"]
+bg_color = Color(0.71629584, 0.7162964, 0.71629596, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[resource]
+Button/colors/font_color = Color(0, 0, 0, 1)
+Button/colors/font_disabled_color = Color(0, 0, 0, 0.5019608)
+Button/colors/font_focus_color = Color(0, 0, 0, 1)
+Button/colors/font_hover_color = Color(0.16078432, 0.16078432, 0.16078432, 1)
+Button/colors/font_hover_pressed_color = Color(0.84705883, 0.84705883, 0.84705883, 1)
+Button/styles/disabled = SubResource("StyleBoxFlat_tlghm")
+Button/styles/focus = SubResource("StyleBoxEmpty_y1jgm")
+Button/styles/hover = SubResource("StyleBoxFlat_rmxxf")
+Button/styles/normal = SubResource("StyleBoxFlat_y1jgm")
+Button/styles/pressed = SubResource("StyleBoxFlat_hx5f2")
+CheckBox/styles/disabled = SubResource("StyleBoxFlat_avs4l")
+CheckBox/styles/focus = SubResource("StyleBoxFlat_oyjwk")
+CheckBox/styles/hover = SubResource("StyleBoxFlat_7g746")
+CheckBox/styles/hover_pressed = SubResource("StyleBoxFlat_kv2b8")
+CheckBox/styles/normal = SubResource("StyleBoxFlat_son2h")
+CheckBox/styles/pressed = SubResource("StyleBoxFlat_2v6ql")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_djxu0")
+RichTextLabel/colors/default_color = Color(0, 0, 0, 1)

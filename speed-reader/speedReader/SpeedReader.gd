@@ -68,6 +68,8 @@ func _ready() -> void:
 	
 	Global.changed_theme.connect(_changed_theme)
 	
+	Global.set_theme.call_deferred(Global.get_theme_type())
+	
 	_resized()
 	
 	resized.connect(_resized)

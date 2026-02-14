@@ -1,0 +1,82 @@
+[gd_resource type="Theme" load_steps=13 format=3 uid="uid://bq60ukjllggxq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c5314"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.16007765, 0.16007765, 0.16007765, 0.48000002)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_djxu0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3lt6q"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.28485027, 0.28485027, 0.28485027, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mlly8"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.16, 0.16, 0.16, 0.5647059)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yifhn"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 2.0
+bg_color = Color(0.13319641, 0.13319641, 0.13319638, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avs4l"]
+draw_center = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oyjwk"]
+draw_center = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7g746"]
+draw_center = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kv2b8"]
+draw_center = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_son2h"]
+draw_center = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2v6ql"]
+draw_center = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_djxu0"]
+bg_color = Color(0.103743516, 0.103743546, 0.10374347, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[resource]
+Button/styles/disabled = SubResource("StyleBoxFlat_c5314")
+Button/styles/focus = SubResource("StyleBoxEmpty_djxu0")
+Button/styles/hover = SubResource("StyleBoxFlat_3lt6q")
+Button/styles/normal = SubResource("StyleBoxFlat_mlly8")
+Button/styles/pressed = SubResource("StyleBoxFlat_yifhn")
+CheckBox/styles/disabled = SubResource("StyleBoxFlat_avs4l")
+CheckBox/styles/focus = SubResource("StyleBoxFlat_oyjwk")
+CheckBox/styles/hover = SubResource("StyleBoxFlat_7g746")
+CheckBox/styles/hover_pressed = SubResource("StyleBoxFlat_kv2b8")
+CheckBox/styles/normal = SubResource("StyleBoxFlat_son2h")
+CheckBox/styles/pressed = SubResource("StyleBoxFlat_2v6ql")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_djxu0")
