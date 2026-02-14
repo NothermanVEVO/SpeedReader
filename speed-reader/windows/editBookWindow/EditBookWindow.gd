@@ -2,10 +2,15 @@ extends Window
 
 class_name EditBookWindow
 
+@onready var _title_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/TitleContainer/TitleRichTextLabel
 @onready var _cover_image : TextureRect = $MarginContainer/VBoxContainer/BookContainer/CoverContainer/Cover
 @onready var _name_line_edit : LineEdit = $MarginContainer/VBoxContainer/BookContainer/VBoxContainer/HBoxContainer/NameLineEdit
 @onready var _save_name_button : Button = $MarginContainer/VBoxContainer/BookContainer/VBoxContainer/HBoxContainer/SaveNameButton
+@onready var _tags_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/BookContainer/VBoxContainer/TagsContainer/MarginContainer/ScrollContainer/TagsFlowContainer/TagsRichTextLabel
 @onready var _tags_flow_container : FlowContainer = $MarginContainer/VBoxContainer/BookContainer/VBoxContainer/TagsContainer/MarginContainer/ScrollContainer/TagsFlowContainer
+@onready var _edit_tags_button : Button = $MarginContainer/VBoxContainer/BookContainer/VBoxContainer/EditTagButton
+@onready var _erase_button : Button = $MarginContainer/VBoxContainer/ButtonsContainer/DeleteButton
+@onready var _return_button : Button = $MarginContainer/VBoxContainer/ButtonsContainer/ReturnButton
 
 @onready var _file_dialog : FileDialog = $FileDialog
 @onready var _accept_dialog : AcceptDialog = $AcceptDialog
@@ -19,6 +24,18 @@ var _book : BookResource
 func _ready() -> void:
 	Files.saved_book.connect(_files_saved_book)
 	Files.erase_book.connect(_files_erase_book)
+	Settings.changed_language.connect(_changed_language)
+	_changed_language(Settings.get_language())
+
+func _changed_language(_language : Settings.Languages) -> void:
+	title = tr("Edit book")
+	_title_rich_text_label.text = tr("Edit book")
+	_name_line_edit.placeholder_text = tr("Book's name") + "..."
+	_save_name_button.text = tr("Save")
+	_tags_rich_text_label.text = tr("Tags") + ":"
+	_edit_tags_button.text = tr("Edit tags")
+	_erase_button.text = tr("Erase")
+	_return_button.text = tr("Finished")
 
 func _files_erase_book(book : BookResource) -> void:
 	if _book and _book == book:

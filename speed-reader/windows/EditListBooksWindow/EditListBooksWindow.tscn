@@ -52,7 +52,7 @@ layout_mode = 2
 layout_mode = 2
 alignment = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/BookMenuContainer/HBoxContainer"]
+[node name="BooksRichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/BookMenuContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 2
 theme_override_font_sizes/normal_font_size = 20
@@ -65,7 +65,7 @@ layout_mode = 2
 alignment = 1
 vertical = true
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/BookMenuContainer/HBoxContainer/Sort"]
+[node name="SortRichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/BookMenuContainer/HBoxContainer/Sort"]
 layout_mode = 2
 text = "Organizar:"
 fit_content = true

@@ -49,7 +49,7 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/NameContainer"]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/NameContainer/HBoxContainer"]
+[node name="NameRichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/NameContainer/HBoxContainer"]
 layout_mode = 2
 text = "Nome:"
 fit_content = true
@@ -69,7 +69,7 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/BackgroundColor"]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/BackgroundColor/HBoxContainer"]
+[node name="BackgroundRichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/BackgroundColor/HBoxContainer"]
 layout_mode = 2
 text = "Cor do fundo:"
 fit_content = true
@@ -89,7 +89,7 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ForegroundColor"]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/ForegroundColor/HBoxContainer"]
+[node name="ForegroundRichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/ForegroundColor/HBoxContainer"]
 layout_mode = 2
 text = "Cor do texto:"
 fit_content = true
@@ -114,7 +114,7 @@ text = "Editar tags"
 [node name="ResultListContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/ResultListContainer"]
+[node name="ResultRichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/ResultListContainer"]
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 22
 text = "Resultado:"
@@ -159,7 +159,7 @@ autowrap_mode = 0
 [node name="ResultTagsContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/ResultTagsContainer"]
+[node name="TagsRichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/ResultTagsContainer"]
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 22
 text = "Tags:"

@@ -6,8 +6,12 @@ const _TOGGLE_BOOK_CONTAINER_SCENE : PackedScene = preload("res://books/toggleBo
 
 @onready var _background_color_rect : ColorRect = $MarginContainer/VBoxContainer/ListTitleContainer/BackgroundColorRect
 @onready var _list_name_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/ListTitleContainer/ListNameRichTextLabel
+@onready var _books_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/BookMenuContainer/HBoxContainer/BooksRichTextLabel
+@onready var _sort_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/BookMenuContainer/HBoxContainer/Sort/SortRichTextLabel
+@onready var _filter_button : Button = $MarginContainer/VBoxContainer/BookMenuContainer/HBoxContainer/FilterButton
 @onready var _search_line_edit : LineEdit = $MarginContainer/VBoxContainer/SearchContainer/SearchLineEdit
 @onready var _books_flow_container : FlowContainer = $MarginContainer/VBoxContainer/BooksFlowContainer
+@onready var _ready_button : Button = $MarginContainer/VBoxContainer/ReadyButton
 
 @onready var _tags_window : TagsWindow = $TagsWindow
 
@@ -22,6 +26,15 @@ func _ready() -> void:
 	
 	Files.sorted_books.connect(_files_sorted_books)
 	_tags_window.confirmation_pressed.connect(_tags_window_confirmation_pressed)
+	Settings.changed_language.connect(_changed_language)
+	_changed_language(Settings.get_language())
+
+func _changed_language(_language : Settings.Languages) -> void:
+	_books_rich_text_label.text = tr("Books")
+	_sort_rich_text_label.text = tr("Sort") + ":"
+	_filter_button.text = tr("Filter")
+	_search_line_edit.placeholder_text = tr("Search")
+	_ready_button.text = tr("Finished")
 
 func _files_sorted_books(sort_type : Files.SortType) -> void:
 	_current_sort_type = sort_type

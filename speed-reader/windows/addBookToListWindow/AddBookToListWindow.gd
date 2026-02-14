@@ -4,6 +4,11 @@ class_name AddBookToListWindow
 
 const _NEW_LIST_WINDOW_SCENE : PackedScene = preload("res://windows/newListWindow/NewListWindow.tscn")
 
+@onready var _lists_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/ListsRichTextLabel
+@onready var _search_line_edit : LineEdit = $MarginContainer/VBoxContainer/SearchBar/SearchLineEdit
+@onready var _new_list_button : Button = $MarginContainer/VBoxContainer/NewListButton
+@onready var _ready_button : Button = $MarginContainer/VBoxContainer/ReadyButton
+
 @onready var _select_lists_container : SelectListsContainer = $MarginContainer/VBoxContainer/ScrollContainer/SelectListsContainer
 
 var _book : BookResource
@@ -11,6 +16,14 @@ var _book : BookResource
 func _ready() -> void:
 	_select_lists_container.list_selected.connect(_list_selected)
 	_select_lists_container.set_list_type(SelectListsContainer.ListType.CUSTOM)
+	Settings.changed_language.connect(_changed_language)
+	_changed_language(Settings.get_language())
+
+func _changed_language(_language : Settings.Languages) -> void:
+	_lists_rich_text_label.text = tr("Lists")
+	_search_line_edit.placeholder_text = tr("Search")
+	_new_list_button.text = "+ " + tr("New list")
+	_ready_button.text = tr("Finished")
 
 func set_book(book : BookResource) -> void:
 	_book = book

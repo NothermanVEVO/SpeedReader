@@ -18,7 +18,7 @@ var _list : ListResource
 signal toggled(toggle_list_container : ToggleListContainer, toggled_on : bool)
 
 func _ready() -> void:
-	pass
+	_name_rich_text_label.resized.connect(_resize_text)
 
 func set_list(list : ListResource) -> void:
 	_list = list
@@ -29,8 +29,8 @@ func set_list(list : ListResource) -> void:
 	_background_color_rect.color = _list.background_color
 	_name_rich_text_label.add_theme_color_override("default_color", _list.foreground_color)
 	_name_rich_text_label.text = _list.name
-	await _name_rich_text_label.resized
-	_resize_text()
+	#await _name_rich_text_label.resized
+	#_resize_text()
 
 func get_list() -> ListResource:
 	return _list

@@ -12,9 +12,15 @@ var _list : ListResource
 @onready var _list_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/ListResult/ScrollContainer/MarginContainer/MarginContainer/ListRichTextLabel
 
 @onready var _title_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/TitleContainer/TitleRichTextLabel
+@onready var _name_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/NameContainer/HBoxContainer/NameRichTextLabel
 @onready var _name_line_edit : LineEdit = $MarginContainer/VBoxContainer/NameContainer/HBoxContainer/NameLineEdit
+@onready var _background_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/BackgroundColor/HBoxContainer/BackgroundRichTextLabel
 @onready var _background_color_picker : ColorPickerButton = $MarginContainer/VBoxContainer/BackgroundColor/HBoxContainer/BackgroundColorPickerButton
+@onready var _foreground_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/ForegroundColor/HBoxContainer/ForegroundRichTextLabel
 @onready var _foreground_color_picker : ColorPickerButton = $MarginContainer/VBoxContainer/ForegroundColor/HBoxContainer/ForegroundColorPickerButton
+@onready var _edit_tag_button : Button = $MarginContainer/VBoxContainer/TagButtonContainer/EditTagButton
+@onready var _result_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/ResultListContainer/ResultRichTextLabel
+@onready var _tags_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/ResultTagsContainer/TagsRichTextLabel
 
 @onready var _tags_flow_container : FlowContainer = $MarginContainer/VBoxContainer/TagsResult/MarginContainer/ScrollContainer/TagsFlowContainer
 
@@ -38,13 +44,16 @@ func _ready() -> void:
 	_changed_language(Settings.get_language())
 
 func _changed_language(_language : Settings.Languages) -> void:
-	pass
-
-#Settings.changed_language.connect(_changed_language)
-	#_changed_language(Settings.get_language())
-#
-#func _changed_language(_language : Settings.Languages) -> void:
-	#pass
+	set_type(_type)
+	_name_rich_text_label.text = tr("Name") + ":"
+	_name_line_edit.placeholder_text = tr("List's name")
+	_background_rich_text_label.text = tr("Background color") + ":"
+	_foreground_rich_text_label.text = tr("Foreground color") + ":"
+	_edit_tag_button.text = tr("Edit tags")
+	_result_rich_text_label.text = tr("Result")
+	_tags_rich_text_label.text = tr("Tags")
+	_erase_button.text = tr("Erase")
+	_create_button.text = tr("Create")
 
 func _remove_tag(tag : TagResource) -> void:
 	for child in _tags_flow_container.get_children():
@@ -85,14 +94,14 @@ func set_type(type : Type) -> void:
 	
 	match _type:
 		Type.NEW_LIST:
-			title = "Nova lista"
+			title = tr("New list")
 			_title_rich_text_label.text = title
-			_create_button.text = "Criar"
+			_create_button.text = tr("Create")
 			_erase_button.visible = false
 		Type.EDIT_LIST:
-			title = "Editar lista"
+			title = tr("Edit list")
 			_title_rich_text_label.text = title
-			_create_button.text = "Salvar"
+			_create_button.text = tr("Save")
 			_erase_button.visible = true
 
 func get_list() -> ListResource:

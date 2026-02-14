@@ -2,6 +2,12 @@ extends Window
 
 class_name EditBookTagWindow
 
+@onready var _title_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/TitleContainer/TitleRichTextLabel
+@onready var _erase_tag_button : Button = $MarginContainer/VBoxContainer/TagButtons/EraseButton
+@onready var _new_tag_button : Button = $MarginContainer/VBoxContainer/TagButtons/NewButton
+@onready var _search_line_edit : LineEdit = $MarginContainer/VBoxContainer/SearchContainer/HBoxContainer/SearchLineEdit
+@onready var _return_button : Button = $MarginContainer/VBoxContainer/ReturnButton
+
 @onready var _tags_flow_container : FlowContainer = $MarginContainer/VBoxContainer/TagsContainer/MarginContainer/ScrollContainer/TagsFlowContainer
 
 @onready var _new_tag_window : Window = $NewTagWindow
@@ -17,6 +23,17 @@ func _ready() -> void:
 	
 	for tag in Files.get_tags().tags:
 		_add_tag(tag)
+	
+	Settings.changed_language.connect(_changed_language)
+	_changed_language(Settings.get_language())
+
+func _changed_language(_language : Settings.Languages) -> void:
+	title = tr("Edit tags")
+	_title_rich_text_label.text = tr("Edit tags")
+	_erase_tag_button.text = tr("Erase")
+	_new_tag_button.text = tr("New Button")
+	_search_line_edit.placeholder_text = tr("Search")
+	_return_button.text = tr("Finished")
 
 func _add_tag(tag : TagResource) -> void:
 	var press_tag_container : PressTagContainer = _PRESS_TAG_SCENE.instantiate()
