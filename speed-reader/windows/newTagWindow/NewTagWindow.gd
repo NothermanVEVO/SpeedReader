@@ -13,6 +13,7 @@ extends Window
 @onready var _create_button : Button = $MarginContainer/VBoxContainer/CreateButton
 
 @onready var _accept_dialog : AcceptDialog = $AcceptDialog
+@onready var _bbcode_info_window : Window = $BBCodeInfoWindow
 
 func _ready() -> void:
 	_background_color_picker_button.color = _tag_container.get_tag().background_color
@@ -59,3 +60,6 @@ func _on_create_button_pressed() -> void:
 
 func _on_close_requested() -> void:
 	visible = false
+
+func _on_info_button_pressed() -> void:
+	_bbcode_info_window.popup_centered()

@@ -33,8 +33,8 @@ func _ready() -> void:
 func _changed_language(_language : Settings.Languages) -> void:
 	title = tr("Edit tags")
 	_title_rich_text_label.text = tr("Edit tags")
-	_erase_tag_button.text = tr("Erase")
-	_new_tag_button.text = tr("New Button")
+	_erase_tag_button.text = tr("Erase tag")
+	_new_tag_button.text = tr("New tag")
 	_search_line_edit.placeholder_text = tr("Search")
 	_return_button.text = tr("Finished")
 

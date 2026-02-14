@@ -435,7 +435,10 @@ func request_to_erase_book(book : BookResource) -> void:
 		return
 	_last_requested_erase_type = EraseType.BOOK
 	_last_requested_book_to_erase = book
-	_erase_confirmation_dialog.dialog_text = "Você tem certeza que deseja apagar o livro:\n\"" + book.name + "\""
+	_erase_confirmation_dialog.size = Vector2.ZERO
+	_erase_confirmation_dialog.dialog_text = tr("Are you sure you want to erase the book") + ":\n\"" + book.name + "\""
+	_erase_confirmation_dialog.cancel_button_text = tr("Cancel")
+	_erase_confirmation_dialog.ok_button_text = tr("Yes")
 	_erase_confirmation_dialog.popup_centered()
 
 func request_to_erase_custom_list(list : ListResource) -> void:
@@ -443,7 +446,10 @@ func request_to_erase_custom_list(list : ListResource) -> void:
 		return
 	_last_requested_erase_type = EraseType.CUSTOM_LIST
 	_last_requested_custom_list_to_erase = list
-	_erase_confirmation_dialog.dialog_text = "Você tem certeza que deseja apagar a lista:\n\"" + list.name + "\""
+	_erase_confirmation_dialog.size = Vector2.ZERO
+	_erase_confirmation_dialog.dialog_text = tr("Are you sure you want to erase the list") + ":\n\"" + list.name + "\""
+	_erase_confirmation_dialog.cancel_button_text = tr("Cancel")
+	_erase_confirmation_dialog.ok_button_text = tr("Yes")
 	_erase_confirmation_dialog.popup_centered()
 
 func _confirmed_to_erase_book() -> void:

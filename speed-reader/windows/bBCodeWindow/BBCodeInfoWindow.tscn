@@ -1,0 +1,148 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5pr50dbr2u32"]
+
+[ext_resource type="Script" uid="uid://btowh6egf0rv3" path="res://windows/bBCodeWindow/BBCodeInfoWindow.gd" id="1_4kuln"]
+
+[node name="BBCodeInfoWindow" type="Window"]
+oversampling_override = 1.0
+title = "BBCode"
+size = Vector2i(550, 350)
+visible = false
+popup_window = true
+force_native = true
+script = ExtResource("1_4kuln")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 22
+text = "Esse campo aceita BBCode, exemplos:"
+fit_content = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 15
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="PulseHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer/PulseHBoxContainer"]
+layout_mode = 2
+focus_mode = 2
+text = "- [pulse freq=1.0 color=#ffffff40 ease=-2.0]text[/pulse] :"
+fit_content = true
+autowrap_mode = 0
+selection_enabled = true
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer/PulseHBoxContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[pulse freq=1.0 color=#ffffff40 ease=-2.0]text[/pulse]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="WaveHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer/WaveHBoxContainer"]
+layout_mode = 2
+focus_mode = 2
+text = "- [wave amp=50.0 freq=5.0 connected=1]text[/wave] :"
+fit_content = true
+autowrap_mode = 0
+selection_enabled = true
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer/WaveHBoxContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[wave amp=50.0 freq=5.0 connected=1]text[/wave]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="TornadoHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer/TornadoHBoxContainer"]
+layout_mode = 2
+focus_mode = 2
+text = "- [tornado radius=5.0 freq=2.0 connected=1]text[/tornado] :"
+fit_content = true
+autowrap_mode = 0
+vertical_alignment = 1
+selection_enabled = true
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer/TornadoHBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+bbcode_enabled = true
+text = "[tornado radius=5.0 freq=2.0 connected=1]text[/tornado]"
+fit_content = true
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ShakeHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer/ShakeHBoxContainer"]
+layout_mode = 2
+focus_mode = 2
+text = "- [shake rate=20.0 level=5 connected=1]text[/shake] :"
+fit_content = true
+autowrap_mode = 0
+selection_enabled = true
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer/ShakeHBoxContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[shake rate=20.0 level=5 connected=1]text[/shake]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="RainbowHBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer/RainbowHBoxContainer"]
+layout_mode = 2
+focus_mode = 2
+text = "- [rainbow freq=1.0 sat=0.8 val=0.8 speed=1.0]text[/rainbow] :"
+fit_content = true
+autowrap_mode = 0
+selection_enabled = true
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/VBoxContainer/RainbowHBoxContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[rainbow freq=1.0 sat=0.8 val=0.8 speed=1.0]text[/rainbow]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="LinkButton" type="LinkButton" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Clique para saber mais"
+uri = "https://docs.godotengine.org/en/latest/tutorials/ui/bbcode_in_richtextlabel.html"
+
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]

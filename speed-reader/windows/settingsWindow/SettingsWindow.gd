@@ -25,6 +25,10 @@ func _ready() -> void:
 	
 	Settings.changed_language.connect(_set_text_by_language)
 	_set_text_by_language(Settings.get_language())
+	
+	if _options_item_list.item_count > 0:
+		_options_item_list.select(0)
+		_options_item_list.item_selected.emit(0)
 
 func _set_text_by_language(_language : Settings.Languages) -> void:
 	title = tr("Settings")

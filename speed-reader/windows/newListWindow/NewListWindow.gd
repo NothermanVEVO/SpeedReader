@@ -28,6 +28,7 @@ var _list : ListResource
 @onready var _create_button : Button = $MarginContainer/VBoxContainer/HBoxContainer/CreateButton
 
 @onready var _accept_dialog : AcceptDialog = $AcceptDialog
+@onready var _bbcode_info_window : Window = $BBCodeInfoWindow
 
 const _TAG_CONTAINER_SCENE : PackedScene = preload("res://books/tag/TagContainer.tscn")
 const _EDIT_LIST_TAG_WINDOW_SCENE : PackedScene = preload("res://windows/editListTagWindow/EditListTagWindow.tscn")
@@ -181,3 +182,6 @@ func _on_erase_button_pressed() -> void:
 func _erase_list(list : ListResource) -> void:
 	if _list and _list == list:
 		queue_free()
+
+func _on_info_button_pressed() -> void:
+	_bbcode_info_window.popup_centered()

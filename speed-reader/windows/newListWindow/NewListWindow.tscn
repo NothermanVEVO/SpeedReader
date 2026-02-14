@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://clkpiwbww0pqq"]
+[gd_scene load_steps=3 format=3 uid="uid://clkpiwbww0pqq"]
 
 [ext_resource type="Script" uid="uid://tgm0saiwk7ug" path="res://windows/newListWindow/NewListWindow.gd" id="1_jrbmh"]
+[ext_resource type="PackedScene" uid="uid://b5pr50dbr2u32" path="res://windows/bBCodeWindow/BBCodeInfoWindow.tscn" id="2_7tb1r"]
 
 [node name="NewListWindow" type="Window"]
 oversampling_override = 1.0
@@ -16,6 +17,8 @@ script = ExtResource("1_jrbmh")
 oversampling_override = 1.0
 title = "Aviso!"
 force_native = true
+
+[node name="BBCodeInfoWindow" parent="." instance=ExtResource("2_7tb1r")]
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
@@ -62,6 +65,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Nome da lista"
 clear_button_enabled = true
+
+[node name="InfoButton" type="Button" parent="MarginContainer/VBoxContainer/NameContainer/HBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = " ? "
 
 [node name="BackgroundColor" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -208,6 +216,7 @@ text = "Criar"
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/NameContainer/HBoxContainer/NameLineEdit" to="." method="_on_name_line_edit_text_changed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/NameContainer/HBoxContainer/InfoButton" to="." method="_on_info_button_pressed"]
 [connection signal="color_changed" from="MarginContainer/VBoxContainer/BackgroundColor/HBoxContainer/BackgroundColorPickerButton" to="." method="_on_background_color_picker_button_color_changed"]
 [connection signal="color_changed" from="MarginContainer/VBoxContainer/ForegroundColor/HBoxContainer/ForegroundColorPickerButton" to="." method="_on_foreground_color_picker_button_color_changed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/TagButtonContainer/EditTagButton" to="." method="_on_edit_tag_button_pressed"]
