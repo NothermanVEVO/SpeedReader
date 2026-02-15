@@ -14,6 +14,8 @@ func _ready() -> void:
 	_resized()
 	resized.connect(_resized)
 	
+	Files.set_custom_list_sort_type(Files.SortType.ALPHABETICAL_ASCEDING)
+	
 	_toggle_all_list_container.set_list(Files.get_all_list())
 	_select_prepared_lists_container.set_list_type(SelectListsContainer.ListType.PREPARED)
 	_select_custom_lists_container.set_list_type(SelectListsContainer.ListType.CUSTOM)

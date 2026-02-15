@@ -12,6 +12,8 @@ extends HBoxContainer
 @onready var _search_line_edit : LineEdit = $MiddleBar/VBoxContainer/SearchBar/SearchLineEdit
 
 func _ready() -> void:
+	_sort_option_button.select(Files.get_book_sort_type())
+	
 	Settings.changed_language.connect(_changed_language)
 	_changed_language(Settings.get_language())
 

@@ -29,8 +29,11 @@ func _ready() -> void:
 	_tags_window.confirmation_pressed.connect(_tags_window_confirmation_pressed)
 	Settings.changed_language.connect(_changed_language)
 	_changed_language(Settings.get_language())
+	
+	_sort_option_button.select(Files.get_book_sort_type())
 
 func _changed_language(_language : Settings.Languages) -> void:
+	title = tr("Book's list")
 	_books_rich_text_label.text = tr("Books")
 	_sort_rich_text_label.text = tr("Sort") + ":"
 	_sort_option_button.set_item_text(0, tr("Used recently"))

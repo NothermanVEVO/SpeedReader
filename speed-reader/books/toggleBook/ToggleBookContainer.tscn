@@ -7,6 +7,9 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_sd023")
 
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
 mouse_default_cursor_shape = 2

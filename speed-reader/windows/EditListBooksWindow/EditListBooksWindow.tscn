@@ -79,15 +79,19 @@ mouse_default_cursor_shape = 2
 text_overrun_behavior = 3
 selected = 0
 fit_to_longest_item = false
-item_count = 4
-popup/item_0/text = "Mais recente"
+item_count = 6
+popup/item_0/text = "Usados recentemente"
 popup/item_0/id = 0
-popup/item_1/text = "Mais antigo"
-popup/item_1/id = 3
-popup/item_2/text = "Alfabética (Crescente)"
+popup/item_1/text = "Usados mais antigo"
+popup/item_1/id = 1
+popup/item_2/text = "Adicionados recentemente"
 popup/item_2/id = 2
-popup/item_3/text = "Alfabética (Decrescente)"
+popup/item_3/text = "Adicionados mais antigo"
 popup/item_3/id = 3
+popup/item_4/text = "Alfabética (Crescente)"
+popup/item_4/id = 4
+popup/item_5/text = "Alfabética (Decrescente)"
+popup/item_5/id = 5
 
 [node name="FilterButton" type="Button" parent="MarginContainer/VBoxContainer/BookMenuContainer/HBoxContainer"]
 layout_mode = 2
