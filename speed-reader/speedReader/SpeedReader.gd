@@ -73,6 +73,9 @@ func _ready() -> void:
 	_resized()
 	
 	resized.connect(_resized)
+	
+	if Files.current_selected_book:
+		Files.current_selected_book.last_open_time = Time.get_unix_time_from_system()
 
 func _resized() -> void:
 	var new_size_y : float = 450.0 * (DisplayServer.window_get_size().y / 1080.0)

@@ -41,10 +41,10 @@ var _all_list : ListResource = ListResource.new(PackedStringArray(), "All", Colo
 var _prepared_lists : ListsResource
 var _custom_lists : ListsResource
 
-enum SortType {LATEST = 0, OLDEST = 1, ALPHABETICAL_ASCEDING = 2, ALPHABETICAL_DESCEDING = 3}
+enum SortType {USED_LATEST = 0, USED_OLDEST = 1, ADDED_LATEST = 2, ADDED_OLDEST = 3, ALPHABETICAL_ASCEDING = 4, ALPHABETICAL_DESCEDING = 5}
 
-var _current_book_sort_type : SortType = SortType.LATEST
-var _current_custom_list_sort_type : SortType = SortType.LATEST
+var _current_book_sort_type : SortType = SortType.USED_LATEST
+var _current_custom_list_sort_type : SortType = SortType.ADDED_LATEST
 
 var current_selected_book : BookResource
 
@@ -248,10 +248,14 @@ func set_book_sort_type(sort_type : SortType) -> void:
 	_current_book_sort_type = sort_type
 	
 	match _current_book_sort_type:
-		SortType.LATEST:
-			_sort_books_by_latest()
-		SortType.OLDEST:
-			_sort_books_by_oldest()
+		SortType.USED_LATEST:
+			_sort_books_by_used_latest()
+		SortType.USED_OLDEST:
+			_sort_books_by_used_oldest()
+		SortType.ADDED_LATEST:
+			_sort_books_by_added_latest()
+		SortType.ADDED_OLDEST:
+			_sort_books_by_added_oldest()
 		SortType.ALPHABETICAL_ASCEDING:
 			_sort_books_by_name_ascending()
 		SortType.ALPHABETICAL_DESCEDING:
@@ -263,9 +267,9 @@ func set_custom_list_sort_type(sort_type : SortType) -> void:
 	_current_custom_list_sort_type = sort_type
 	
 	match _current_custom_list_sort_type:
-		SortType.LATEST:
+		SortType.ADDED_LATEST:
 			_sort_custom_lists_by_latest()
-		SortType.OLDEST:
+		SortType.ADDED_OLDEST:
 			_sort_custom_lists_by_oldest()
 		SortType.ALPHABETICAL_ASCEDING:
 			_sort_custom_lists_by_name_ascending()
@@ -274,12 +278,22 @@ func set_custom_list_sort_type(sort_type : SortType) -> void:
 	
 	sorted_custom_lists.emit(_current_custom_list_sort_type)
 
-func _sort_books_by_latest() -> void:
+func _sort_books_by_used_latest() -> void:
+	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
+		return a.last_open_time > b.last_open_time
+	)
+
+func _sort_books_by_used_oldest() -> void:
+	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
+		return a.last_open_time < b.last_open_time
+	)
+
+func _sort_books_by_added_latest() -> void:
 	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
 		return a.creation_time > b.creation_time
 	)
 
-func _sort_books_by_oldest() -> void:
+func _sort_books_by_added_oldest() -> void:
 	_books.sort_custom(func(a: BookResource, b: BookResource) -> bool:
 		return a.creation_time < b.creation_time
 	)

@@ -9,6 +9,7 @@ class_name BookResource
 @export var comment : String
 @export var tags : TagsResource
 @export var creation_time : float
+@export var last_open_time : float
 
 @export var sizes_by_pages : Array[SizePagesResource]
 @export var last_word_byte_pos : int

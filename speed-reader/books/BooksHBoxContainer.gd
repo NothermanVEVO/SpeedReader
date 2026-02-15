@@ -23,7 +23,12 @@ func _changed_language(_language : Settings.Languages) -> void:
 	_type_option_button.set_item_text(0, tr("Long"))
 	_type_option_button.set_item_text(1, tr("Block"))
 	_sort_rich_text_label.text = tr("Sort") + ":"
-	#_sort_option_button
+	_sort_option_button.set_item_text(0, tr("Used recently"))
+	_sort_option_button.set_item_text(1, tr("Used oldest"))
+	_sort_option_button.set_item_text(2, tr("Added recently"))
+	_sort_option_button.set_item_text(3, tr("Added oldest"))
+	_sort_option_button.set_item_text(4, tr("Alphabetical") + "(" + tr("Ascending") + ")")
+	_sort_option_button.set_item_text(5, tr("Alphabetical") + "(" + tr("Descending") + ")")
 	_filter_button.text = tr("Filter")
 	_new_file_button.text = tr("New file")
 	_search_line_edit.placeholder_text = tr("Search")

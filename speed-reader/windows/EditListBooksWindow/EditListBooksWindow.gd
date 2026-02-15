@@ -8,6 +8,7 @@ const _TOGGLE_BOOK_CONTAINER_SCENE : PackedScene = preload("res://books/toggleBo
 @onready var _list_name_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/ListTitleContainer/ListNameRichTextLabel
 @onready var _books_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/BookMenuContainer/HBoxContainer/BooksRichTextLabel
 @onready var _sort_rich_text_label : RichTextLabel = $MarginContainer/VBoxContainer/BookMenuContainer/HBoxContainer/Sort/SortRichTextLabel
+@onready var _sort_option_button : OptionButton = $MarginContainer/VBoxContainer/BookMenuContainer/HBoxContainer/Sort/SortOption
 @onready var _filter_button : Button = $MarginContainer/VBoxContainer/BookMenuContainer/HBoxContainer/FilterButton
 @onready var _search_line_edit : LineEdit = $MarginContainer/VBoxContainer/SearchContainer/SearchLineEdit
 @onready var _books_flow_container : FlowContainer = $MarginContainer/VBoxContainer/BooksFlowContainer
@@ -32,6 +33,12 @@ func _ready() -> void:
 func _changed_language(_language : Settings.Languages) -> void:
 	_books_rich_text_label.text = tr("Books")
 	_sort_rich_text_label.text = tr("Sort") + ":"
+	_sort_option_button.set_item_text(0, tr("Used recently"))
+	_sort_option_button.set_item_text(1, tr("Used oldest"))
+	_sort_option_button.set_item_text(2, tr("Added recently"))
+	_sort_option_button.set_item_text(3, tr("Added oldest"))
+	_sort_option_button.set_item_text(4, tr("Alphabetical") + "(" + tr("Ascending") + ")")
+	_sort_option_button.set_item_text(5, tr("Alphabetical") + "(" + tr("Descending") + ")")
 	_filter_button.text = tr("Filter")
 	_search_line_edit.placeholder_text = tr("Search")
 	_ready_button.text = tr("Finished")

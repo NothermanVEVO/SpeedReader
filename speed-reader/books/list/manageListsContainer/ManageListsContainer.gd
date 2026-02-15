@@ -53,7 +53,10 @@ func _changed_language(_language : Settings.Languages) -> void:
 	_title_rich_text_label.text = tr("Manage lists")
 	_return_button.text = tr("Return")
 	_sort_rich_text_label.text = tr("Sort") + ":"
-	#_sort_option_button
+	_sort_option_button.set_item_text(0, tr("Added recently"))
+	_sort_option_button.set_item_text(1, tr("Added oldest"))
+	_sort_option_button.set_item_text(2, tr("Alphabetical") + "(" + tr("Ascending") + ")")
+	_sort_option_button.set_item_text(3, tr("Alphabetical") + "(" + tr("Descending") + ")")
 	_filter_button.text = tr("Filter")
 	_search_line_edit.placeholder_text = tr("Search")
 	_new_list_button.text = "+ " + tr("New list")
@@ -121,7 +124,7 @@ func _add_custom_list(list : ListResource) -> void:
 	var manage_list_container : ManageListContainer = _MANAGE_LIST_CONTAINER_SCENE.instantiate()
 	_lists_vbox_container.add_child(manage_list_container)
 	manage_list_container.set_list(list)
-	_on_sort_option_item_selected(_current_sort_type)
+	_on_sort_option_item_selected.call_deferred(_current_sort_type)
 
 func _remove_custom_list(list : ListResource) -> void:
 	for child in _lists_vbox_container.get_children():
@@ -132,7 +135,7 @@ func _remove_custom_list(list : ListResource) -> void:
 	_tags_window_confirmation_pressed(_last_include_tags, _last_exclude_tags, _last_include_mode, _last_exclude_mode)
 
 func _on_sort_option_item_selected(index: int) -> void:
-	_current_sort_type = index as Files.SortType
+	_current_sort_type = _sort_option_button.get_item_id(index) as Files.SortType
 	
 	Files.set_custom_list_sort_type(_current_sort_type)
 	

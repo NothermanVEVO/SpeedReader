@@ -326,6 +326,7 @@ func _input_dialog_text_confirmed(text : String) -> void:
 		var book := BookResource.new(text, 0, 0, "", TagsResource.new())
 		book.current_dir_path = import_file_path.get_base_dir()
 		book.creation_time = Time.get_unix_time_from_system()
+		book.last_open_time = book.creation_time
 		var book_status := Files.save_book(book)
 		_open_accept_dialog_on_import(book_status)
 		if book_status == OK:
