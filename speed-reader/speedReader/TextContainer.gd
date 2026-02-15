@@ -46,10 +46,8 @@ func _set_text_by_language(_language : Settings.Languages) -> void:
 func _changed_theme(_theme : Global.Themes) -> void:
 	match _theme:
 		Global.Themes.DARK:
-			print("dark")
 			theme = _DARK_THEME
 		Global.Themes.WHITE:
-			print("white")
 			theme = _WHITE_THEME
 
 func _reset() -> void:

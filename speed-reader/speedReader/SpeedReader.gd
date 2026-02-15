@@ -6,7 +6,7 @@ const MIN_WORDS_PER_MINUTE : float = 1
 const MAX_WORDS_PER_MINUTE : float = 2000
 const PUNCTUATION_DELAY : float = 0.5
 
-const PUNCTUATIONS : String = ".,:;!?"
+const PUNCTUATIONS : String = ".,:;!?…"
 const IGNORED_CHARACTERS : String = PUNCTUATIONS + "'´`"
 
 @onready var _color_background : ColorRect = $ColorBackground
@@ -213,6 +213,8 @@ func play() -> void:
 		if not _compound_words_positions.is_empty() and _currently_compound_word_idx < _compound_words_positions.size():
 			_currently_compound_word_idx += 1
 			queue_redraw()
+			if _currently_compound_word_idx >= _compound_words_positions.size():
+				_currently_word_idx += 1
 		else:
 			_currently_word_idx += 1
 			_set_current_word(_currently_word_idx)
@@ -223,7 +225,7 @@ func play() -> void:
 				_quant_of_same_word_repetitions = 1
 			_last_word = _current_word
 		
-		if _current_word[-1] in PUNCTUATIONS:
+		if _current_word[-1] in PUNCTUATIONS and _currently_compound_word_idx >= _compound_words_positions.size():
 			_currently_words_per_minute = _words_per_minute - _words_per_minute * PUNCTUATION_DELAY
 		else:
 			_currently_words_per_minute = _words_per_minute
@@ -390,10 +392,11 @@ func _draw() -> void:
 func _full_text_clicked_on_word(_word : String, idx : int) -> void:
 	_quant_of_same_word_repetitions = 1
 	_set_current_word(idx)
-	if _compound_words_positions.is_empty():
-		_currently_word_idx = idx - 1
-	else:
-		_currently_word_idx = idx
+	_currently_word_idx = idx - 1
+	#if _compound_words_positions.is_empty():
+		#_currently_word_idx = idx - 1
+	#else:
+		#_currently_word_idx = idx
 	stop()
 
 func _is_last_word_equal_to_current_word(last_word : String, current_word : String) -> bool:
