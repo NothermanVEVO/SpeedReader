@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://ckliwujw5g2pu" path="res://books/BookInfo.gd" id="3_mmmtf"]
 [ext_resource type="PackedScene" uid="uid://dpwkarvfhcc7v" path="res://books/list/allListSelectContainer/AllListsSelectContainer.tscn" id="4_lx3rd"]
 [ext_resource type="Script" uid="uid://iv7ta42kqk34" path="res://books/BooksHBoxContainer.gd" id="6_kvyi4"]
-[ext_resource type="Texture2D" uid="uid://y5gylchfmc12" path="res://assets/icons/speed_reader.png" id="7_a08qk"]
+[ext_resource type="Texture2D" uid="uid://bwiyvjai3d0hs" path="res://assets/icons/speed_reader_v2.png" id="7_a08qk"]
 
 [node name="Books" type="MarginContainer"]
 anchors_preset = 15
