@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dken4cvi5kx5f"]
+[gd_scene load_steps=10 format=3 uid="uid://dken4cvi5kx5f"]
 
 [ext_resource type="Theme" uid="uid://bq60ukjllggxq" path="res://themes/dark/books/books_theme_dark.tres" id="1_erviv"]
 [ext_resource type="Script" uid="uid://peileisktac3" path="res://books/Books.gd" id="1_xue48"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://ckliwujw5g2pu" path="res://books/BookInfo.gd" id="3_mmmtf"]
 [ext_resource type="PackedScene" uid="uid://dpwkarvfhcc7v" path="res://books/list/allListSelectContainer/AllListsSelectContainer.tscn" id="4_lx3rd"]
 [ext_resource type="Script" uid="uid://iv7ta42kqk34" path="res://books/BooksHBoxContainer.gd" id="6_kvyi4"]
+[ext_resource type="Texture2D" uid="uid://y5gylchfmc12" path="res://assets/icons/speed_reader.png" id="7_a08qk"]
 
 [node name="Books" type="MarginContainer"]
 anchors_preset = 15
@@ -62,6 +63,12 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 text = "|||"
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/LeftBar/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("7_a08qk")
+expand_mode = 1
 
 [node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/LeftBar/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
