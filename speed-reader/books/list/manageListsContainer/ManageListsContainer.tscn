@@ -26,7 +26,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="TitleRichTextLabel" type="RichTextLabel" parent="VBoxContainer/TitleContainer"]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 55)
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 36
 text = "Gerenciar listas"

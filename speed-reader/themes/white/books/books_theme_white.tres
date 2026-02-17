@@ -1,4 +1,9 @@
-[gd_resource type="Theme" load_steps=13 format=3 uid="uid://gbaxr0lmmko3"]
+[gd_resource type="Theme" load_steps=17 format=3 uid="uid://gbaxr0lmmko3"]
+
+[ext_resource type="FontFile" uid="uid://c55x50yepnavk" path="res://fonts/Poppins/Poppins-Light.ttf" id="1_y1jgm"]
+[ext_resource type="FontFile" uid="uid://bfxltl5fbth5i" path="res://fonts/Poppins/Poppins-Bold.ttf" id="2_hx5f2"]
+[ext_resource type="FontFile" uid="uid://78j0guquwqxd" path="res://fonts/Poppins/Poppins-BoldItalic.ttf" id="3_yo5hb"]
+[ext_resource type="FontFile" uid="uid://bisie8xqalrpp" path="res://fonts/Poppins/Poppins-LightItalic.ttf" id="4_m72td"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tlghm"]
 content_margin_left = 5.0
@@ -73,6 +78,7 @@ Button/colors/font_disabled_color = Color(0, 0, 0, 0.5019608)
 Button/colors/font_focus_color = Color(0, 0, 0, 1)
 Button/colors/font_hover_color = Color(0.16078432, 0.16078432, 0.16078432, 1)
 Button/colors/font_hover_pressed_color = Color(0.84705883, 0.84705883, 0.84705883, 1)
+Button/fonts/font = ExtResource("1_y1jgm")
 Button/styles/disabled = SubResource("StyleBoxFlat_tlghm")
 Button/styles/focus = SubResource("StyleBoxEmpty_y1jgm")
 Button/styles/hover = SubResource("StyleBoxFlat_rmxxf")
@@ -84,5 +90,12 @@ CheckBox/styles/hover = SubResource("StyleBoxFlat_7g746")
 CheckBox/styles/hover_pressed = SubResource("StyleBoxFlat_kv2b8")
 CheckBox/styles/normal = SubResource("StyleBoxFlat_son2h")
 CheckBox/styles/pressed = SubResource("StyleBoxFlat_2v6ql")
+LineEdit/fonts/font = ExtResource("1_y1jgm")
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_djxu0")
 RichTextLabel/colors/default_color = Color(0, 0, 0, 1)
+RichTextLabel/fonts/bold_font = ExtResource("2_hx5f2")
+RichTextLabel/fonts/bold_italics_font = ExtResource("3_yo5hb")
+RichTextLabel/fonts/italics_font = ExtResource("4_m72td")
+RichTextLabel/fonts/mono_font = ExtResource("1_y1jgm")
+RichTextLabel/fonts/normal_font = ExtResource("1_y1jgm")
+TextEdit/fonts/font = ExtResource("1_y1jgm")

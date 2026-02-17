@@ -5,12 +5,12 @@
 [ext_resource type="FontFile" uid="uid://c55x50yepnavk" path="res://fonts/Poppins/Poppins-Light.ttf" id="2_v4uy4"]
 [ext_resource type="Script" uid="uid://cdmdowrdnm7vn" path="res://speedReader/TextContainer.gd" id="2_xdc5n"]
 [ext_resource type="Script" uid="uid://b3uukynvdg636" path="res://speedReader/FullText.gd" id="3_f3hev"]
+[ext_resource type="FontFile" uid="uid://bfxltl5fbth5i" path="res://fonts/Poppins/Poppins-Bold.ttf" id="4_l6734"]
 [ext_resource type="Script" uid="uid://ckutroofw2701" path="res://dialog/InputDialog.gd" id="5_q068l"]
 [ext_resource type="Script" uid="uid://nnsywkaaa6jg" path="res://speedReader/Player.gd" id="6_3dwvd"]
 [ext_resource type="Texture2D" uid="uid://vdmm4fxsfxv7" path="res://assets/dark theme/white_skip_back_button.png" id="6_jaaaw"]
 [ext_resource type="Texture2D" uid="uid://nr8subgtvvwi" path="res://assets/dark theme/white_skip_forward_button.png" id="8_3dwvd"]
 [ext_resource type="Texture2D" uid="uid://qblsa1w723aq" path="res://assets/dark theme/white_play_button.png" id="8_dj55r"]
-[ext_resource type="FontFile" uid="uid://dejoefeh8m8sh" path="res://fonts/roboto/Roboto-Regular.ttf" id="9_dj55r"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_iq8i0"]
 color = Color(0.18, 0.18, 0.18, 1)
@@ -78,6 +78,7 @@ layout_mode = 2
 [node name="BookNameRichTextLabel" type="RichTextLabel" parent="HBoxContainer/Player/VBoxContainer"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("4_l6734")
 theme_override_font_sizes/normal_font_size = 32
 bbcode_enabled = true
 
@@ -134,7 +135,7 @@ alignment = 1
 
 [node name="WPMText" type="RichTextLabel" parent="HBoxContainer/Player/VBoxContainer/FlowContainer/WordsPerMinute"]
 layout_mode = 2
-theme_override_fonts/normal_font = ExtResource("9_dj55r")
+theme_override_fonts/normal_font = ExtResource("2_v4uy4")
 theme_override_font_sizes/normal_font_size = 20
 text = " Palavras Por Minuto (PPM): "
 fit_content = true

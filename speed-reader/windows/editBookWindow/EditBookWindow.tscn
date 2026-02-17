@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cg1gutrnxy8oo"]
+[gd_scene load_steps=3 format=3 uid="uid://cg1gutrnxy8oo"]
 
 [ext_resource type="Script" uid="uid://bnomnaicrqy3" path="res://windows/editBookWindow/EditBookWindow.gd" id="1_i5ya0"]
+[ext_resource type="Texture2D" uid="uid://byd0pwdci2da6" path="res://assets/icons/plus.png" id="2_i5ya0"]
 
 [node name="EditBookWindow" type="Window"]
 oversampling_override = 1.0
@@ -63,6 +64,15 @@ layout_mode = 2
 [node name="Cover" type="TextureRect" parent="MarginContainer/VBoxContainer/BookContainer/CoverContainer"]
 custom_minimum_size = Vector2(200, 256)
 layout_mode = 2
+expand_mode = 1
+
+[node name="Plus" type="TextureRect" parent="MarginContainer/VBoxContainer/BookContainer/CoverContainer"]
+modulate = Color(1, 1, 1, 0.8627451)
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("2_i5ya0")
 expand_mode = 1
 
 [node name="CoverButton" type="Button" parent="MarginContainer/VBoxContainer/BookContainer/CoverContainer"]
